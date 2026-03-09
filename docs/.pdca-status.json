@@ -1,0 +1,105 @@
+{
+  "version": "2.0",
+  "lastUpdated": "2026-03-09T10:45:30.333Z",
+  "activeFeatures": [
+    "react-tennis-2",
+    "service",
+    "scripts"
+  ],
+  "primaryFeature": "react-tennis-2",
+  "features": {
+    "react-tennis-2": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-03-09T10:25:25.631Z",
+        "lastUpdated": "2026-03-09T10:25:25.631Z"
+      },
+      "lastFile": "/Users/jeonghak/work/react-tennis-2/lib/prisma.ts"
+    },
+    "service": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-03-09T10:25:37.726Z",
+        "lastUpdated": "2026-03-09T10:45:30.333Z"
+      },
+      "lastFile": "/Users/jeonghak/work/react-tennis-2/service/schedule.ts"
+    },
+    "scripts": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-03-09T10:27:06.138Z",
+        "lastUpdated": "2026-03-09T10:27:06.138Z"
+      },
+      "lastFile": "/Users/jeonghak/work/react-tennis-2/scripts/migrate-sanity-to-postgres.ts"
+    }
+  },
+  "pipeline": {
+    "currentPhase": 1,
+    "level": "Dynamic",
+    "phaseHistory": []
+  },
+  "session": {
+    "startedAt": "2026-03-09T09:12:04.567Z",
+    "onboardingCompleted": false,
+    "lastActivity": "2026-03-09T10:45:30.333Z"
+  },
+  "history": [
+    {
+      "timestamp": "2026-03-09T10:25:25.631Z",
+      "feature": "react-tennis-2",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-09T10:25:37.726Z",
+      "feature": "service",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-09T10:25:57.066Z",
+      "feature": "service",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-09T10:26:20.563Z",
+      "feature": "service",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-09T10:27:06.138Z",
+      "feature": "scripts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-09T10:45:09.850Z",
+      "feature": "service",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-03-09T10:45:30.333Z",
+      "feature": "service",
+      "phase": "do",
+      "action": "updated"
+    }
+  ]
+}
