@@ -42,17 +42,23 @@ export default function Home() {
 
   // 일정 데이터 불러오기
   const { data: schedules } = useSWR<GetScheduleProps[]>('/api/schedule');
+  // UTC 날짜 문자열을 로컬 날짜 문자열로 정규화 (timezone 오차 방지)
+  const toLocalDateStr = (dateStr: string) => {
+    const d = new Date(dateStr);
+    return new Date(d.getFullYear(), d.getMonth(), d.getDate()).toDateString();
+  };
+
   // 완료된 게임 날짜
   const doneDates = schedules
     ? schedules
         .filter((s) => s.status === 'done')
-        .map((s) => new Date(s.date).toDateString())
+        .map((s) => toLocalDateStr(s.date))
     : [];
   // 완료되지 않은 일정 날짜
   const notDoneDates = schedules
     ? schedules
         .filter((s) => s.status !== 'done')
-        .map((s) => new Date(s.date).toDateString())
+        .map((s) => toLocalDateStr(s.date))
     : [];
 
   // 달력에서 선택한 날짜의 스케줄 정보
@@ -133,10 +139,10 @@ export default function Home() {
                     }
                     // 해당 날짜의 스케줄 정보 저장
                     const schedule = schedules?.find(
-                      (s) =>
-                        new Date(s.date).toDateString() === date.toDateString()
+                      (s) => toLocalDateStr(s.date) === date.toDateString()
                     );
                     setSelectedSchedule(schedule || null);
+                    setShowCalendar(false);
                   }
                   // date가 undefined인 경우 (같은 날짜 재클릭) 아무것도 하지 않음
                 }}

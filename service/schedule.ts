@@ -36,7 +36,8 @@ export async function getAllSchedule() {
     orderBy: { date: 'desc' },
     include: {
       gameResult: { select: { id: true } },
-      _count: { select: { attendees: true } },
+      courtNumbers: true,
+      attendees: { select: { name: true } },
     },
   });
   return schedules.map((s) => ({

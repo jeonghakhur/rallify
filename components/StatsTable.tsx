@@ -260,6 +260,13 @@ export default function StatsTable() {
         if (data && data.startDate && data.endDate) {
           setStartDate(new Date(data.startDate));
           setEndDate(new Date(data.endDate));
+        } else {
+          // 기본값: 6개월 전 ~ 오늘
+          const today = new Date();
+          const sixMonthsAgo = new Date();
+          sixMonthsAgo.setMonth(today.getMonth() - 6);
+          setStartDate(sixMonthsAgo);
+          setEndDate(today);
         }
       });
   }, []);

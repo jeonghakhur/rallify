@@ -1,4 +1,23 @@
 import { prisma } from '@/lib/prisma';
+import { encryptField, decryptField } from '@/util/encryption';
+
+type SensitiveUser = {
+  phoneNumber?: string | null;
+  birthday?: string | null;
+  birthyear?: string | null;
+  address?: string | null;
+  [key: string]: unknown;
+};
+
+function decryptSensitiveFields<T extends SensitiveUser>(user: T): T {
+  return {
+    ...user,
+    phoneNumber: decryptField(user.phoneNumber),
+    birthday: decryptField(user.birthday),
+    birthyear: decryptField(user.birthyear),
+    address: decryptField(user.address),
+  };
+}
 
 export async function existingUser(email: string) {
   return prisma.user.findUnique({
@@ -50,6 +69,45 @@ export async function addUser({
   });
 }
 
+export async function createEmailUser(data: {
+  email: string;
+  password: string;
+  name: string;
+  gender: string;
+}) {
+  return prisma.user.create({
+    data: {
+      email: data.email,
+      password: data.password,
+      name: data.name,
+      gender: data.gender,
+      username: data.email.split('@')[0],
+      provider: 'email',
+      level: 0,
+    },
+  });
+}
+
+export async function getPendingMembers() {
+  return prisma.user.findMany({
+    where: { level: 0 },
+    orderBy: { createdAt: 'asc' },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      gender: true,
+      level: true,
+      provider: true,
+      createdAt: true,
+    },
+  });
+}
+
+export async function deleteUserById(id: string) {
+  return prisma.user.delete({ where: { id } });
+}
+
 export async function getAllMembers() {
   const users = await prisma.user.findMany({
     orderBy: { name: 'asc' },
@@ -58,9 +116,9 @@ export async function getAllMembers() {
 }
 
 export async function getUserByUser(id: string) {
-  return prisma.user.findUnique({
-    where: { id },
-  });
+  const user = await prisma.user.findUnique({ where: { id } });
+  if (!user) return null;
+  return decryptSensitiveFields(user);
 }
 
 export async function getUserByEmail(email: string) {
@@ -82,9 +140,17 @@ export async function updateUserById(
     level: number;
   }>
 ) {
+  const { phoneNumber, birthday, birthyear, address, ...rest } = updatedData;
+  const encryptedData = {
+    ...rest,
+    ...(phoneNumber !== undefined && { phoneNumber: encryptField(phoneNumber) }),
+    ...(birthday !== undefined && { birthday: encryptField(birthday) }),
+    ...(birthyear !== undefined && { birthyear: encryptField(birthyear) }),
+    ...(address !== undefined && { address: encryptField(address) }),
+  };
   return prisma.user.update({
     where: { id },
-    data: updatedData,
+    data: encryptedData,
   });
 }
 

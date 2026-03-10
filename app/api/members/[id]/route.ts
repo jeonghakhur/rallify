@@ -17,9 +17,7 @@ export async function GET(_: NextRequest, context: Context) {
 
 export async function PATCH(req: NextRequest, context: Context) {
   const { id } = await context.params;
-  console.log(id);
   const body = await req.json();
-  console.log(body);
 
   return withSessionUser(async () =>
     updateUserById(id, body).then((data) => {

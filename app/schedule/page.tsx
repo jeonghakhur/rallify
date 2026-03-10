@@ -19,16 +19,16 @@ import {
 import { CalendarPlus, SlidersHorizontal } from 'lucide-react';
 
 export default function ScheduleList() {
-  const { isLoading, user } = useAuthRedirect('/', 0);
+  const { user } = useAuthRedirect('/', 0);
   const { data: schedules, error } = useSWR<GetScheduleProps[]>(
-    isLoading ? null : '/api/schedule',
+    '/api/schedule',
     {
       revalidateOnFocus: false,
       revalidateOnReconnect: false,
       dedupingInterval: 60000,
     }
   );
-  const [loading, setLoading] = useState<boolean>(isLoading);
+  const [loading, setLoading] = useState<boolean>(true);
   const router = useRouter();
   // 조회기간 상태
   const [startDate, setStartDate] = useState<Date | undefined>(undefined);

@@ -13,12 +13,8 @@ type Context = {
   params: Promise<{ id: string }>; // params가 Promise로 감싸져 있음
 };
 export async function GET(_: NextRequest, context: Context) {
-  const { id } = await context.params; // params를 비동기로 처리
-
-  return withSessionUser(async () =>
-    getSchedule(id) //
-      .then((data) => NextResponse.json(data))
-  );
+  const { id } = await context.params;
+  return getSchedule(id).then((data) => NextResponse.json(data));
 }
 
 export async function PATCH(req: NextRequest, context: Context) {

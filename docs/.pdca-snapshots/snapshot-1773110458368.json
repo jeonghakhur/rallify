@@ -1,0 +1,227 @@
+{
+  "timestamp": "2026-03-10T02:40:58.367Z",
+  "reason": "compaction",
+  "status": {
+    "version": "2.0",
+    "lastUpdated": "2026-03-10T02:38:02.888Z",
+    "activeFeatures": [
+      "react-tennis-2",
+      "service",
+      "scripts",
+      "util",
+      "stats-period",
+      "members",
+      "[id]",
+      "schedule"
+    ],
+    "primaryFeature": "react-tennis-2",
+    "features": {
+      "react-tennis-2": {
+        "phase": "do",
+        "phaseNumber": 3,
+        "matchRate": null,
+        "iterationCount": 0,
+        "requirements": [],
+        "documents": {},
+        "timestamps": {
+          "started": "2026-03-09T10:25:25.631Z",
+          "lastUpdated": "2026-03-10T02:33:14.166Z"
+        },
+        "lastFile": "/Users/jeonghak/work/react-tennis-2/components/StatsTable.tsx"
+      },
+      "service": {
+        "phase": "do",
+        "phaseNumber": 3,
+        "matchRate": null,
+        "iterationCount": 0,
+        "requirements": [],
+        "documents": {},
+        "timestamps": {
+          "started": "2026-03-09T10:25:37.726Z",
+          "lastUpdated": "2026-03-09T10:45:30.333Z"
+        },
+        "lastFile": "/Users/jeonghak/work/react-tennis-2/service/schedule.ts"
+      },
+      "scripts": {
+        "phase": "do",
+        "phaseNumber": 3,
+        "matchRate": null,
+        "iterationCount": 0,
+        "requirements": [],
+        "documents": {},
+        "timestamps": {
+          "started": "2026-03-09T10:27:06.138Z",
+          "lastUpdated": "2026-03-09T10:27:06.138Z"
+        },
+        "lastFile": "/Users/jeonghak/work/react-tennis-2/scripts/migrate-sanity-to-postgres.ts"
+      },
+      "util": {
+        "phase": "do",
+        "phaseNumber": 3,
+        "matchRate": null,
+        "iterationCount": 0,
+        "requirements": [],
+        "documents": {},
+        "timestamps": {
+          "started": "2026-03-10T02:22:19.351Z",
+          "lastUpdated": "2026-03-10T02:22:19.351Z"
+        },
+        "lastFile": "/Users/jeonghak/work/react-tennis-2/util/session.ts"
+      },
+      "stats-period": {
+        "phase": "do",
+        "phaseNumber": 3,
+        "matchRate": null,
+        "iterationCount": 0,
+        "requirements": [],
+        "documents": {},
+        "timestamps": {
+          "started": "2026-03-10T02:22:22.939Z",
+          "lastUpdated": "2026-03-10T02:22:22.939Z"
+        },
+        "lastFile": "/Users/jeonghak/work/react-tennis-2/app/api/stats-period/route.ts"
+      },
+      "members": {
+        "phase": "do",
+        "phaseNumber": 3,
+        "matchRate": null,
+        "iterationCount": 0,
+        "requirements": [],
+        "documents": {},
+        "timestamps": {
+          "started": "2026-03-10T02:22:25.916Z",
+          "lastUpdated": "2026-03-10T02:22:25.916Z"
+        },
+        "lastFile": "/Users/jeonghak/work/react-tennis-2/app/api/members/route.ts"
+      },
+      "[id]": {
+        "phase": "do",
+        "phaseNumber": 3,
+        "matchRate": null,
+        "iterationCount": 0,
+        "requirements": [],
+        "documents": {},
+        "timestamps": {
+          "started": "2026-03-10T02:37:57.796Z",
+          "lastUpdated": "2026-03-10T02:37:57.796Z"
+        },
+        "lastFile": "/Users/jeonghak/work/react-tennis-2/app/api/schedule/[id]/route.ts"
+      },
+      "schedule": {
+        "phase": "do",
+        "phaseNumber": 3,
+        "matchRate": null,
+        "iterationCount": 0,
+        "requirements": [],
+        "documents": {},
+        "timestamps": {
+          "started": "2026-03-10T02:38:02.888Z",
+          "lastUpdated": "2026-03-10T02:38:02.888Z"
+        },
+        "lastFile": "/Users/jeonghak/work/react-tennis-2/app/schedule/page.tsx"
+      }
+    },
+    "pipeline": {
+      "currentPhase": 1,
+      "level": "Dynamic",
+      "phaseHistory": []
+    },
+    "session": {
+      "startedAt": "2026-03-09T09:12:04.567Z",
+      "onboardingCompleted": false,
+      "lastActivity": "2026-03-10T02:38:02.888Z"
+    },
+    "history": [
+      {
+        "timestamp": "2026-03-09T10:25:25.631Z",
+        "feature": "react-tennis-2",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-03-09T10:25:37.726Z",
+        "feature": "service",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-03-09T10:25:57.066Z",
+        "feature": "service",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-03-09T10:26:20.563Z",
+        "feature": "service",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-03-09T10:27:06.138Z",
+        "feature": "scripts",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-03-09T10:45:09.850Z",
+        "feature": "service",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-03-09T10:45:30.333Z",
+        "feature": "service",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-03-10T02:22:19.351Z",
+        "feature": "util",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-03-10T02:22:22.939Z",
+        "feature": "stats-period",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-03-10T02:22:25.916Z",
+        "feature": "members",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-03-10T02:33:03.035Z",
+        "feature": "react-tennis-2",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-03-10T02:33:07.747Z",
+        "feature": "react-tennis-2",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-03-10T02:33:14.166Z",
+        "feature": "react-tennis-2",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-03-10T02:37:57.796Z",
+        "feature": "[id]",
+        "phase": "do",
+        "action": "updated"
+      },
+      {
+        "timestamp": "2026-03-10T02:38:02.888Z",
+        "feature": "schedule",
+        "phase": "do",
+        "action": "updated"
+      }
+    ]
+  }
+}

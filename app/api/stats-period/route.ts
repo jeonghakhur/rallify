@@ -3,9 +3,7 @@ import { withSessionUser } from '@/util/session';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET() {
-  return withSessionUser(async () =>
-    getStatsPeriod().then((data) => NextResponse.json(data))
-  );
+  return getStatsPeriod().then((data) => NextResponse.json(data));
 }
 
 export async function POST(req: NextRequest) {
