@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "lastUpdated": "2026-03-10T04:56:47.850Z",
+  "lastUpdated": "2026-04-22T14:51:47.378Z",
   "activeFeatures": [
     "react-tennis-2",
     "service",
@@ -13,7 +13,9 @@
     "register",
     "signup",
     "pending",
-    "e2e"
+    "e2e",
+    "tmp",
+    "comments"
   ],
   "primaryFeature": "react-tennis-2",
   "features": {
@@ -39,9 +41,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-03-09T10:25:37.726Z",
-        "lastUpdated": "2026-03-10T04:30:59.343Z"
+        "lastUpdated": "2026-04-22T14:51:47.378Z"
       },
-      "lastFile": "/Users/jeonghak/work/react-tennis-2/service/user.ts"
+      "lastFile": "/Users/jeonghakhur/work/person/rallify/service/games.ts"
     },
     "scripts": {
       "phase": "do",
@@ -172,6 +174,32 @@
         "lastUpdated": "2026-03-10T04:17:08.079Z"
       },
       "lastFile": "/Users/jeonghak/work/react-tennis-2/tests/e2e/signup-login.spec.ts"
+    },
+    "tmp": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-04-22T14:16:49.621Z",
+        "lastUpdated": "2026-04-22T14:16:49.621Z"
+      },
+      "lastFile": "/tmp/gen_migration.py"
+    },
+    "comments": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-04-22T14:50:13.809Z",
+        "lastUpdated": "2026-04-22T14:50:24.438Z"
+      },
+      "lastFile": "/Users/jeonghakhur/work/person/rallify/app/api/gameResult/[id]/comments/route.ts"
     }
   },
   "pipeline": {
@@ -182,7 +210,7 @@
   "session": {
     "startedAt": "2026-03-09T09:12:04.567Z",
     "onboardingCompleted": false,
-    "lastActivity": "2026-03-10T04:56:47.850Z"
+    "lastActivity": "2026-04-22T14:51:47.378Z"
   },
   "history": [
     {
@@ -446,6 +474,42 @@
     {
       "timestamp": "2026-03-10T04:56:47.850Z",
       "feature": "react-tennis-2",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-22T14:16:49.621Z",
+      "feature": "tmp",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-22T14:49:54.399Z",
+      "feature": "service",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-22T14:50:13.809Z",
+      "feature": "comments",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-22T14:50:24.438Z",
+      "feature": "comments",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-22T14:51:28.846Z",
+      "feature": "service",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-22T14:51:47.378Z",
+      "feature": "service",
       "phase": "do",
       "action": "updated"
     }

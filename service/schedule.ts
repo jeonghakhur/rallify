@@ -23,9 +23,9 @@ export async function getSchedule(id: string) {
       createdAt: c.createdAt.toISOString(),
       author: {
         _ref: c.authorId,
-        name: c.author.name,
-        username: c.author.username,
-        image: c.author.image,
+        name: c.author?.name ?? null,
+        username: c.author?.username ?? null,
+        image: c.author?.image ?? null,
       },
     })),
   };
@@ -186,6 +186,27 @@ export async function removeAttendance(
   attendeeKey: string
 ) {
   return prisma.attendee.delete({ where: { id: attendeeKey } });
+}
+
+export async function addCommentToSchedule(
+  scheduleId: string,
+  comment: { authorId: string; text: string }
+) {
+  return prisma.scheduleComment.create({
+    data: {
+      scheduleId,
+      authorId: comment.authorId,
+      text: comment.text,
+    },
+    include: { author: true },
+  });
+}
+
+export async function removeCommentFromSchedule(
+  _scheduleId: string,
+  commentKey: string
+) {
+  return prisma.scheduleComment.delete({ where: { id: commentKey } });
 }
 
 export async function updateScheduleStatus(scheduleId: string, status: string) {

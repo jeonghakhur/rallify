@@ -53,9 +53,9 @@ function formatGameResult(
       createdAt: c.createdAt.toISOString(),
       author: {
         _ref: c.authorId,
-        name: c.author.name,
-        username: c.author.username,
-        image: c.author.image,
+        name: c.author?.name ?? null,
+        username: c.author?.username ?? null,
+        image: c.author?.image ?? null,
       },
     })),
   };

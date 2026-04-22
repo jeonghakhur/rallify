@@ -135,8 +135,8 @@ model ScheduleComment {
 
   scheduleId String
   schedule   Schedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
-  authorId   String
-  author     User     @relation(fields: [authorId], references: [id])
+  authorId   String?
+  author     User?    @relation(fields: [authorId], references: [id])
 }
 
 // ─────────────────────────────────────────
@@ -151,8 +151,8 @@ model GameResult {
 
   scheduleId  String      @unique
   schedule    Schedule    @relation(fields: [scheduleId], references: [id])
-  authorId    String
-  author      User        @relation("GameResultAuthor", fields: [authorId], references: [id])
+  authorId    String?
+  author      User?       @relation("GameResultAuthor", fields: [authorId], references: [id])
   games       Game[]
   comments    GameComment[]
   editHistory EditHistory[]
@@ -176,8 +176,8 @@ model GameComment {
 
   gameResultId String
   gameResult   GameResult @relation(fields: [gameResultId], references: [id], onDelete: Cascade)
-  authorId     String
-  author       User       @relation(fields: [authorId], references: [id])
+  authorId     String?
+  author       User?      @relation(fields: [authorId], references: [id])
 }
 
 model EditHistory {
@@ -186,8 +186,8 @@ model EditHistory {
 
   gameResultId String
   gameResult   GameResult @relation(fields: [gameResultId], references: [id], onDelete: Cascade)
-  editorId     String
-  editor       User       @relation(fields: [editorId], references: [id])
+  editorId     String?
+  editor       User?      @relation(fields: [editorId], references: [id])
 }
 
 // ─────────────────────────────────────────
