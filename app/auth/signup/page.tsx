@@ -8,7 +8,12 @@ import Link from 'next/link';
 
 export default function SignUpPage() {
   const router = useRouter();
-  const [form, setForm] = useState({ email: '', password: '', name: '', gender: '' });
+  const [form, setForm] = useState({
+    email: '',
+    password: '',
+    name: '',
+    gender: '',
+  });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -54,7 +59,9 @@ export default function SignUpPage() {
 
   return (
     <section className="flex flex-col w-[320px] mt-10 mx-auto gap-4">
-      <h1 className="text-2xl font-bold text-center text-gray-800">이메일 회원가입</h1>
+      <h1 className="text-2xl font-bold text-center text-gray-800">
+        이메일 회원가입
+      </h1>
 
       {error && (
         <div className="bg-red-50 border border-red-200 text-red-600 text-sm p-3 rounded-md">
@@ -64,7 +71,9 @@ export default function SignUpPage() {
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-3">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">이메일</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            이메일
+          </label>
           <input
             type="email"
             required
@@ -76,7 +85,9 @@ export default function SignUpPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">패스워드</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            패스워드
+          </label>
           <input
             type="password"
             required
@@ -89,7 +100,9 @@ export default function SignUpPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">이름</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            이름
+          </label>
           <input
             type="text"
             required
@@ -102,7 +115,9 @@ export default function SignUpPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">성별</label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            성별
+          </label>
           <div className="flex gap-3">
             {['남성', '여성'].map((g) => (
               <button
@@ -125,6 +140,18 @@ export default function SignUpPage() {
           {loading ? '처리 중...' : '가입하기'}
         </Button>
       </form>
+
+      <p className="text-xs text-gray-400 text-center">
+        가입하면{' '}
+        <Link href="/terms" className="underline hover:text-gray-600">
+          이용약관
+        </Link>
+        과{' '}
+        <Link href="/privacy" className="underline hover:text-gray-600">
+          개인정보처리방침
+        </Link>
+        에 동의하는 것으로 간주됩니다.
+      </p>
 
       <div className="text-center text-sm text-gray-500">
         이미 계정이 있으신가요?{' '}

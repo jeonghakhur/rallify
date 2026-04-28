@@ -15,7 +15,7 @@ export default function RegisterPendingPage() {
       router.push('/auth/signin');
       return;
     }
-    if (session.user.level >= 1) {
+    if (session.user.role !== 'PENDING') {
       router.push('/');
     }
   }, [session, status, router]);
@@ -43,8 +43,10 @@ export default function RegisterPendingPage() {
 
         <h1 className="text-xl font-bold text-gray-800 mb-2">가입 신청 완료</h1>
         <p className="text-gray-500 text-sm mb-1">
-          <span className="font-medium text-gray-700">{session?.user.name}</span>님,
-          가입 신청이 완료되었습니다.
+          <span className="font-medium text-gray-700">
+            {session?.user.name}
+          </span>
+          님, 가입 신청이 완료되었습니다.
         </p>
         <p className="text-gray-500 text-sm mb-6">
           관리자 승인 후 서비스를 이용하실 수 있습니다.

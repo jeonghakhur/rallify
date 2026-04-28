@@ -8,25 +8,20 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-// ─────────────────────────────────────────
-// NextAuth 필수 모델
-// ─────────────────────────────────────────
-
 model Account {
   id                String  @id @default(cuid())
   userId            String
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.Text
+  id_token          String?
   session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
 }
@@ -47,147 +42,165 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-// ─────────────────────────────────────────
-// 사용자
-// ─────────────────────────────────────────
-
 model User {
-  id            String    @id @default(cuid())
-  username      String?   @unique
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
-  image         String?
-  level         Int       @default(0)
-  gender        String?
-  provider      String?
-  phoneNumber   String?
-  birthday      String?
-  birthyear     String?
-  address       String?
-  password      String?
-  createdAt     DateTime  @default(now())
-
-  // NextAuth 관계
-  accounts Account[]
-  sessions Session[]
-
-  // 앱 관계
-  schedules        Schedule[]        @relation("ScheduleAuthor")
+  id               String            @id @default(cuid())
+  username         String?           @unique
+  name             String?
+  email            String?           @unique
+  emailVerified    DateTime?
+  image            String?
+  level            Int               @default(0)
+  role             String            @default("USER")
+  gender           String?
+  provider         String?
+  phoneNumber      String?
+  birthday         String?
+  birthyear        String?
+  address          String?
+  password         String?
+  agreedTermsAt    DateTime?
+  createdAt        DateTime          @default(now())
+  accounts         Account[]
   attendees        Attendee[]
-  scheduleComments ScheduleComment[]
-  gameResults      GameResult[]      @relation("GameResultAuthor")
-  gameComments     GameComment[]
   editHistories    EditHistory[]
+  gameComments     GameComment[]
+  gameResults      GameResult[]      @relation("GameResultAuthor")
+  schedules        Schedule[]        @relation("ScheduleAuthor")
+  scheduleComments ScheduleComment[]
+  sessions         Session[]
+  createdClubs     Club[]            @relation("ClubCreator")
+  clubMembers      ClubMember[]
 }
 
-// ─────────────────────────────────────────
-// 스케줄
-// ─────────────────────────────────────────
-
 model Schedule {
-  id         String   @id @default(cuid())
-  date       String
-  startTime  String
-  endTime    String
-  courtName  String
-  courtCount String
-  status     String   @default("pending")
-  createdAt  DateTime @default(now())
-
+  id           String            @id @default(cuid())
+  date         String
+  startTime    String
+  endTime      String
+  courtName    String
+  courtCount   String
+  status       String            @default("pending")
+  createdAt    DateTime          @default(now())
   authorId     String?
-  author       User?             @relation("ScheduleAuthor", fields: [authorId], references: [id])
-  courtNumbers CourtNumber[]
   attendees    Attendee[]
-  comments     ScheduleComment[]
+  courtNumbers CourtNumber[]
   gameResult   GameResult?
+  author       User?             @relation("ScheduleAuthor", fields: [authorId], references: [id])
+  comments     ScheduleComment[]
 }
 
 model CourtNumber {
-  id        String @id @default(cuid())
-  number    String
-  startTime String
-  endTime   String
-
+  id         String   @id @default(cuid())
+  number     String
+  startTime  String
+  endTime    String
   scheduleId String
   schedule   Schedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
 }
 
 model Attendee {
-  id          String  @id @default(cuid())
+  id          String   @id @default(cuid())
   name        String
   gender      String
   startHour   String
   startMinute String
   endHour     String
   endMinute   String
-
-  scheduleId String
-  schedule   Schedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
-  userId     String?
-  user       User?    @relation(fields: [userId], references: [id])
+  scheduleId  String
+  userId      String?
+  schedule    Schedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
+  user        User?    @relation(fields: [userId], references: [id])
 }
 
 model ScheduleComment {
-  id        String   @id @default(cuid())
-  text      String
-  createdAt DateTime @default(now())
-
+  id         String   @id @default(cuid())
+  text       String
+  createdAt  DateTime @default(now())
   scheduleId String
-  schedule   Schedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
   authorId   String?
-  author     User?    @relation(fields: [authorId], references: [id])
+  author     User?    @relation(fields: [authorId], references: [id], onDelete: Restrict)
+  schedule   Schedule @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
 }
 
-// ─────────────────────────────────────────
-// 게임 결과
-// ─────────────────────────────────────────
-
 model GameResult {
-  id           String    @id @default(cuid())
-  status       String    @default("pending")
-  createdAt    DateTime  @default(now())
+  id           String        @id @default(cuid())
+  status       String        @default("pending")
+  createdAt    DateTime      @default(now())
   lastEditedAt DateTime?
-
-  scheduleId  String      @unique
-  schedule    Schedule    @relation(fields: [scheduleId], references: [id])
-  authorId    String?
-  author      User?       @relation("GameResultAuthor", fields: [authorId], references: [id])
-  games       Game[]
-  comments    GameComment[]
-  editHistory EditHistory[]
+  scheduleId   String        @unique
+  authorId     String?
+  editHistory  EditHistory[]
+  games        Game[]
+  comments     GameComment[]
+  author       User?         @relation("GameResultAuthor", fields: [authorId], references: [id], onDelete: Restrict)
+  schedule     Schedule      @relation(fields: [scheduleId], references: [id])
 }
 
 model Game {
-  id      String   @id @default(cuid())
-  court   String
-  players String[]
-  score   String[]
-  time    String
-
+  id           String     @id @default(cuid())
+  court        String
+  players      String[]
+  score        String[]
+  time         String
   gameResultId String
   gameResult   GameResult @relation(fields: [gameResultId], references: [id], onDelete: Cascade)
 }
 
 model GameComment {
-  id        String   @id @default(cuid())
-  text      String
-  createdAt DateTime @default(now())
-
+  id           String     @id @default(cuid())
+  text         String
+  createdAt    DateTime   @default(now())
   gameResultId String
-  gameResult   GameResult @relation(fields: [gameResultId], references: [id], onDelete: Cascade)
   authorId     String?
-  author       User?      @relation(fields: [authorId], references: [id])
+  author       User?      @relation(fields: [authorId], references: [id], onDelete: Restrict)
+  gameResult   GameResult @relation(fields: [gameResultId], references: [id], onDelete: Cascade)
 }
 
 model EditHistory {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-
+  id           String     @id @default(cuid())
+  createdAt    DateTime   @default(now())
   gameResultId String
-  gameResult   GameResult @relation(fields: [gameResultId], references: [id], onDelete: Cascade)
   editorId     String?
-  editor       User?      @relation(fields: [editorId], references: [id])
+  editor       User?      @relation(fields: [editorId], references: [id], onDelete: Restrict)
+  gameResult   GameResult @relation(fields: [gameResultId], references: [id], onDelete: Cascade)
+}
+
+// ─────────────────────────────────────────
+// 클럽
+// ─────────────────────────────────────────
+
+model Club {
+  id          String       @id @default(cuid())
+  name        String
+  description String?
+  city        String?
+  district    String?
+  joinType    String       @default("APPROVAL")
+  maxMembers  Int?
+  isActive    Boolean      @default(true)
+  createdBy   String
+  creator     User         @relation("ClubCreator", fields: [createdBy], references: [id])
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  members     ClubMember[]
+}
+
+model ClubMember {
+  id           String    @id @default(cuid())
+  clubId       String
+  club         Club      @relation(fields: [clubId], references: [id], onDelete: Cascade)
+  userId       String
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role         String    @default("MEMBER")
+  status       String    @default("PENDING")
+  statusReason String?
+  introduction String?
+  invitedBy    String?
+  joinedAt     DateTime?
+  createdAt    DateTime  @default(now())
+
+  @@unique([clubId, userId])
 }
 
 // ─────────────────────────────────────────

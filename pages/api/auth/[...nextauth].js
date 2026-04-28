@@ -141,6 +141,7 @@ export const authOptions = {
             username: user.email.split('@')[0],
             provider: account.provider,
             level: 0,
+            role: 'PENDING',
             gender,
             phoneNumber: encryptField(phone_number),
             birthday: encryptField(birthday),
@@ -162,10 +163,11 @@ export const authOptions = {
       if (token.id || trigger === 'update') {
         const dbUser = await prisma.user.findUnique({
           where: { id: token.id },
-          select: { level: true, gender: true, username: true, name: true },
+          select: { level: true, role: true, gender: true, username: true, name: true },
         });
         if (dbUser) {
           token.level = dbUser.level;
+          token.role = dbUser.role ?? 'USER';
           token.gender = dbUser.gender ?? '';
           token.userName = dbUser.username ?? token.email?.split('@')[0] ?? '';
           token.name = dbUser.name ?? token.name ?? '';
@@ -177,6 +179,7 @@ export const authOptions = {
       if (session.user) {
         session.user.id = token.id;
         session.user.level = token.level ?? 0;
+        session.user.role = token.role ?? 'USER';
         session.user.gender = token.gender ?? '';
         session.user.userName = token.userName ?? '';
         session.user.name = token.name ?? '';

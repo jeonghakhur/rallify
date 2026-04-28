@@ -15,7 +15,7 @@ export default function NavBar() {
     pathname?.includes('/studio/structure');
 
   const user = session?.user;
-  const level = user?.level || 0;
+  const role = user?.role || 'PENDING';
   const [largeFont, setLargeFont] = useState<null | boolean>(null);
 
   // 마운트 후 localStorage에서 값 동기화
@@ -73,7 +73,7 @@ export default function NavBar() {
                 홈
               </Link>
             </li>
-            {level > 0 && (
+            {role !== 'PENDING' && (
               <>
                 <li>
                   <Link
@@ -101,9 +101,22 @@ export default function NavBar() {
                     게임
                   </Link>
                 </li>
+                <li>
+                  <Link
+                    href="/clubs"
+                    className={
+                      'relative pb-0.5 ' +
+                      (pathname.startsWith('/clubs')
+                        ? 'border-b-2 border-blue-600 transition-all duration-300 ease-in-out'
+                        : 'border-b-2 border-transparent transition-all duration-300 ease-in-out')
+                    }
+                  >
+                    클럽
+                  </Link>
+                </li>
               </>
             )}
-            {level > 4 && (
+            {role === 'SUPER_ADMIN' && (
               <li>
                 <Link
                   href="/members"

@@ -19,7 +19,7 @@ type Member = {
 };
 
 export default function AdminMembersPage() {
-  const { user, isLoading } = useAuthRedirect('/', 4);
+  const { user, isLoading } = useAuthRedirect('/', 'SUPER_ADMIN');
   const [tab, setTab] = useState<'pending' | 'active'>('pending');
 
   const { data: pendingMembers } = useSWR<Member[]>(
@@ -41,7 +41,10 @@ export default function AdminMembersPage() {
   };
 
   const handleLevelChange = async (id: string, currentLevel: number) => {
-    const newLevel = prompt(`새 등급을 입력하세요 (현재: ${currentLevel})`, String(currentLevel));
+    const newLevel = prompt(
+      `새 등급을 입력하세요 (현재: ${currentLevel})`,
+      String(currentLevel)
+    );
     if (!newLevel || isNaN(Number(newLevel))) return;
     await fetch(`/api/admin/members/${id}`, {
       method: 'PATCH',
@@ -52,7 +55,8 @@ export default function AdminMembersPage() {
   };
 
   const handleReject = async (id: string, name: string | null) => {
-    if (!confirm(`${name ?? '이 회원'}의 가입을 거절하고 계정을 삭제할까요?`)) return;
+    if (!confirm(`${name ?? '이 회원'}의 가입을 거절하고 계정을 삭제할까요?`))
+      return;
     await fetch(`/api/admin/members/${id}`, { method: 'DELETE' });
     mutate('/api/admin/members?status=pending');
   };
@@ -94,7 +98,9 @@ export default function AdminMembersPage() {
       {tab === 'pending' && (
         <div className="space-y-3">
           {!pendingMembers || pendingMembers.length === 0 ? (
-            <p className="text-gray-500 text-center py-12">대기 중인 가입 신청이 없습니다.</p>
+            <p className="text-gray-500 text-center py-12">
+              대기 중인 가입 신청이 없습니다.
+            </p>
           ) : (
             pendingMembers.map((member) => (
               <div
@@ -102,11 +108,17 @@ export default function AdminMembersPage() {
                 className="bg-white rounded-lg border border-gray-200 p-4 flex items-center justify-between gap-3"
               >
                 <div className="min-w-0">
-                  <p className="font-medium text-gray-800">{member.name ?? '(이름 없음)'}</p>
-                  <p className="text-sm text-gray-500 truncate">{member.email}</p>
+                  <p className="font-medium text-gray-800">
+                    {member.name ?? '(이름 없음)'}
+                  </p>
+                  <p className="text-sm text-gray-500 truncate">
+                    {member.email}
+                  </p>
                   <p className="text-xs text-gray-400 mt-0.5">
                     {member.gender ?? '-'} · {member.provider ?? 'email'} ·{' '}
-                    {format(new Date(member.createdAt), 'MM/dd HH:mm', { locale: ko })}
+                    {format(new Date(member.createdAt), 'MM/dd HH:mm', {
+                      locale: ko,
+                    })}
                   </p>
                 </div>
                 <div className="flex gap-2 shrink-0">
@@ -131,7 +143,9 @@ export default function AdminMembersPage() {
       {tab === 'active' && (
         <div className="space-y-3">
           {activeMembers.length === 0 ? (
-            <p className="text-gray-500 text-center py-12">활성 회원이 없습니다.</p>
+            <p className="text-gray-500 text-center py-12">
+              활성 회원이 없습니다.
+            </p>
           ) : (
             activeMembers.map((member) => (
               <div
@@ -140,7 +154,9 @@ export default function AdminMembersPage() {
               >
                 <div className="min-w-0">
                   <p className="font-medium text-gray-800">{member.name}</p>
-                  <p className="text-sm text-gray-500 truncate">{member.email}</p>
+                  <p className="text-sm text-gray-500 truncate">
+                    {member.email}
+                  </p>
                   <p className="text-xs text-gray-400 mt-0.5">
                     {member.gender ?? '-'} · 등급 {member.level}
                   </p>

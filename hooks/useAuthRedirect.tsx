@@ -8,7 +8,7 @@ const REGISTER_PATHS = ['/register', '/register/pending'];
 
 export default function useAuthRedirect(
   redirectTo: string = '/auth/signin',
-  minLevel: number = 0
+  requiredRole?: 'SUPER_ADMIN'
 ) {
   const { data: session, status } = useSession();
   const router = useRouter();
@@ -23,11 +23,11 @@ export default function useAuthRedirect(
       return;
     }
 
-    const level = session.user.level;
+    const role = session.user.role ?? 'PENDING';
     const name = session.user.name;
 
-    // level=0: 가입 대기 상태 리디렉션
-    if (level === 0) {
+    // PENDING: 가입 대기 상태 리디렉션
+    if (role === 'PENDING') {
       if (!name && pathname !== '/register') {
         router.push('/register');
       } else if (name && !REGISTER_PATHS.includes(pathname)) {
@@ -38,12 +38,12 @@ export default function useAuthRedirect(
       return;
     }
 
-    if (level < minLevel) {
+    if (requiredRole === 'SUPER_ADMIN' && role !== 'SUPER_ADMIN') {
       router.push(redirectTo);
     } else {
       setIsChecking(false);
     }
-  }, [session, status, router, redirectTo, minLevel, pathname]);
+  }, [session, status, router, redirectTo, requiredRole, pathname]);
 
   return { user: session?.user, isLoading: isChecking };
 }

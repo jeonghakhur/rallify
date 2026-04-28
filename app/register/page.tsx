@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 
 export default function RegisterPage() {
@@ -19,12 +20,12 @@ export default function RegisterPage() {
       return;
     }
     // 이미 프로필 완성된 경우
-    if (session.user.level === 0 && session.user.name) {
+    if (session.user.role === 'PENDING' && session.user.name) {
       router.push('/register/pending');
       return;
     }
     // 이미 승인된 경우
-    if (session.user.level >= 1) {
+    if (session.user.role !== 'PENDING') {
       router.push('/');
       return;
     }
@@ -75,7 +76,9 @@ export default function RegisterPage() {
 
   return (
     <section className="flex flex-col w-[320px] mt-10 mx-auto gap-4">
-      <h1 className="text-2xl font-bold text-center text-gray-800">프로필 완성</h1>
+      <h1 className="text-2xl font-bold text-center text-gray-800">
+        프로필 완성
+      </h1>
       <p className="text-sm text-gray-500 text-center">
         서비스 가입을 위해 아래 정보를 입력해주세요.
       </p>
@@ -88,7 +91,9 @@ export default function RegisterPage() {
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-3">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">이름</label>
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            이름
+          </label>
           <input
             type="text"
             required
@@ -100,7 +105,9 @@ export default function RegisterPage() {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">성별</label>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            성별
+          </label>
           <div className="flex gap-3">
             {['남성', '여성'].map((g) => (
               <button
@@ -131,6 +138,18 @@ export default function RegisterPage() {
             placeholder="010-0000-0000"
           />
         </div>
+
+        <p className="text-xs text-gray-400 text-center">
+          가입하면{' '}
+          <Link href="/terms" className="underline hover:text-gray-600">
+            이용약관
+          </Link>
+          과{' '}
+          <Link href="/privacy" className="underline hover:text-gray-600">
+            개인정보처리방침
+          </Link>
+          에 동의하는 것으로 간주됩니다.
+        </p>
 
         <Button type="submit" className="w-full mt-2" disabled={loading}>
           {loading ? '저장 중...' : '완료'}
