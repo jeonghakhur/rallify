@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "lastUpdated": "2026-04-23T13:46:02.509Z",
+  "lastUpdated": "2026-04-28T12:25:14.367Z",
   "activeFeatures": [
     "react-tennis-2",
     "service",
@@ -28,7 +28,9 @@
     "respond",
     "search",
     "create",
-    "manage"
+    "manage",
+    "games",
+    "user"
   ],
   "primaryFeature": "react-tennis-2",
   "features": {
@@ -54,9 +56,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-03-09T10:25:37.726Z",
-        "lastUpdated": "2026-04-23T13:45:48.896Z"
+        "lastUpdated": "2026-04-28T12:25:14.367Z"
       },
-      "lastFile": "/Users/jeonghakhur/work/person/rallify/service/club.ts"
+      "lastFile": "/Users/jeonghakhur/work/person/rallify/service/user.ts"
     },
     "scripts": {
       "phase": "do",
@@ -106,9 +108,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-03-10T02:22:25.916Z",
-        "lastUpdated": "2026-04-23T13:32:04.843Z"
+        "lastUpdated": "2026-04-28T12:23:57.526Z"
       },
-      "lastFile": "/Users/jeonghakhur/work/person/rallify/app/api/admin/members/route.ts"
+      "lastFile": "/Users/jeonghakhur/work/person/rallify/app/admin/members/page.tsx"
     },
     "[id]": {
       "phase": "do",
@@ -119,9 +121,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-03-10T02:37:57.796Z",
-        "lastUpdated": "2026-04-23T13:46:02.509Z"
+        "lastUpdated": "2026-04-28T12:23:17.070Z"
       },
-      "lastFile": "/Users/jeonghakhur/work/person/rallify/app/clubs/[id]/page.tsx"
+      "lastFile": "/Users/jeonghakhur/work/person/rallify/app/api/admin/members/[id]/route.ts"
     },
     "schedule": {
       "phase": "do",
@@ -215,11 +217,11 @@
       "lastFile": "/Users/jeonghakhur/work/person/rallify/app/api/gameResult/[id]/comments/route.ts"
     },
     "클럽관리": {
-      "phase": "design",
-      "planPath": "docs/01-plan/features/클럽관리.plan.md",
-      "designPath": "docs/02-design/features/클럽관리.design.md",
+      "phase": "archived",
+      "matchRate": 93,
       "startedAt": "2026-04-23T00:00:00Z",
-      "lastUpdated": "2026-04-23T00:00:00Z"
+      "archivedAt": "2026-04-28T00:00:00Z",
+      "archivedTo": "docs/archive/2026-04/클럽관리/"
     },
     "model": {
       "phase": "do",
@@ -389,6 +391,32 @@
         "lastUpdated": "2026-04-23T13:44:25.971Z"
       },
       "lastFile": "/Users/jeonghakhur/work/person/rallify/app/clubs/[id]/manage/page.tsx"
+    },
+    "games": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-04-28T12:20:31.004Z",
+        "lastUpdated": "2026-04-28T12:21:03.087Z"
+      },
+      "lastFile": "/Users/jeonghakhur/work/person/rallify/app/games/page.tsx"
+    },
+    "user": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-04-28T12:24:21.495Z",
+        "lastUpdated": "2026-04-28T12:24:40.359Z"
+      },
+      "lastFile": "/Users/jeonghakhur/work/person/rallify/app/user/page.tsx"
     }
   },
   "pipeline": {
@@ -399,7 +427,7 @@
   "session": {
     "startedAt": "2026-03-09T09:12:04.567Z",
     "onboardingCompleted": false,
-    "lastActivity": "2026-04-23T13:46:02.509Z"
+    "lastActivity": "2026-04-28T12:25:14.367Z"
   },
   "history": [
     {
@@ -927,6 +955,78 @@
     {
       "timestamp": "2026-04-23T13:46:02.509Z",
       "feature": "[id]",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-28T12:20:31.004Z",
+      "feature": "games",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-28T12:20:39.333Z",
+      "feature": "games",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-28T12:20:47.547Z",
+      "feature": "games",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-28T12:21:03.087Z",
+      "feature": "games",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-28T12:22:46.917Z",
+      "feature": "service",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-28T12:23:03.545Z",
+      "feature": "service",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-28T12:23:17.070Z",
+      "feature": "[id]",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-28T12:23:50.773Z",
+      "feature": "members",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-28T12:23:57.526Z",
+      "feature": "members",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-28T12:24:21.495Z",
+      "feature": "user",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-28T12:24:40.359Z",
+      "feature": "user",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-28T12:25:14.367Z",
+      "feature": "service",
       "phase": "do",
       "action": "updated"
     }
