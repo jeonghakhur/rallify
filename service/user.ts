@@ -84,13 +84,14 @@ export async function createEmailUser(data: {
       username: data.email.split('@')[0],
       provider: 'email',
       level: 0,
+      role: 'PENDING',
     },
   });
 }
 
 export async function getPendingMembers() {
   return prisma.user.findMany({
-    where: { level: 0 },
+    where: { role: 'PENDING' },
     orderBy: { createdAt: 'asc' },
     select: {
       id: true,
@@ -138,12 +139,15 @@ export async function updateUserById(
     birthyear: string;
     address: string;
     level: number;
+    role: string;
   }>
 ) {
   const { phoneNumber, birthday, birthyear, address, ...rest } = updatedData;
   const encryptedData = {
     ...rest,
-    ...(phoneNumber !== undefined && { phoneNumber: encryptField(phoneNumber) }),
+    ...(phoneNumber !== undefined && {
+      phoneNumber: encryptField(phoneNumber),
+    }),
     ...(birthday !== undefined && { birthday: encryptField(birthday) }),
     ...(birthyear !== undefined && { birthyear: encryptField(birthyear) }),
     ...(address !== undefined && { address: encryptField(address) }),

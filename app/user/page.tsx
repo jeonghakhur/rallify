@@ -20,12 +20,16 @@ import { toast } from '@/hooks/use-toast';
 import { Switch } from '@/components/ui/switch';
 
 export default function User() {
-  const { status } = useSession();
+  const { data: session, status } = useSession();
   const { data, isLoading, error } = useSWR<SimpleUserProps>('/api/me');
   const { control, register, handleSubmit, reset } = useForm<SimpleUserProps>();
   const [loading, setLoading] = useState<boolean>(isLoading);
   const [largeFont, setLargeFont] = useState(false);
   const [isClient, setIsClient] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deleteEmail, setDeleteEmail] = useState('');
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [deleteError, setDeleteError] = useState('');
 
   // 클라이언트에서만 localStorage 값을 가져오기
   useEffect(() => {
@@ -176,6 +180,90 @@ export default function User() {
             </div>
           </div>
         </form>
+      )}
+
+      {/* Danger Zone */}
+      <div className="mx-5 mt-8 mb-6 border border-red-200 rounded-lg p-4 bg-red-50">
+        <h3 className="text-sm font-semibold text-red-600 mb-2">위험 구역</h3>
+        <p className="text-xs text-gray-600 mb-3">
+          회원 탈퇴 시 모든 데이터가 삭제되며 복구할 수 없습니다.
+        </p>
+        <Button
+          variant="outline"
+          size="sm"
+          className="text-red-600 border-red-300 hover:bg-red-100"
+          onClick={() => {
+            setShowDeleteModal(true);
+            setDeleteEmail('');
+            setDeleteError('');
+          }}
+        >
+          회원탈퇴
+        </Button>
+      </div>
+
+      {/* 탈퇴 확인 모달 */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-lg p-6 max-w-sm w-full">
+            <h3 className="text-lg font-bold text-red-600 mb-2">회원탈퇴</h3>
+            <p className="text-sm text-gray-600 mb-4">
+              탈퇴 시 모든 데이터가 영구 삭제되며 복구할 수 없습니다. 계속하려면
+              이메일 주소를 입력하세요.
+            </p>
+
+            {deleteError && (
+              <div className="bg-red-50 border border-red-200 text-red-600 text-sm p-3 rounded-md mb-3">
+                {deleteError}
+              </div>
+            )}
+
+            <input
+              type="email"
+              value={deleteEmail}
+              onChange={(e) => setDeleteEmail(e.target.value)}
+              placeholder={session?.user?.email || '이메일 주소'}
+              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm mb-4"
+            />
+
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                className="flex-1"
+                onClick={() => setShowDeleteModal(false)}
+              >
+                취소
+              </Button>
+              <Button
+                className="flex-1 bg-red-600 hover:bg-red-700 text-white"
+                disabled={deleteEmail !== session?.user?.email || deleteLoading}
+                onClick={async () => {
+                  setDeleteLoading(true);
+                  setDeleteError('');
+                  try {
+                    const res = await fetch('/api/me', {
+                      method: 'DELETE',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({
+                        confirmEmail: deleteEmail,
+                      }),
+                    });
+                    const result = await res.json();
+                    if (!res.ok) {
+                      setDeleteError(result.error);
+                      return;
+                    }
+                    signOut({ callbackUrl: '/auth/signin' });
+                  } finally {
+                    setDeleteLoading(false);
+                  }
+                }}
+              >
+                {deleteLoading ? '처리 중...' : '탈퇴하기'}
+              </Button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

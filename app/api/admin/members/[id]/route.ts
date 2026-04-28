@@ -12,7 +12,19 @@ export async function PATCH(req: NextRequest, context: Context) {
     if (user.role !== 'SUPER_ADMIN') {
       return NextResponse.json({ error: '권한이 없습니다.' }, { status: 403 });
     }
-    const result = await updateUserById(id, { level: body.level });
+    // level 변경 시 role도 동기화
+    const roleMap: Record<number, string> = {
+      0: 'PENDING',
+      1: 'USER',
+      2: 'USER',
+      3: 'USER',
+    };
+    const newRole =
+      body.level >= 4 ? 'SUPER_ADMIN' : (roleMap[body.level] ?? 'USER');
+    const result = await updateUserById(id, {
+      level: body.level,
+      role: newRole,
+    });
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password: _pw, ...safeResult } = result as typeof result & {
       password?: string;

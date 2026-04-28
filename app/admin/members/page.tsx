@@ -14,6 +14,7 @@ type Member = {
   email: string | null;
   gender: string | null;
   level: number;
+  role: string;
   provider: string | null;
   createdAt: string;
 };
@@ -29,7 +30,7 @@ export default function AdminMembersPage() {
     user && tab === 'active' ? '/api/admin/members' : null
   );
 
-  const activeMembers = allMembers?.filter((m) => m.level >= 1) ?? [];
+  const activeMembers = allMembers?.filter((m) => m.role !== 'PENDING') ?? [];
 
   const handleApprove = async (id: string) => {
     await fetch(`/api/admin/members/${id}`, {
