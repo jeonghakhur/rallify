@@ -1,4 +1,5 @@
-import { updateUserById, deleteUserById } from '@/service/user';
+import { getUserByUser, updateUserById, deleteUserById } from '@/service/user';
+import { getManagedClubsByUser } from '@/service/club';
 import { withSessionUser } from '@/util/session';
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
@@ -9,6 +10,44 @@ import {
 } from '@/lib/email-templates';
 
 type Context = { params: Promise<{ id: string }> };
+
+const ALLOWED_FIELDS = [
+  'name',
+  'gender',
+  'birthyear',
+  'phoneNumber',
+  'address',
+  'level',
+] as const;
+
+type AllowedField = (typeof ALLOWED_FIELDS)[number];
+
+function pickAllowed(body: Record<string, unknown>) {
+  const out: Partial<Record<AllowedField, unknown>> = {};
+  for (const key of ALLOWED_FIELDS) {
+    if (key in body) out[key] = body[key];
+  }
+  return out;
+}
+
+export async function GET(_: NextRequest, context: Context) {
+  const { id } = await context.params;
+
+  return withSessionUser(async (sessionUser) => {
+    if (sessionUser.role !== 'SUPER_ADMIN') {
+      return NextResponse.json({ error: '권한이 없습니다.' }, { status: 403 });
+    }
+    const user = await getUserByUser(id);
+    if (!user) {
+      return NextResponse.json(
+        { error: '회원을 찾을 수 없습니다.' },
+        { status: 404 }
+      );
+    }
+    const managedClubs = await getManagedClubsByUser(id);
+    return NextResponse.json({ ...user, managedClubs });
+  });
+}
 
 export async function PATCH(req: NextRequest, context: Context) {
   const { id } = await context.params;
@@ -23,23 +62,45 @@ export async function PATCH(req: NextRequest, context: Context) {
       where: { id },
       select: { role: true, email: true, name: true },
     });
+    if (!before) {
+      return NextResponse.json(
+        { error: '회원을 찾을 수 없습니다.' },
+        { status: 404 }
+      );
+    }
+
+    const allowed = pickAllowed(body) as Partial<{
+      name: string;
+      gender: string;
+      birthyear: string | null;
+      phoneNumber: string | null;
+      address: string | null;
+      level: number;
+    }>;
 
     // level 변경 시 role도 동기화
-    const roleMap: Record<number, string> = {
-      0: 'PENDING',
-      1: 'USER',
-      2: 'USER',
-      3: 'USER',
-    };
-    const newRole =
-      body.level >= 4 ? 'SUPER_ADMIN' : (roleMap[body.level] ?? 'USER');
-    const result = await updateUserById(id, {
-      level: body.level,
-      role: newRole,
-    });
+    let roleUpdate: { role?: string } = {};
+    if (typeof allowed.level === 'number') {
+      const roleMap: Record<number, string> = {
+        0: 'PENDING',
+        1: 'USER',
+        2: 'USER',
+        3: 'USER',
+      };
+      const newRole =
+        allowed.level >= 4 ? 'SUPER_ADMIN' : (roleMap[allowed.level] ?? 'USER');
+      roleUpdate = { role: newRole };
+    }
+
+    const result = await updateUserById(id, { ...allowed, ...roleUpdate });
 
     // PENDING → 비PENDING 전환 시에만 승인 메일
-    if (before?.role === 'PENDING' && newRole !== 'PENDING' && before.email) {
+    if (
+      before.role === 'PENDING' &&
+      roleUpdate.role &&
+      roleUpdate.role !== 'PENDING' &&
+      before.email
+    ) {
       try {
         const tpl = signupApprovedTemplate(before.name ?? '회원');
         await sendMail({

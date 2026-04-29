@@ -8,6 +8,8 @@ import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { useDialog } from '@/hooks/useDialog';
+import { getUserLevelLabel } from '@/lib/userLevel';
+import MemberEditDialog from '@/components/admin/MemberEditDialog';
 
 type Member = {
   id: string;
@@ -24,6 +26,7 @@ export default function AdminMembersPage() {
   const { user, isLoading } = useAuthRedirect('/', 'SUPER_ADMIN');
   const { confirm, alert } = useDialog();
   const [tab, setTab] = useState<'pending' | 'active'>('pending');
+  const [editingId, setEditingId] = useState<string | null>(null);
 
   const { data: pendingMembers } = useSWR<Member[]>(
     user ? '/api/admin/members?status=pending' : null
@@ -41,20 +44,6 @@ export default function AdminMembersPage() {
       body: JSON.stringify({ level: 1 }),
     });
     mutate('/api/admin/members?status=pending');
-  };
-
-  const handleLevelChange = async (id: string, currentLevel: number) => {
-    const newLevel = prompt(
-      `새 등급을 입력하세요 (현재: ${currentLevel})`,
-      String(currentLevel)
-    );
-    if (!newLevel || isNaN(Number(newLevel))) return;
-    await fetch(`/api/admin/members/${id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ level: Number(newLevel) }),
-    });
-    mutate('/api/admin/members');
   };
 
   const handleReject = async (id: string, name: string | null) => {
@@ -181,21 +170,28 @@ export default function AdminMembersPage() {
                 className="bg-white rounded-lg border border-gray-200 p-4 flex items-center justify-between gap-3"
               >
                 <div className="min-w-0">
-                  <p className="font-medium text-gray-800">{member.name}</p>
+                  <button
+                    type="button"
+                    onClick={() => setEditingId(member.id)}
+                    className="font-medium text-gray-800 hover:text-blue-600 hover:underline text-left"
+                  >
+                    {member.name}
+                  </button>
                   <p className="text-sm text-gray-500 truncate">
                     {member.email}
                   </p>
                   <p className="text-xs text-gray-400 mt-0.5">
-                    {member.gender ?? '-'} · 등급 {member.level}
+                    {member.gender ?? '-'} · {getUserLevelLabel(member.level)}{' '}
+                    (Lv.{member.level})
                   </p>
                 </div>
                 <div className="flex gap-2 shrink-0">
                   <Button
                     size="sm"
                     variant="outline"
-                    onClick={() => handleLevelChange(member.id, member.level)}
+                    onClick={() => setEditingId(member.id)}
                   >
-                    등급변경
+                    수정
                   </Button>
                   <Button
                     size="sm"
@@ -211,6 +207,11 @@ export default function AdminMembersPage() {
           )}
         </div>
       )}
+
+      <MemberEditDialog
+        memberId={editingId}
+        onClose={() => setEditingId(null)}
+      />
     </Container>
   );
 }

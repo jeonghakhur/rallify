@@ -134,10 +134,10 @@ export async function updateUserById(
     name: string;
     image: string;
     gender: string;
-    phoneNumber: string;
-    birthday: string;
-    birthyear: string;
-    address: string;
+    phoneNumber: string | null;
+    birthday: string | null;
+    birthyear: string | null;
+    address: string | null;
     level: number;
     role: string;
   }>

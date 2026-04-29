@@ -117,15 +117,15 @@ export default function NavBar() {
             {role === 'SUPER_ADMIN' && (
               <li>
                 <Link
-                  href="/members"
+                  href="/admin/members"
                   className={
                     'relative pb-0.5 ' +
-                    (pathname.startsWith('/members')
+                    (pathname.startsWith('/admin/members')
                       ? 'border-b-2 border-blue-600 transition-all duration-300 ease-in-out'
                       : 'border-b-2 border-transparent transition-all duration-300 ease-in-out')
                   }
                 >
-                  회원
+                  회원관리
                 </Link>
               </li>
             )}

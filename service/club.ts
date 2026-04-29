@@ -299,6 +299,27 @@ export async function getMyClubs(userId: string) {
   }));
 }
 
+export async function getManagedClubsByUser(userId: string) {
+  const memberships = await prisma.clubMember.findMany({
+    where: {
+      userId,
+      status: 'ACTIVE',
+      role: { in: ['OWNER', 'MANAGER'] },
+    },
+    include: {
+      club: { select: { id: true, name: true, isActive: true } },
+    },
+    orderBy: { joinedAt: 'asc' },
+  });
+  return memberships
+    .filter((m) => m.club.isActive)
+    .map((m) => ({
+      id: m.club.id,
+      name: m.club.name,
+      role: m.role as 'OWNER' | 'MANAGER',
+    }));
+}
+
 // ─── 권한 체크 ───
 
 export async function getClubRole(clubId: string, userId: string) {

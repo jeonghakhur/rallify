@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "lastUpdated": "2026-04-29T10:29:31.452Z",
+  "lastUpdated": "2026-04-29T11:39:46.273Z",
   "activeFeatures": [
     "react-tennis-2",
     "service",
@@ -30,7 +30,8 @@
     "create",
     "manage",
     "games",
-    "user"
+    "user",
+    "admin"
   ],
   "primaryFeature": "react-tennis-2",
   "features": {
@@ -56,7 +57,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-03-09T10:25:37.726Z",
-        "lastUpdated": "2026-04-28T12:25:14.367Z"
+        "lastUpdated": "2026-04-29T11:39:46.273Z"
       },
       "lastFile": "/Users/jeonghakhur/work/person/rallify/service/user.ts"
     },
@@ -108,9 +109,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-03-10T02:22:25.916Z",
-        "lastUpdated": "2026-04-28T12:59:56.055Z"
+        "lastUpdated": "2026-04-29T11:38:24.748Z"
       },
-      "lastFile": "/Users/jeonghakhur/work/person/rallify/app/members/page.tsx"
+      "lastFile": "/Users/jeonghakhur/work/person/rallify/app/admin/members/page.tsx"
     },
     "[id]": {
       "phase": "do",
@@ -121,7 +122,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-03-10T02:37:57.796Z",
-        "lastUpdated": "2026-04-28T13:06:46.042Z"
+        "lastUpdated": "2026-04-29T11:37:06.850Z"
       },
       "lastFile": "/Users/jeonghakhur/work/person/rallify/app/api/admin/members/[id]/route.ts"
     },
@@ -134,9 +135,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-03-10T02:38:02.888Z",
-        "lastUpdated": "2026-03-10T02:38:02.888Z"
+        "lastUpdated": "2026-04-29T11:00:28.475Z"
       },
-      "lastFile": "/Users/jeonghak/work/react-tennis-2/app/schedule/page.tsx"
+      "lastFile": "/Users/jeonghakhur/work/person/rallify/components/schedule/ScheduleDetailUser.tsx"
     },
     "register": {
       "phase": "do",
@@ -245,9 +246,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-23T13:30:41.979Z",
-        "lastUpdated": "2026-04-28T13:05:56.966Z"
+        "lastUpdated": "2026-04-29T11:39:11.470Z"
       },
-      "lastFile": "/Users/jeonghakhur/work/person/rallify/hooks/useAuthRedirect.tsx"
+      "lastFile": "/Users/jeonghakhur/work/person/rallify/components/Navbar.tsx"
     },
     "terms": {
       "phase": "do",
@@ -388,7 +389,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-23T13:44:25.971Z",
-        "lastUpdated": "2026-04-23T13:44:25.971Z"
+        "lastUpdated": "2026-04-29T10:58:31.277Z"
       },
       "lastFile": "/Users/jeonghakhur/work/person/rallify/app/clubs/[id]/manage/page.tsx"
     },
@@ -417,6 +418,19 @@
         "lastUpdated": "2026-04-28T12:24:40.359Z"
       },
       "lastFile": "/Users/jeonghakhur/work/person/rallify/app/user/page.tsx"
+    },
+    "admin": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-04-29T11:37:50.488Z",
+        "lastUpdated": "2026-04-29T11:37:50.488Z"
+      },
+      "lastFile": "/Users/jeonghakhur/work/person/rallify/components/admin/MemberEditDialog.tsx"
     }
   },
   "pipeline": {
@@ -427,7 +441,7 @@
   "session": {
     "startedAt": "2026-03-09T09:12:04.567Z",
     "onboardingCompleted": false,
-    "lastActivity": "2026-04-29T10:29:31.452Z"
+    "lastActivity": "2026-04-29T11:39:46.273Z"
   },
   "history": [
     {
@@ -1129,6 +1143,336 @@
     {
       "timestamp": "2026-04-29T10:29:31.452Z",
       "feature": "e2e",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-29T10:49:39.795Z",
+      "feature": "members",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-29T10:49:46.052Z",
+      "feature": "members",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-29T10:49:50.560Z",
+      "feature": "members",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-29T10:56:18.159Z",
+      "feature": "rallify",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-29T10:56:25.721Z",
+      "feature": "rallify",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-29T10:56:28.434Z",
+      "feature": "rallify",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-29T10:56:37.705Z",
+      "feature": "members",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-29T10:56:42.981Z",
+      "feature": "members",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-29T10:56:52.351Z",
+      "feature": "members",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-29T10:57:18.154Z",
+      "feature": "members",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-29T10:57:24.114Z",
+      "feature": "members",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-29T10:57:32.145Z",
+      "feature": "members",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-29T10:57:43.259Z",
+      "feature": "[id]",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-29T10:57:51.240Z",
+      "feature": "[id]",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-29T10:57:57.742Z",
+      "feature": "[id]",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-29T10:58:07.541Z",
+      "feature": "manage",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-29T10:58:12.689Z",
+      "feature": "manage",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-29T10:58:23.517Z",
+      "feature": "manage",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-29T10:58:31.277Z",
+      "feature": "manage",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-29T10:58:43.369Z",
+      "feature": "[id]",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-29T10:58:49.875Z",
+      "feature": "[id]",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-29T10:58:55.629Z",
+      "feature": "[id]",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-29T10:59:13.386Z",
+      "feature": "[id]",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-29T10:59:14.481Z",
+      "feature": "[id]",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-29T10:59:17.847Z",
+      "feature": "[id]",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-29T10:59:26.474Z",
+      "feature": "[id]",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-29T10:59:35.777Z",
+      "feature": "schedule",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-29T10:59:40.554Z",
+      "feature": "schedule",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-29T10:59:46.943Z",
+      "feature": "schedule",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-29T10:59:59.568Z",
+      "feature": "schedule",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-29T11:00:09.467Z",
+      "feature": "schedule",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-29T11:00:14.463Z",
+      "feature": "schedule",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-29T11:00:22.041Z",
+      "feature": "schedule",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-29T11:00:28.475Z",
+      "feature": "schedule",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-29T11:00:37.835Z",
+      "feature": "rallify",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-29T11:00:42.733Z",
+      "feature": "rallify",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-29T11:00:49.102Z",
+      "feature": "rallify",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-29T11:00:59.955Z",
+      "feature": "rallify",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-29T11:01:04.662Z",
+      "feature": "rallify",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-29T11:01:16.084Z",
+      "feature": "rallify",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-29T11:22:04.110Z",
+      "feature": "rallify",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-29T11:22:09.708Z",
+      "feature": "service",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-29T11:22:23.724Z",
+      "feature": "[id]",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-29T11:22:42.349Z",
+      "feature": "[id]",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-29T11:22:56.154Z",
+      "feature": "[id]",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-29T11:23:09.789Z",
+      "feature": "[id]",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-29T11:27:25.758Z",
+      "feature": "service",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-29T11:32:46.542Z",
+      "feature": "rallify",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-29T11:33:04.953Z",
+      "feature": "members",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-29T11:33:17.023Z",
+      "feature": "members",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-29T11:37:06.850Z",
+      "feature": "[id]",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-29T11:37:50.488Z",
+      "feature": "admin",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-29T11:38:24.748Z",
+      "feature": "members",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-29T11:39:11.470Z",
+      "feature": "rallify",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-29T11:39:46.273Z",
+      "feature": "service",
       "phase": "do",
       "action": "updated"
     }
