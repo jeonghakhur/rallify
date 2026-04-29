@@ -113,7 +113,7 @@ export async function getAllMembers() {
   const users = await prisma.user.findMany({
     orderBy: { name: 'asc' },
   });
-  return users.map((u) => ({ ...u, id: u.id }));
+  return users.map((u) => decryptSensitiveFields(u));
 }
 
 export async function getUserByUser(id: string) {
