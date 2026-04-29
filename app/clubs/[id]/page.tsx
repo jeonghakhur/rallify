@@ -2,6 +2,7 @@
 
 import { use } from 'react';
 import useAuthRedirect from '@/hooks/useAuthRedirect';
+import { useDialog } from '@/hooks/useDialog';
 import useSWR, { mutate } from 'swr';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -53,6 +54,7 @@ export default function ClubDetailPage({
   const { id } = use(params);
   const { isLoading: authLoading } = useAuthRedirect();
   const { data: club, isLoading } = useSWR<ClubDetail>(`/api/clubs/${id}`);
+  const { confirm, alert } = useDialog();
   const [joining, setJoining] = useState(false);
   const [responding, setResponding] = useState(false);
 
@@ -66,7 +68,7 @@ export default function ClubDetailPage({
       });
       const data = await res.json();
       if (!res.ok) {
-        alert(data.error);
+        await alert({ title: '가입 신청 실패', description: data.error });
         return;
       }
       mutate(`/api/clubs/${id}`);
@@ -91,7 +93,14 @@ export default function ClubDetailPage({
   };
 
   const handleLeave = async () => {
-    if (!club?.myMembership || !confirm('정말 클럽을 나가시겠습니까?')) return;
+    if (!club?.myMembership) return;
+    const ok = await confirm({
+      title: '클럽 나가기',
+      description: '정말 클럽을 나가시겠습니까?',
+      confirmText: '나가기',
+      destructive: true,
+    });
+    if (!ok) return;
     await fetch(`/api/clubs/${id}/members/${club.myMembership.id}`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },

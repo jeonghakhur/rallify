@@ -7,6 +7,7 @@ import { format, formatDistanceToNow, isToday } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { useState } from 'react';
 import { useToast } from '@/hooks/use-toast';
+import { useDialog } from '@/hooks/useDialog';
 import Image from 'next/image';
 
 interface Comment {
@@ -49,6 +50,7 @@ export default function CommentSection({
   const [commentText, setCommentText] = useState('');
   const [commentLoading, setCommentLoading] = useState(false);
   const { toast } = useToast();
+  const { confirm } = useDialog();
 
   const formatCommentDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -101,7 +103,12 @@ export default function CommentSection({
   };
 
   const handleRemoveComment = async (commentKey: string) => {
-    const isConfirmed = confirm('코멘트를 삭제하시겠습니까?');
+    const isConfirmed = await confirm({
+      title: '코멘트 삭제',
+      description: '코멘트를 삭제하시겠습니까?',
+      confirmText: '삭제',
+      destructive: true,
+    });
     if (!isConfirmed) {
       return;
     }

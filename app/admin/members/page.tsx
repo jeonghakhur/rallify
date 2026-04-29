@@ -7,6 +7,7 @@ import useSWR, { mutate } from 'swr';
 import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
+import { useDialog } from '@/hooks/useDialog';
 
 type Member = {
   id: string;
@@ -21,6 +22,7 @@ type Member = {
 
 export default function AdminMembersPage() {
   const { user, isLoading } = useAuthRedirect('/', 'SUPER_ADMIN');
+  const { confirm, alert } = useDialog();
   const [tab, setTab] = useState<'pending' | 'active'>('pending');
 
   const { data: pendingMembers } = useSWR<Member[]>(
@@ -56,23 +58,32 @@ export default function AdminMembersPage() {
   };
 
   const handleReject = async (id: string, name: string | null) => {
-    if (!confirm(`${name ?? '이 회원'}의 가입을 거절하고 계정을 삭제할까요?`))
-      return;
+    const ok = await confirm({
+      title: '가입 거절',
+      description: `${name ?? '이 회원'}의 가입을 거절하고 계정을 삭제할까요?`,
+      confirmText: '거절',
+      destructive: true,
+    });
+    if (!ok) return;
     await fetch(`/api/admin/members/${id}`, { method: 'DELETE' });
     mutate('/api/admin/members?status=pending');
   };
 
   const handleDelete = async (id: string, name: string | null) => {
-    if (
-      !confirm(
-        `${name ?? '이 회원'}의 계정을 삭제할까요?\n관련 데이터도 함께 삭제됩니다.`
-      )
-    )
-      return;
+    const ok = await confirm({
+      title: '회원 삭제',
+      description: `${name ?? '이 회원'}의 계정을 삭제할까요?\n관련 데이터도 함께 삭제됩니다.`,
+      confirmText: '삭제',
+      destructive: true,
+    });
+    if (!ok) return;
     const res = await fetch(`/api/admin/members/${id}`, { method: 'DELETE' });
     if (!res.ok) {
       const data = await res.json().catch(() => ({}));
-      alert(data.error ?? '삭제에 실패했습니다.');
+      await alert({
+        title: '삭제 실패',
+        description: data.error ?? '삭제에 실패했습니다.',
+      });
       return;
     }
     mutate('/api/admin/members');

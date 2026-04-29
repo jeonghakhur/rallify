@@ -2,6 +2,7 @@
 
 import { use, useState } from 'react';
 import useAuthRedirect from '@/hooks/useAuthRedirect';
+import { useDialog } from '@/hooks/useDialog';
 import useSWR, { mutate } from 'swr';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
@@ -37,6 +38,7 @@ export default function ClubManagePage({
   const { id } = use(params);
   const { user, isLoading: authLoading } = useAuthRedirect();
   const router = useRouter();
+  const { confirm, alert } = useDialog();
   const { data: club } = useSWR<ClubDetail>(`/api/clubs/${id}`);
   const [tab, setTab] = useState<'pending' | 'invited' | 'active' | 'settings'>(
     'pending'
@@ -101,7 +103,13 @@ export default function ClubManagePage({
   };
 
   const handleRemove = async (memberId: string) => {
-    if (!confirm('정말 이 멤버를 강퇴하시겠습니까?')) return;
+    const ok = await confirm({
+      title: '멤버 강퇴',
+      description: '정말 이 멤버를 강퇴하시겠습니까?',
+      confirmText: '강퇴',
+      destructive: true,
+    });
+    if (!ok) return;
     await fetch(`/api/clubs/${id}/members/${memberId}`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
@@ -113,12 +121,12 @@ export default function ClubManagePage({
 
   const handleRoleChange = async (memberId: string, currentRole: string) => {
     const newRole = currentRole === 'MEMBER' ? 'MANAGER' : 'MEMBER';
-    if (
-      !confirm(
-        `역할을 ${newRole === 'MANAGER' ? '매니저' : '회원'}(으)로 변경하시겠습니까?`
-      )
-    )
-      return;
+    const ok = await confirm({
+      title: '역할 변경',
+      description: `역할을 ${newRole === 'MANAGER' ? '매니저' : '회원'}(으)로 변경하시겠습니까?`,
+      confirmText: '변경',
+    });
+    if (!ok) return;
     await fetch(`/api/clubs/${id}/members/${memberId}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
@@ -145,7 +153,7 @@ export default function ClubManagePage({
     });
     const data = await res.json();
     if (!res.ok) {
-      alert(data.error);
+      await alert({ title: '초대 실패', description: data.error });
       return;
     }
     setSearchResults((prev) => prev.filter((u) => u.id !== userId));
@@ -153,8 +161,14 @@ export default function ClubManagePage({
   };
 
   const handleDeleteClub = async () => {
-    if (!confirm('정말 클럽을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.'))
-      return;
+    const ok = await confirm({
+      title: '클럽 삭제',
+      description:
+        '정말 클럽을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.',
+      confirmText: '삭제',
+      destructive: true,
+    });
+    if (!ok) return;
     await fetch(`/api/clubs/${id}`, { method: 'DELETE' });
     router.push('/clubs');
   };

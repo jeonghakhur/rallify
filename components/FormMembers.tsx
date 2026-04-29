@@ -20,6 +20,7 @@ import {
   FieldArrayWithId,
 } from 'react-hook-form';
 import { AuthUser } from '@/model/user';
+import { useDialog } from '@/hooks/useDialog';
 
 type Props = {
   form: UseFormReturn<ScheduleFormType>;
@@ -54,6 +55,7 @@ export default function FormMembers({
 }: Props) {
   const guestNameRef = useRef<HTMLInputElement>(null);
   const genderRef = useRef<HTMLButtonElement>(null);
+  const { confirm, alert } = useDialog();
 
   const [attendanceTime, setAttendanceTime] = useState({
     startHour: String(startTime),
@@ -112,7 +114,10 @@ export default function FormMembers({
     if (!name) return;
 
     if (isAttendee(name)) {
-      alert('이미 추가된 참석자입니다.');
+      await alert({
+        title: '참석자 추가 불가',
+        description: '이미 추가된 참석자입니다.',
+      });
       return;
     }
     // postAttendance가 제공된 경우 사용
@@ -131,7 +136,10 @@ export default function FormMembers({
         await postAttendance(attendanceData);
       } catch (error) {
         console.error('참석자 추가 실패:', error);
-        alert('참석자 추가에 실패했습니다.');
+        await alert({
+          title: '참석자 추가 실패',
+          description: '참석자 추가에 실패했습니다.',
+        });
       } finally {
         if (guestNameRef.current) {
           guestNameRef.current.value = '';
@@ -141,7 +149,12 @@ export default function FormMembers({
   }
 
   async function handleRemoveMember(attendees: AttendanceProps) {
-    const isConfirmed = confirm('참석자를 삭제하시겠습니까?');
+    const isConfirmed = await confirm({
+      title: '참석자 삭제',
+      description: '참석자를 삭제하시겠습니까?',
+      confirmText: '삭제',
+      destructive: true,
+    });
     if (!isConfirmed) {
       return;
     }

@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { toast } from '@/hooks/use-toast';
+import { useDialog } from '@/hooks/useDialog';
 import CommentSection from '@/components/common/CommentSection';
 import useAuthRedirect from '@/hooks/useAuthRedirect';
 import { Game, GameResult } from '@/model/gameResult';
@@ -47,6 +48,7 @@ export default function Page({ params }: Props) {
   const [editableGames, setEditableGames] = useState<Game[]>([]);
   const [gameStatus, setGameStatus] = useState<GameResult['status']>();
   const router = useRouter();
+  const { confirm, alert } = useDialog();
 
   // 사용자 인증 정보 가져오기
   const { user } = useAuthRedirect('/', 0);
@@ -75,7 +77,12 @@ export default function Page({ params }: Props) {
   }, [game]);
 
   const handleDelete = async (id: string) => {
-    const isConfirmed = confirm('정말 삭제하시겠습니까?');
+    const isConfirmed = await confirm({
+      title: '게임 결과 삭제',
+      description: '정말 삭제하시겠습니까?',
+      confirmText: '삭제',
+      destructive: true,
+    });
     if (!isConfirmed) return;
 
     setDataLoading(true);
@@ -115,13 +122,19 @@ export default function Page({ params }: Props) {
         }
       } else {
         // 에러 발생 시 사용자에게 알림
-        alert(result.error || '삭제 중 오류가 발생했습니다.');
+        await alert({
+          title: '삭제 실패',
+          description: result.error || '삭제 중 오류가 발생했습니다.',
+        });
         setDataLoading(false);
         return;
       }
     } catch (error) {
       console.error('게임 삭제 중 오류:', error);
-      alert('삭제 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+      await alert({
+        title: '삭제 실패',
+        description: '삭제 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.',
+      });
     } finally {
       // setLoading(false);
       // 성공/실패와 관계없이 목록 페이지로 이동
@@ -130,7 +143,11 @@ export default function Page({ params }: Props) {
   };
 
   const handleUpdate = async function (id: string) {
-    const isConfirmed = confirm('게임 정보를 수정하시겠습니까?');
+    const isConfirmed = await confirm({
+      title: '게임 정보 수정',
+      description: '게임 정보를 수정하시겠습니까?',
+      confirmText: '수정',
+    });
     if (!isConfirmed) return;
 
     setDataLoading(true);
@@ -144,11 +161,17 @@ export default function Page({ params }: Props) {
         });
         // setTimeout(() => router.push('/games'), 1500);
       } else {
-        alert(gameResult.error || '수정 중 오류가 발생했습니다.');
+        await alert({
+          title: '수정 실패',
+          description: gameResult.error || '수정 중 오류가 발생했습니다.',
+        });
       }
     } catch (error) {
       console.error('게임 수정 중 오류:', error);
-      alert('수정 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+      await alert({
+        title: '수정 실패',
+        description: '수정 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.',
+      });
     } finally {
       setDataLoading(false);
     }
@@ -157,7 +180,11 @@ export default function Page({ params }: Props) {
   const handleGameUpdate = async function (gameIndex: number) {
     if (!game) return;
 
-    const isConfirmed = confirm(`게임 ${gameIndex + 1}을 수정하시겠습니까?`);
+    const isConfirmed = await confirm({
+      title: '게임 수정',
+      description: `게임 ${gameIndex + 1}을 수정하시겠습니까?`,
+      confirmText: '수정',
+    });
     if (!isConfirmed) return;
 
     setDataLoading(true);
@@ -170,11 +197,17 @@ export default function Page({ params }: Props) {
           duration: 1500,
         });
       } else {
-        alert(result.error || '수정 중 오류가 발생했습니다.');
+        await alert({
+          title: '수정 실패',
+          description: result.error || '수정 중 오류가 발생했습니다.',
+        });
       }
     } catch (error) {
       console.error('게임 수정 중 오류:', error);
-      alert('수정 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+      await alert({
+        title: '수정 실패',
+        description: '수정 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.',
+      });
     } finally {
       setDataLoading(false);
     }
@@ -183,7 +216,12 @@ export default function Page({ params }: Props) {
   const handleGameDelete = async function (gameIndex: number) {
     if (!game) return;
 
-    const isConfirmed = confirm(`게임 ${gameIndex + 1}을 삭제하시겠습니까?`);
+    const isConfirmed = await confirm({
+      title: '게임 삭제',
+      description: `게임 ${gameIndex + 1}을 삭제하시겠습니까?`,
+      confirmText: '삭제',
+      destructive: true,
+    });
     if (!isConfirmed) return;
 
     setDataLoading(true);
@@ -231,7 +269,10 @@ export default function Page({ params }: Props) {
             }
           }
         } else {
-          alert(result.error || '삭제 중 오류가 발생했습니다.');
+          await alert({
+            title: '삭제 실패',
+            description: result.error || '삭제 중 오류가 발생했습니다.',
+          });
         }
         router.push('/games');
         return;
@@ -247,11 +288,17 @@ export default function Page({ params }: Props) {
           duration: 1500,
         });
       } else {
-        alert(result.error || '삭제 중 오류가 발생했습니다.');
+        await alert({
+          title: '삭제 실패',
+          description: result.error || '삭제 중 오류가 발생했습니다.',
+        });
       }
     } catch (error) {
       console.error('게임 삭제 중 오류:', error);
-      alert('삭제 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.');
+      await alert({
+        title: '삭제 실패',
+        description: '삭제 중 오류가 발생했습니다. 잠시 후 다시 시도해주세요.',
+      });
     } finally {
       setDataLoading(false);
     }

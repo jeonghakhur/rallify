@@ -10,6 +10,7 @@ import { Form } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from '@/hooks/use-toast';
+import { useDialog } from '@/hooks/useDialog';
 import useSchedule from '@/hooks/useSchedule';
 import {
   ScheduleFormSchema,
@@ -35,6 +36,7 @@ export default function ScheduleDetailAdmin({ scheduleId, user }: Props) {
   const userName = user?.name;
   const gender = user?.gender;
   const router = useRouter();
+  const { confirm } = useDialog();
   const [loading, setLoading] = useState<boolean>(false);
   const [earliestStartTime, setEarliestStartTime] = useState<number>(19);
   const [latestEndTime, setLatestEndTime] = useState<number>(22);
@@ -111,18 +113,22 @@ export default function ScheduleDetailAdmin({ scheduleId, user }: Props) {
     }
   }, [form.formState.errors]);
 
-  const handleDelete = () => {
-    const isConfirmed = confirm('정말 삭제하시겠습니까?');
-    if (isConfirmed) {
-      setLoading(true);
-      removeSchedule()
-        .then((data) => console.log(data))
-        .catch((error) => console.error(error))
-        .finally(() => {
-          setLoading(false);
-          router.push('/');
-        });
-    }
+  const handleDelete = async () => {
+    const isConfirmed = await confirm({
+      title: '스케줄 삭제',
+      description: '정말 삭제하시겠습니까?',
+      confirmText: '삭제',
+      destructive: true,
+    });
+    if (!isConfirmed) return;
+    setLoading(true);
+    removeSchedule()
+      .then((data) => console.log(data))
+      .catch((error) => console.error(error))
+      .finally(() => {
+        setLoading(false);
+        router.push('/');
+      });
   };
 
   async function onSubmit(data: ScheduleFormType) {
@@ -148,7 +154,7 @@ export default function ScheduleDetailAdmin({ scheduleId, user }: Props) {
     try {
       await patchSchedule(data);
       await mutate('/api/schedule', undefined, { revalidate: true });
-      alert('스케줄이 수정되었습니다.');
+      toast({ title: '스케줄이 수정되었습니다.', duration: 1500 });
       // router.push('/schedule');
     } catch (error) {
       console.error(error);

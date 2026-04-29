@@ -16,6 +16,7 @@ import { ko } from 'date-fns/locale';
 import { useEffect, useState } from 'react';
 import useSchedule from '@/hooks/useSchedule';
 import { useToast } from '@/hooks/use-toast';
+import { useDialog } from '@/hooks/useDialog';
 import CommentSection from '@/components/common/CommentSection';
 import useSWR from 'swr';
 import { UserProps } from '@/model/user';
@@ -47,6 +48,7 @@ export default function ScheduleDetailUser({ scheduleId, user }: Props) {
     removeComment,
   } = useSchedule(scheduleId);
   const { toast } = useToast();
+  const { confirm, alert } = useDialog();
   const [loading, setLoading] = useState<boolean>(false);
   const [existingIndex, setExistingIndex] = useState<number>(-1);
   const [myAttendance, setMyAttendance] =
@@ -113,15 +115,24 @@ export default function ScheduleDetailUser({ scheduleId, user }: Props) {
     );
 
     if (startTime.getTime() === endTime.getTime()) {
-      alert('시작시간과 종료시간이 동일합니다.');
+      await alert({
+        title: '시간 확인',
+        description: '시작시간과 종료시간이 동일합니다.',
+      });
       return;
     }
     if (startTime.getTime() > endTime.getTime()) {
-      alert('시작시간이 종료시간보다 늦습니다.');
+      await alert({
+        title: '시간 확인',
+        description: '시작시간이 종료시간보다 늦습니다.',
+      });
       return;
     }
     if ((endTime.getTime() - startTime.getTime()) / (1000 * 60) <= 30) {
-      alert('운동시간이 너무 짧습니다. 확인해주세요.');
+      await alert({
+        title: '시간 확인',
+        description: '운동시간이 너무 짧습니다. 확인해주세요.',
+      });
       return;
     }
 
@@ -166,7 +177,12 @@ export default function ScheduleDetailUser({ scheduleId, user }: Props) {
       return;
     }
 
-    const isConfirmed = confirm('참석시간을 삭제하시겠습니까?');
+    const isConfirmed = await confirm({
+      title: '참석시간 삭제',
+      description: '참석시간을 삭제하시겠습니까?',
+      confirmText: '삭제',
+      destructive: true,
+    });
     if (!isConfirmed) {
       return;
     }
