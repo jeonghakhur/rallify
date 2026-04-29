@@ -2,16 +2,19 @@
 
 import { Container } from '@/components/Layout';
 import LoadingGrid from '@/components/LoadingGrid';
+import { Button } from '@/components/ui/button';
 import useAuthRedirect from '@/hooks/useAuthRedirect';
 import { UserProps } from '@/model/user';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
+
+type Member = UserProps & { role?: string };
 
 export default function Page() {
   const { isLoading } = useAuthRedirect('/', 4);
 
-  const { data: members } = useSWR<UserProps[]>('/api/members');
+  const { data: members } = useSWR<Member[]>('/api/members');
 
   const [loading, setLoading] = useState<boolean>(isLoading);
   useEffect(() => {
@@ -19,6 +22,22 @@ export default function Page() {
       setLoading(false);
     }
   }, [members]);
+
+  const handleDelete = async (id: string, name: string) => {
+    if (
+      !confirm(
+        `${name ?? '이 회원'}의 계정을 삭제할까요?\n관련 데이터도 함께 삭제됩니다.`
+      )
+    )
+      return;
+    const res = await fetch(`/api/admin/members/${id}`, { method: 'DELETE' });
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      alert(data.error ?? '삭제에 실패했습니다.');
+      return;
+    }
+    mutate('/api/members');
+  };
 
   return (
     <Container className="px-5">
@@ -35,21 +54,47 @@ export default function Page() {
                 <th>거주지</th>
                 <th>출생년도</th>
                 <th>레벨</th>
+                <th>상태</th>
+                <th>관리</th>
               </tr>
             </thead>
             <tbody>
-              {members?.map((member, idx) => (
-                <tr key={member.id}>
-                  <td>{members.length - idx}</td>
-                  <td>
-                    <Link href={`/members/${member.id}`}>{member.name}</Link>
-                  </td>
-                  <td>{member.gender}</td>
-                  <td>{member.address}</td>
-                  <td>{member.birthyear}</td>
-                  <td>{member.level}</td>
-                </tr>
-              ))}
+              {members?.map((member, idx) => {
+                const isPending = member.role === 'PENDING';
+                return (
+                  <tr key={member.id}>
+                    <td>{members.length - idx}</td>
+                    <td>
+                      <Link href={`/members/${member.id}`}>{member.name}</Link>
+                    </td>
+                    <td>{member.gender}</td>
+                    <td>{member.address}</td>
+                    <td>{member.birthyear}</td>
+                    <td>{member.level}</td>
+                    <td>
+                      <span
+                        className={`inline-block px-2 py-0.5 rounded text-xs font-medium ${
+                          isPending
+                            ? 'bg-yellow-100 text-yellow-700'
+                            : 'bg-green-100 text-green-700'
+                        }`}
+                      >
+                        {isPending ? '가입 대기' : '활성'}
+                      </span>
+                    </td>
+                    <td>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="text-red-500 border-red-200 hover:bg-red-50"
+                        onClick={() => handleDelete(member.id, member.name)}
+                      >
+                        삭제
+                      </Button>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

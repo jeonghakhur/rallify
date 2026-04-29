@@ -16,10 +16,18 @@ const errorMessages: Record<string, string> = {
   ALREADY_REGISTERED: '이미 다른 소셜 계정으로 가입되어 있습니다.',
   INVALID_CREDENTIALS: '잘못된 로그인 정보입니다.',
   CredentialsSignin: '이메일 또는 패스워드가 올바르지 않습니다.',
-  AccessDenied: '로그인 권한이 없습니다. 소셜 앱에서 필수 정보 제공에 동의해 주세요.',
+  PENDING_APPROVAL:
+    '가입 신청이 아직 승인되지 않았습니다. 관리자 승인 후 로그인하실 수 있습니다.',
+  AccessDenied:
+    '로그인 권한이 없습니다. 소셜 앱에서 필수 정보 제공에 동의해 주세요.',
   OAuthCallback: '소셜 로그인 처리 중 오류가 발생했습니다. 다시 시도해 주세요.',
   OAuthAccountNotLinked: '이미 다른 방법으로 가입된 이메일입니다.',
   DEFAULT: '알 수 없는 에러가 발생했습니다. 다시 시도해주세요.',
+};
+
+const noticeMessages: Record<string, string> = {
+  'signup-complete':
+    '가입 신청이 접수되었습니다. 관리자 승인 후 로그인하실 수 있습니다 (1~2일 소요).',
 };
 
 const providerLabels: Record<string, string> = {
@@ -38,6 +46,8 @@ export default function SignIn({ providers, callbackUrl }: Props) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const errorCode = searchParams?.get('error');
+  const noticeCode = searchParams?.get('notice');
+  const noticeMessage = noticeCode ? noticeMessages[noticeCode] : null;
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -70,6 +80,11 @@ export default function SignIn({ providers, callbackUrl }: Props) {
 
   return (
     <div className="flex flex-col gap-3">
+      {noticeMessage && !errorCode && !loginError && (
+        <div className="bg-blue-50 border border-blue-200 text-blue-700 text-sm p-3 rounded-md text-center">
+          {noticeMessage}
+        </div>
+      )}
       {(errorCode || loginError) && (
         <div className="bg-red-50 border border-red-200 text-red-600 text-sm p-3 rounded-md text-center">
           {loginError || errorMessages[errorCode!] || errorMessages.DEFAULT}
@@ -94,7 +109,11 @@ export default function SignIn({ providers, callbackUrl }: Props) {
           placeholder="패스워드"
           className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
-        <Button type="submit" className="w-full h-[50px] rounded-xl text-base" disabled={loading}>
+        <Button
+          type="submit"
+          className="w-full h-[50px] rounded-xl text-base"
+          disabled={loading}
+        >
           {loading ? '로그인 중...' : '이메일로 로그인'}
         </Button>
       </form>

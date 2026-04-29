@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
@@ -40,18 +39,8 @@ export default function SignUpPage() {
         return;
       }
 
-      const result = await signIn('credentials', {
-        email: form.email,
-        password: form.password,
-        redirect: false,
-      });
-
-      if (result?.error) {
-        setError('로그인에 실패했습니다. 다시 시도해주세요.');
-        return;
-      }
-
-      router.push('/register/pending');
+      // 자동 로그인하지 않고, 안내와 함께 로그인 화면으로 이동
+      router.push('/auth/signin?notice=signup-complete');
     } finally {
       setLoading(false);
     }

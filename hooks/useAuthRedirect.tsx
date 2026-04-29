@@ -1,10 +1,8 @@
 'use client';
 
-import { useSession } from 'next-auth/react';
-import { useRouter, usePathname } from 'next/navigation';
+import { useSession, signOut } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-
-const REGISTER_PATHS = ['/register', '/register/pending'];
 
 export default function useAuthRedirect(
   redirectTo: string = '/auth/signin',
@@ -12,7 +10,6 @@ export default function useAuthRedirect(
 ) {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const pathname = usePathname();
   const [isChecking, setIsChecking] = useState(true);
 
   useEffect(() => {
@@ -24,17 +21,10 @@ export default function useAuthRedirect(
     }
 
     const role = session.user.role ?? 'PENDING';
-    const name = session.user.name;
 
-    // PENDING: 가입 대기 상태 리디렉션
+    // PENDING 세션은 더 이상 허용하지 않음 (구버전 잔존 세션 방어)
     if (role === 'PENDING') {
-      if (!name && pathname !== '/register') {
-        router.push('/register');
-      } else if (name && !REGISTER_PATHS.includes(pathname)) {
-        router.push('/register/pending');
-      } else {
-        setIsChecking(false);
-      }
+      signOut({ callbackUrl: '/auth/signin?error=PENDING_APPROVAL' });
       return;
     }
 
@@ -43,7 +33,7 @@ export default function useAuthRedirect(
     } else {
       setIsChecking(false);
     }
-  }, [session, status, router, redirectTo, requiredRole, pathname]);
+  }, [session, status, router, redirectTo, requiredRole]);
 
   return { user: session?.user, isLoading: isChecking };
 }

@@ -62,6 +62,22 @@ export default function AdminMembersPage() {
     mutate('/api/admin/members?status=pending');
   };
 
+  const handleDelete = async (id: string, name: string | null) => {
+    if (
+      !confirm(
+        `${name ?? '이 회원'}의 계정을 삭제할까요?\n관련 데이터도 함께 삭제됩니다.`
+      )
+    )
+      return;
+    const res = await fetch(`/api/admin/members/${id}`, { method: 'DELETE' });
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      alert(data.error ?? '삭제에 실패했습니다.');
+      return;
+    }
+    mutate('/api/admin/members');
+  };
+
   if (isLoading) return null;
 
   return (
@@ -162,14 +178,23 @@ export default function AdminMembersPage() {
                     {member.gender ?? '-'} · 등급 {member.level}
                   </p>
                 </div>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="shrink-0"
-                  onClick={() => handleLevelChange(member.id, member.level)}
-                >
-                  등급변경
-                </Button>
+                <div className="flex gap-2 shrink-0">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => handleLevelChange(member.id, member.level)}
+                  >
+                    등급변경
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="text-red-500 border-red-200 hover:bg-red-50"
+                    onClick={() => handleDelete(member.id, member.name)}
+                  >
+                    삭제
+                  </Button>
+                </div>
               </div>
             ))
           )}

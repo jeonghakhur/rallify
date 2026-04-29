@@ -1,4 +1,4 @@
-import { test, expect, request } from '@playwright/test';
+import { test, expect } from '@playwright/test';
 
 // 테스트 계정 10개 생성
 const TEST_ACCOUNTS = Array.from({ length: 10 }, (_, i) => ({
@@ -21,7 +21,7 @@ test.describe('회원가입 및 로그인 테스트', () => {
       const res = await request.post(`${BASE_URL}/api/auth/register`, {
         data: account,
       });
-      const body = await res.json().catch(() => ({}));
+      await res.json().catch(() => ({}));
       results.push({
         email: account.email,
         status: res.status(),
@@ -52,7 +52,12 @@ test.describe('회원가입 및 로그인 테스트', () => {
   // 3. 유효성 검사 확인
   test('패스워드 8자 미만 시 422 반환', async ({ request }) => {
     const res = await request.post(`${BASE_URL}/api/auth/register`, {
-      data: { email: 'short@test.com', password: '123', name: '테스트', gender: '남성' },
+      data: {
+        email: 'short@test.com',
+        password: '123',
+        name: '테스트',
+        gender: '남성',
+      },
     });
     expect(res.status()).toBe(422);
   });
@@ -65,7 +70,9 @@ test.describe('회원가입 및 로그인 테스트', () => {
   });
 
   // 4. UI 회원가입 플로우 (browser 테스트)
-  test('이메일 가입 UI 플로우: 가입 → 대기 페이지 이동', async ({ page }) => {
+  test('이메일 가입 UI 플로우: 가입 → 로그인 화면(signup-complete 안내) 이동', async ({
+    page,
+  }) => {
     const account = {
       email: `ui_test_${Date.now()}@test.com`,
       password: 'Test12345pw',
@@ -82,44 +89,28 @@ test.describe('회원가입 및 로그인 테스트', () => {
     await page.getByRole('button', { name: '남성' }).click();
     await page.getByRole('button', { name: '가입하기' }).click();
 
-    // /register/pending으로 이동 확인
-    await expect(page).toHaveURL(/\/register\/pending/, { timeout: 10000 });
-    await expect(page.getByText('가입 신청 완료')).toBeVisible();
-    await expect(page.getByText('UI테스트')).toBeVisible();
+    // /auth/signin?notice=signup-complete 으로 이동 확인
+    await expect(page).toHaveURL(/\/auth\/signin\?notice=signup-complete/, {
+      timeout: 10000,
+    });
+    await expect(page.getByText('가입 신청이 접수되었습니다')).toBeVisible();
   });
 
-  // 5. 로그인 테스트 (등록된 계정 → 대기 페이지)
-  test('10개 계정 로그인 후 pending 페이지 이동 확인', async ({ page }) => {
-    const results: { email: string; success: boolean; url: string }[] = [];
+  // 5. PENDING 사용자 로그인 차단 확인
+  test('PENDING 계정 로그인 시 PENDING_APPROVAL 에러', async ({ page }) => {
+    const account = TEST_ACCOUNTS[0];
 
-    for (const account of TEST_ACCOUNTS) {
-      await page.goto(`${BASE_URL}/auth/signin`);
+    await page.goto(`${BASE_URL}/auth/signin`);
+    await page.fill('input[type="email"]', account.email);
+    await page.fill('input[type="password"]', account.password);
+    await page.getByRole('button', { name: /이메일로 로그인/ }).click();
 
-      // "이메일로 가입하기" 링크로 signup 페이지 접근 대신 직접 signIn
-      const res = await page.request.post(`${BASE_URL}/api/auth/callback/credentials`, {
-        form: {
-          email: account.email,
-          password: account.password,
-          csrfToken: '',
-          callbackUrl: BASE_URL,
-          json: 'true',
-        },
-      });
-
-      results.push({
-        email: account.email,
-        success: res.status() < 400,
-        url: res.url(),
-      });
-    }
-
-    const succeeded = results.filter((r) => r.success);
-    console.log(`\n로그인 API 결과: ${succeeded.length}/10 성공`);
-    results.forEach((r) =>
-      console.log(`  ${r.success ? '✓' : '✗'} ${r.email} → HTTP 성공여부: ${r.success}`)
-    );
-
-    expect(succeeded.length).toBeGreaterThanOrEqual(8);
+    // 로그인 거절 → 에러 메시지 표시
+    await expect(
+      page.getByText(/가입 신청이 아직 승인되지 않았습니다/)
+    ).toBeVisible({
+      timeout: 10000,
+    });
   });
 
   // 6. 로그인 페이지 UI 확인
@@ -131,22 +122,11 @@ test.describe('회원가입 및 로그인 테스트', () => {
     await expect(page).toHaveURL(/\/auth\/signup/);
   });
 
-  // 7. level=0 사용자 접근 제어 (pending 페이지 리디렉션)
-  test('level=0 유저가 / 접근 시 pending으로 리디렉션', async ({ page }) => {
-    // 방금 가입한 계정(level=0)으로 로그인 시도
-    const account = TEST_ACCOUNTS[0];
-
-    // 가입 UI로 로그인
-    await page.goto(`${BASE_URL}/auth/signup`);
-
-    // 이미 가입된 계정이므로 에러 확인 후 직접 signin 페이지로 이동
-    // NextAuth credentials 로그인 직접 테스트
-    await page.goto(`${BASE_URL}/auth/signin`);
-
-    // 소셜 로그인 버튼만 있고 credentials 입력창은 없으므로
-    // /register/pending이 level=0 접근 시 표시되는지 확인
+  // 7. 미로그인 사용자 접근 제어
+  test('미로그인 / 접근 시 signin 리디렉션', async ({ page }) => {
     await page.goto(`${BASE_URL}/`);
-    // 미로그인 상태에서 / 접근 → signin 리디렉션 확인
-    await expect(page).toHaveURL(/\/(auth\/signin|\?callbackUrl)?/, { timeout: 5000 });
+    await expect(page).toHaveURL(/\/(auth\/signin|\?callbackUrl)?/, {
+      timeout: 5000,
+    });
   });
 });

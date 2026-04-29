@@ -7,6 +7,8 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import bcrypt from 'bcryptjs';
 import { prisma } from '@/lib/prisma';
 import { encryptField } from '@/util/encryption';
+import { sendMail } from '@/lib/mail';
+import { signupReceivedTemplate } from '@/lib/email-templates';
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -48,6 +50,9 @@ export const authOptions: NextAuthOptions = {
           user.password
         );
         if (!isValid) return null;
+        if (user.role === 'PENDING') {
+          throw new Error('PENDING_APPROVAL');
+        }
         return { id: user.id, name: user.name, email: user.email };
       },
     }),
@@ -68,6 +73,10 @@ export const authOptions: NextAuthOptions = {
           existingUser.provider !== account.provider
         ) {
           return `/auth/signin?error=ALREADY_REGISTERED`;
+        }
+
+        if (existingUser.role === 'PENDING') {
+          return `/auth/signin?error=PENDING_APPROVAL`;
         }
 
         const existingAccount = await prisma.account.findUnique({
@@ -183,7 +192,16 @@ export const authOptions: NextAuthOptions = {
         // unique constraint 등 예외 무시
       }
 
-      return true;
+      // 신규 가입 → 신청 접수 메일 발송 (실패해도 가입 흐름은 진행)
+      try {
+        const tpl = signupReceivedTemplate(userName);
+        await sendMail({ to: user.email, subject: tpl.subject, html: tpl.html });
+      } catch (err) {
+        console.error('[signup] failed to send received mail (social)', err);
+      }
+
+      // 세션을 만들지 않고 가입 신청 완료 안내 화면으로 이동
+      return `/auth/signin?notice=signup-complete`;
     },
     async jwt({ token, user, trigger }) {
       if (user) {
