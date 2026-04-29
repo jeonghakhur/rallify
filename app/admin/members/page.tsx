@@ -20,6 +20,9 @@ type Member = {
   role: string;
   provider: string | null;
   createdAt: string;
+  address: string | null;
+  birthday: string | null;
+  birthyear: string | null;
 };
 
 export default function AdminMembersPage() {
@@ -184,6 +187,17 @@ export default function AdminMembersPage() {
                     {member.gender ?? '-'} · {getUserLevelLabel(member.level)}{' '}
                     (Lv.{member.level})
                   </p>
+                  {(member.address || member.birthday || member.birthyear) && (
+                    <p className="text-xs text-gray-400 mt-0.5 truncate">
+                      {member.address && <span>거주 {member.address}</span>}
+                      {member.address &&
+                        (member.birthday || member.birthyear) &&
+                        ' · '}
+                      {(member.birthday || member.birthyear) && (
+                        <span>생년 {member.birthday || member.birthyear}</span>
+                      )}
+                    </p>
+                  )}
                 </div>
                 <div className="flex gap-2 shrink-0">
                   <Button

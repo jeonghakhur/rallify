@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "lastUpdated": "2026-04-29T11:39:46.273Z",
+  "lastUpdated": "2026-04-29T11:43:19.747Z",
   "activeFeatures": [
     "react-tennis-2",
     "service",
@@ -109,7 +109,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-03-10T02:22:25.916Z",
-        "lastUpdated": "2026-04-29T11:38:24.748Z"
+        "lastUpdated": "2026-04-29T11:43:19.747Z"
       },
       "lastFile": "/Users/jeonghakhur/work/person/rallify/app/admin/members/page.tsx"
     },
@@ -441,7 +441,7 @@
   "session": {
     "startedAt": "2026-03-09T09:12:04.567Z",
     "onboardingCompleted": false,
-    "lastActivity": "2026-04-29T11:39:46.273Z"
+    "lastActivity": "2026-04-29T11:43:19.747Z"
   },
   "history": [
     {
@@ -1473,6 +1473,18 @@
     {
       "timestamp": "2026-04-29T11:39:46.273Z",
       "feature": "service",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-29T11:43:03.515Z",
+      "feature": "members",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-29T11:43:19.747Z",
+      "feature": "members",
       "phase": "do",
       "action": "updated"
     }
