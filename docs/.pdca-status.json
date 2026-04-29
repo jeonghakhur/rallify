@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "lastUpdated": "2026-04-28T12:25:14.367Z",
+  "lastUpdated": "2026-04-29T10:29:31.452Z",
   "activeFeatures": [
     "react-tennis-2",
     "service",
@@ -108,9 +108,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-03-10T02:22:25.916Z",
-        "lastUpdated": "2026-04-28T12:23:57.526Z"
+        "lastUpdated": "2026-04-28T12:59:56.055Z"
       },
-      "lastFile": "/Users/jeonghakhur/work/person/rallify/app/admin/members/page.tsx"
+      "lastFile": "/Users/jeonghakhur/work/person/rallify/app/members/page.tsx"
     },
     "[id]": {
       "phase": "do",
@@ -121,7 +121,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-03-10T02:37:57.796Z",
-        "lastUpdated": "2026-04-28T12:23:17.070Z"
+        "lastUpdated": "2026-04-28T13:06:46.042Z"
       },
       "lastFile": "/Users/jeonghakhur/work/person/rallify/app/api/admin/members/[id]/route.ts"
     },
@@ -147,9 +147,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-03-10T03:48:08.586Z",
-        "lastUpdated": "2026-04-23T13:36:36.222Z"
+        "lastUpdated": "2026-04-28T13:05:02.783Z"
       },
-      "lastFile": "/Users/jeonghakhur/work/person/rallify/app/register/page.tsx"
+      "lastFile": "/Users/jeonghakhur/work/person/rallify/app/api/auth/register/route.ts"
     },
     "signup": {
       "phase": "do",
@@ -160,7 +160,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-03-10T03:48:42.435Z",
-        "lastUpdated": "2026-04-23T13:35:52.394Z"
+        "lastUpdated": "2026-04-28T13:05:10.133Z"
       },
       "lastFile": "/Users/jeonghakhur/work/person/rallify/app/auth/signup/page.tsx"
     },
@@ -186,9 +186,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-03-10T04:15:45.786Z",
-        "lastUpdated": "2026-03-10T04:17:08.079Z"
+        "lastUpdated": "2026-04-29T10:29:31.452Z"
       },
-      "lastFile": "/Users/jeonghak/work/react-tennis-2/tests/e2e/signup-login.spec.ts"
+      "lastFile": "/Users/jeonghakhur/work/person/rallify/tests/e2e/signup-login.spec.ts"
     },
     "tmp": {
       "phase": "do",
@@ -245,9 +245,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-23T13:30:41.979Z",
-        "lastUpdated": "2026-04-23T13:45:00.196Z"
+        "lastUpdated": "2026-04-28T13:05:56.966Z"
       },
-      "lastFile": "/Users/jeonghakhur/work/person/rallify/components/Navbar.tsx"
+      "lastFile": "/Users/jeonghakhur/work/person/rallify/hooks/useAuthRedirect.tsx"
     },
     "terms": {
       "phase": "do",
@@ -375,7 +375,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-23T13:43:00.213Z",
-        "lastUpdated": "2026-04-23T13:43:00.213Z"
+        "lastUpdated": "2026-04-28T12:33:54.494Z"
       },
       "lastFile": "/Users/jeonghakhur/work/person/rallify/app/clubs/create/page.tsx"
     },
@@ -427,7 +427,7 @@
   "session": {
     "startedAt": "2026-03-09T09:12:04.567Z",
     "onboardingCompleted": false,
-    "lastActivity": "2026-04-28T12:25:14.367Z"
+    "lastActivity": "2026-04-29T10:29:31.452Z"
   },
   "history": [
     {
@@ -1027,6 +1027,108 @@
     {
       "timestamp": "2026-04-28T12:25:14.367Z",
       "feature": "service",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-28T12:33:54.494Z",
+      "feature": "create",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-28T12:55:24.750Z",
+      "feature": "members",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-28T12:55:29.958Z",
+      "feature": "members",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-28T12:55:47.705Z",
+      "feature": "[id]",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-28T12:59:56.055Z",
+      "feature": "members",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-28T13:02:12.860Z",
+      "feature": "rallify",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-28T13:02:25.096Z",
+      "feature": "rallify",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-28T13:05:02.783Z",
+      "feature": "register",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-28T13:05:10.133Z",
+      "feature": "signup",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-28T13:05:19.131Z",
+      "feature": "rallify",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-28T13:05:19.312Z",
+      "feature": "rallify",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-28T13:05:22.595Z",
+      "feature": "rallify",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-28T13:05:56.966Z",
+      "feature": "rallify",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-28T13:06:46.042Z",
+      "feature": "[id]",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-28T13:08:53.260Z",
+      "feature": "e2e",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-29T10:29:30.001Z",
+      "feature": "e2e",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-29T10:29:31.452Z",
+      "feature": "e2e",
       "phase": "do",
       "action": "updated"
     }

@@ -42,11 +42,69 @@ export default function CreateClubPage() {
     }
   };
 
+  const testData = [
+    {
+      name: '망원 테니스 클럽',
+      description:
+        '망원한강공원에서 매주 화/목 저녁에 활동하는 테니스 동호회입니다. 초보부터 중급까지 환영합니다.',
+      city: '서울',
+      district: '마포구',
+      joinType: 'APPROVAL',
+    },
+    {
+      name: '그랜드슬램 테니스',
+      description:
+        '주말 아침 테니스를 즐기는 모임입니다. 실력보다 즐거움을 추구합니다.',
+      city: '서울',
+      district: '마포구',
+      joinType: 'OPEN',
+    },
+    {
+      name: '한강 나이트 테니스',
+      description: '퇴근 후 한강에서 야간 테니스를 즐기는 직장인 모임입니다.',
+      city: '서울',
+      district: '영등포구',
+      joinType: 'INVITE_ONLY',
+    },
+    {
+      name: '서초 테니스 아카데미',
+      description: '체계적인 레슨과 리그전을 운영하는 테니스 클럽입니다.',
+      city: '서울',
+      district: '서초구',
+      joinType: 'APPROVAL',
+    },
+    {
+      name: '송파 위켄드 테니스',
+      description: '올림픽공원 인근에서 주말에 모여 복식 경기를 즐깁니다.',
+      city: '서울',
+      district: '송파구',
+      joinType: 'OPEN',
+    },
+  ];
+
+  const fillTestData = () => {
+    const data = testData[Math.floor(Math.random() * testData.length)];
+    setForm(data);
+  };
+
   if (authLoading) return null;
 
   return (
     <main className="max-w-md mx-auto px-4 py-6">
-      <h1 className="text-xl font-bold mb-6">클럽 만들기</h1>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-xl font-bold">클럽 만들기</h1>
+        {process.env.NODE_ENV === 'development' && (
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={fillTestData}
+            className="text-xs text-orange-600 border-orange-300 hover:bg-orange-50"
+          >
+            테스트 데이터
+          </Button>
+        )}
+      </div>
 
       {error && (
         <div className="bg-red-50 border border-red-200 text-red-600 text-sm p-3 rounded-md mb-4">

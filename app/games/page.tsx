@@ -16,6 +16,7 @@ import {
   PopoverContent,
 } from '@/components/ui/popover';
 import { Calendar } from '@/components/ui/calendar';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 
 interface Game {
   _id: string;
@@ -48,6 +49,7 @@ export default function Home() {
   const [endDate, setEndDate] = useState<Date | undefined>(undefined);
   const [visibleCount, setVisibleCount] = useState(5);
   const listRef = useRef<HTMLDivElement>(null);
+  const [selectedGame, setSelectedGame] = useState<Game | null>(null);
 
   useEffect(() => {
     if (games) {
@@ -226,11 +228,7 @@ export default function Home() {
                   ? 'cursor-pointer hover:shadow-lg'
                   : 'cursor-default'
               }`}
-              onClick={
-                isClickable
-                  ? () => router.push(`/games/${game.scheduleID}`)
-                  : undefined
-              }
+              onClick={isClickable ? () => setSelectedGame(game) : undefined}
             >
               <div className="flex justify-between items-start mb-4">
                 <div>
@@ -322,6 +320,91 @@ export default function Home() {
           );
         })}
       </div>
+
+      {/* 게임 상세 결과 모달 */}
+      <Dialog
+        open={!!selectedGame}
+        onOpenChange={(open) => {
+          if (!open) setSelectedGame(null);
+        }}
+      >
+        <DialogContent className="max-w-md max-h-[80vh] overflow-y-auto">
+          {selectedGame && (
+            <>
+              <DialogTitle className="text-center">
+                <div className="text-xl font-bold">
+                  {selectedGame.courtName}
+                </div>
+                <div className="text-sm text-gray-600 font-normal mt-1">
+                  {format(
+                    new Date(selectedGame.date),
+                    'yyyy년 MM월 dd일 (EEE)',
+                    { locale: ko }
+                  )}
+                </div>
+              </DialogTitle>
+
+              <div className="text-sm text-gray-500 text-center">
+                총 {selectedGame.games.length}개의 게임
+              </div>
+
+              <div className="flex flex-col gap-3 mt-2">
+                {selectedGame.games.map((g, index) => {
+                  const scoreA = parseInt(g.score[0] || '0') || 0;
+                  const scoreB = parseInt(g.score[1] || '0') || 0;
+                  const teamAWins = scoreA > scoreB;
+                  const teamBWins = scoreB > scoreA;
+
+                  return (
+                    <div key={index} className="bg-gray-50 rounded-lg p-4">
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="text-sm font-medium text-gray-700">
+                          게임 {index + 1}
+                        </span>
+                        <div className="flex gap-2 text-sm text-gray-500">
+                          <span>{g.time}</span>
+                          {g.court && <span>{g.court}코트</span>}
+                        </div>
+                      </div>
+                      <div className="flex justify-between items-center text-base">
+                        <div className={`${teamAWins ? 'font-bold' : ''}`}>
+                          {g.players[0]}/{g.players[1]}
+                          <span
+                            className={`ml-1 ${teamAWins ? 'text-red-600 font-bold' : 'text-gray-700'}`}
+                          >
+                            [{g.score[0] || '0'}]
+                          </span>
+                        </div>
+                        <div className="text-gray-400 mx-2">vs</div>
+                        <div className={`${teamBWins ? 'font-bold' : ''}`}>
+                          {g.players[2]}/{g.players[3]}
+                          <span
+                            className={`ml-1 ${teamBWins ? 'text-red-600 font-bold' : 'text-gray-700'}`}
+                          >
+                            [{g.score[1] || '0'}]
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full mt-2"
+                onClick={() => {
+                  router.push(`/games/${selectedGame.scheduleID}`);
+                  setSelectedGame(null);
+                }}
+              >
+                상세 페이지로 이동
+              </Button>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </Container>
   );
 }
