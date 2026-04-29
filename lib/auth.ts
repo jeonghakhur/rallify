@@ -24,7 +24,8 @@ export const authOptions: NextAuthOptions = {
       allowDangerousEmailAccountLinking: true,
       authorization: {
         params: {
-          scope: 'name email gender mobile birthday birthyear',
+          // 네이버 콘솔에서 활성화한 항목만 요청 (불일치 시 "서비스 설정 오류" 발생)
+          scope: 'name email profile_image gender mobile birthyear',
         },
       },
     }),
