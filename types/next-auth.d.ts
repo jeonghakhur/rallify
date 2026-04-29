@@ -5,3 +5,13 @@ declare module 'next-auth' {
     user: AuthUser;
   }
 }
+
+declare module 'next-auth/jwt' {
+  interface JWT {
+    id?: string;
+    level?: number;
+    role?: string;
+    gender?: string;
+    userName?: string;
+  }
+}

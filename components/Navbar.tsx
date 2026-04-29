@@ -10,9 +10,7 @@ import { useState, useEffect } from 'react';
 export default function NavBar() {
   const { data: session, status } = useSession();
   const pathname = usePathname() || '';
-  const isSignin =
-    pathname?.includes('/auth/signin') ||
-    pathname?.includes('/studio/structure');
+  const isSignin = pathname?.includes('/auth/signin');
 
   const user = session?.user;
   const role = user?.role || 'PENDING';

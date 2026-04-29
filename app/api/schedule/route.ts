@@ -41,7 +41,7 @@ export async function POST(req: NextRequest) {
       console.log('✅ Zod 검증 완료된 데이터:', validatedData);
 
       const result = await createSchedule(user.id, validatedData);
-      console.log('💾 Sanity에 저장된 데이터:', result);
+      console.log('💾 저장된 데이터:', result);
 
       return NextResponse.json(result);
     } catch (error) {

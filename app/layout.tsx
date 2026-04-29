@@ -1,13 +1,11 @@
 import type { Metadata, Viewport } from 'next';
 import { Noto_Sans } from 'next/font/google';
-import { Theme } from '@radix-ui/themes';
 import { Toaster } from '@/components/ui/toaster';
 import './globals.css';
-import '@radix-ui/themes/styles.css';
 import AuthContext from '@/context/AuthContext';
 import SWRConfigContext from '@/context/SWRConfigContext';
 import clsx from 'clsx';
-import ConditionalNavBar from '@/components/ConditionalNavBar';
+import NavBar from '@/components/Navbar';
 
 const notoSans = Noto_Sans({
   subsets: ['latin'],
@@ -39,22 +37,13 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className={clsx(notoSans.className)}>
-        <Theme
-          accentColor="crimson"
-          grayColor="olive"
-          radius="large"
-          scaling="100%"
-        >
-          <AuthContext>
-            <SWRConfigContext>
-              <ConditionalNavBar />
-              {/* Studio 페이지에서 NavBar 제외 */}
-              {children}
-              {/* <ThemePanel /> */}
-              <Toaster />
-            </SWRConfigContext>
-          </AuthContext>
-        </Theme>
+        <AuthContext>
+          <SWRConfigContext>
+            <NavBar />
+            {children}
+            <Toaster />
+          </SWRConfigContext>
+        </AuthContext>
       </body>
     </html>
   );

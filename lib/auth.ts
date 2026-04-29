@@ -1,19 +1,19 @@
 import { PrismaAdapter } from '@auth/prisma-adapter';
-import { prisma } from '@/lib/prisma';
-import NextAuth from 'next-auth';
+import type { NextAuthOptions } from 'next-auth';
 import KakaoProvider from 'next-auth/providers/kakao';
 import NaverProvider from 'next-auth/providers/naver';
 import GoogleProvider from 'next-auth/providers/google';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import bcrypt from 'bcryptjs';
+import { prisma } from '@/lib/prisma';
 import { encryptField } from '@/util/encryption';
 
-export const authOptions = {
+export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
     KakaoProvider({
-      clientId: process.env.KAKAO_CLIENT_ID,
-      clientSecret: process.env.KAKAO_CLIENT_SECRET,
+      clientId: process.env.KAKAO_CLIENT_ID || '',
+      clientSecret: process.env.KAKAO_CLIENT_SECRET || '',
       allowDangerousEmailAccountLinking: true,
     }),
     NaverProvider({
@@ -43,7 +43,10 @@ export const authOptions = {
           where: { email: credentials.email },
         });
         if (!user || !user.password) return null;
-        const isValid = await bcrypt.compare(credentials.password, user.password);
+        const isValid = await bcrypt.compare(
+          credentials.password,
+          user.password
+        );
         if (!isValid) return null;
         return { id: user.id, name: user.name, email: user.email };
       },
@@ -51,23 +54,22 @@ export const authOptions = {
   ],
   callbacks: {
     async signIn({ user, account, profile }) {
-      if (!user.email) return false;
+      if (!user.email || !account) return false;
 
-      // CredentialsProvider는 별도 처리 없이 통과
       if (account.provider === 'credentials') return true;
 
-      // 기존 사용자 먼저 확인 (반환 사용자는 이름 없어도 허용)
       const existingUser = await prisma.user.findUnique({
         where: { email: user.email },
       });
 
       if (existingUser) {
-        if (existingUser.provider && existingUser.provider !== account.provider) {
+        if (
+          existingUser.provider &&
+          existingUser.provider !== account.provider
+        ) {
           return `/auth/signin?error=ALREADY_REGISTERED`;
         }
 
-        // Account 레코드가 없으면 직접 생성 (OAuthAccountNotLinked 방지)
-        // 기존 사용자가 Sanity 마이그레이션으로 Account 없이 생성된 경우 처리
         const existingAccount = await prisma.account.findUnique({
           where: {
             provider_providerAccountId: {
@@ -97,48 +99,76 @@ export const authOptions = {
         return true;
       }
 
-      // 신규 사용자: 이름 필수 확인
       let userName = user.name;
-      if (account.provider === 'naver' && !userName && profile?.response?.name) {
-        userName = profile.response.name;
+      const naverProfile = profile as
+        | {
+            response?: {
+              name?: string;
+              gender?: string;
+              mobile?: string;
+              birthday?: string;
+              birthyear?: string;
+            };
+          }
+        | undefined;
+      if (
+        account.provider === 'naver' &&
+        !userName &&
+        naverProfile?.response?.name
+      ) {
+        userName = naverProfile.response.name;
       }
       if (!userName) return false;
 
-      // 소셜 프로필에서 추가 정보 추출
-      let gender = null;
-      let phone_number = null;
-      let birthday = null;
-      let birthyear = null;
+      let gender: string | null = null;
+      let phone_number: string | null = null;
+      let birthday: string | null = null;
+      let birthyear: string | null = null;
 
       if (account.provider === 'naver') {
-        const response = profile?.response || {};
-        gender = response.gender === 'M' ? '남성' : response.gender === 'F' ? '여성' : null;
+        const response = naverProfile?.response || {};
+        gender =
+          response.gender === 'M'
+            ? '남성'
+            : response.gender === 'F'
+              ? '여성'
+              : null;
         phone_number = response.mobile || null;
         birthday = response.birthday || null;
         birthyear = response.birthyear || null;
       }
 
       if (account.provider === 'kakao') {
-        const response = profile?.kakao_account || {};
-        gender = response.gender === 'male' ? '남성' : response.gender === 'female' ? '여성' : null;
+        const kakaoProfile = profile as
+          | {
+              kakao_account?: {
+                gender?: string;
+                phone_number?: string;
+                birthday?: string;
+                birthyear?: string;
+              };
+            }
+          | undefined;
+        const response = kakaoProfile?.kakao_account || {};
+        gender =
+          response.gender === 'male'
+            ? '남성'
+            : response.gender === 'female'
+              ? '여성'
+              : null;
         phone_number = response.phone_number || null;
         birthday = response.birthday || null;
         birthyear = response.birthyear || null;
       }
 
-      // 구글은 추가 정보 없이 기본 처리 (gender, phone 등 미제공)
-
-      // PrismaAdapter는 signIn 콜백 이후에 createUser를 실행하므로
-      // upsert로 먼저 프로필 데이터를 포함한 유저를 생성
-      // allowDangerousEmailAccountLinking과 함께 사용 시 Account가 자동 연결됨
       try {
         await prisma.user.upsert({
           where: { email: user.email },
           create: {
             email: user.email,
             name: userName,
-            image: user.image,
-            username: user.email.split('@')[0],
+            image: user.image ?? null,
+            username: user.email.split('@')[0] ?? null,
             provider: account.provider,
             level: 0,
             role: 'PENDING',
@@ -147,7 +177,7 @@ export const authOptions = {
             birthday: encryptField(birthday),
             birthyear: encryptField(birthyear),
           },
-          update: {}, // 이미 존재하면 건드리지 않음
+          update: {},
         });
       } catch {
         // unique constraint 등 예외 무시
@@ -155,15 +185,20 @@ export const authOptions = {
 
       return true;
     },
-    async jwt({ token, user, account, trigger }) {
-      // 최초 로그인 시 또는 세션 업데이트 시 DB에서 최신 정보 로드
+    async jwt({ token, user, trigger }) {
       if (user) {
         token.id = user.id;
       }
       if (token.id || trigger === 'update') {
         const dbUser = await prisma.user.findUnique({
-          where: { id: token.id },
-          select: { level: true, role: true, gender: true, username: true, name: true },
+          where: { id: token.id as string },
+          select: {
+            level: true,
+            role: true,
+            gender: true,
+            username: true,
+            name: true,
+          },
         });
         if (dbUser) {
           token.level = dbUser.level;
@@ -177,12 +212,12 @@ export const authOptions = {
     },
     async session({ session, token }) {
       if (session.user) {
-        session.user.id = token.id;
-        session.user.level = token.level ?? 0;
-        session.user.role = token.role ?? 'USER';
-        session.user.gender = token.gender ?? '';
-        session.user.userName = token.userName ?? '';
-        session.user.name = token.name ?? '';
+        session.user.id = token.id as string;
+        session.user.level = (token.level as number) ?? 0;
+        session.user.role = (token.role as string) ?? 'USER';
+        session.user.gender = (token.gender as string) ?? '';
+        session.user.userName = (token.userName as string) ?? '';
+        session.user.name = (token.name as string) ?? '';
       }
       return session;
     },
@@ -194,5 +229,3 @@ export const authOptions = {
     signIn: '/auth/signin',
   },
 };
-
-export default NextAuth(authOptions);
