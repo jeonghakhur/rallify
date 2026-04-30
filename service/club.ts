@@ -152,13 +152,41 @@ export async function joinClub(
   }
 
   const isOpen = club.joinType === 'OPEN';
+  const targetStatus = isOpen ? 'ACTIVE' : 'PENDING';
+
+  // 기존 row 처리: REJECTED / LEFT / REMOVED 는 재신청으로 되살림
+  const existing = await prisma.clubMember.findUnique({
+    where: { clubId_userId: { clubId, userId } },
+  });
+
+  if (existing) {
+    if (existing.status === 'ACTIVE') {
+      throw new Error('이미 가입된 클럽입니다.');
+    }
+    if (existing.status === 'PENDING') {
+      throw new Error('이미 가입 신청한 클럽입니다.');
+    }
+    if (existing.status === 'INVITED') {
+      throw new Error('초대된 상태입니다. 초대를 수락해주세요.');
+    }
+    return prisma.clubMember.update({
+      where: { id: existing.id },
+      data: {
+        status: targetStatus,
+        role: 'MEMBER',
+        statusReason: null,
+        ...(introduction && { introduction }),
+        ...(isOpen ? { joinedAt: new Date() } : { joinedAt: null }),
+      },
+    });
+  }
 
   return prisma.clubMember.create({
     data: {
       clubId,
       userId,
       role: 'MEMBER',
-      status: isOpen ? 'ACTIVE' : 'PENDING',
+      status: targetStatus,
       ...(introduction && { introduction }),
       ...(isOpen && { joinedAt: new Date() }),
     },
@@ -223,6 +251,14 @@ export async function removeMember(memberId: string, reason?: string) {
     where: { id: memberId },
     data: { status: 'REMOVED', ...(reason && { statusReason: reason }) },
   });
+}
+
+/**
+ * ClubMember 행을 DB에서 완전 제거. 비활성 상태(REJECTED/LEFT/REMOVED) 정리 용도.
+ * 호출 측에서 권한 및 상태를 검증해야 함.
+ */
+export async function purgeMember(memberId: string) {
+  return prisma.clubMember.delete({ where: { id: memberId } });
 }
 
 export async function leaveClub(memberId: string, userId: string) {

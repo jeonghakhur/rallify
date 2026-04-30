@@ -12,6 +12,7 @@ type Member = {
   role: string;
   status: string;
   introduction: string | null;
+  statusReason: string | null;
   createdAt: string;
   user: {
     id: string;
@@ -23,6 +24,18 @@ type Member = {
     phoneNumber?: string | null;
     birthyear?: string | null;
   };
+};
+
+const HISTORY_STATUS_LABEL: Record<string, string> = {
+  REJECTED: '거절',
+  LEFT: '탈퇴',
+  REMOVED: '강퇴',
+};
+
+const HISTORY_STATUS_COLOR: Record<string, string> = {
+  REJECTED: 'bg-red-100 text-red-700',
+  LEFT: 'bg-gray-100 text-gray-600',
+  REMOVED: 'bg-orange-100 text-orange-700',
 };
 
 function calcAge(birthyear?: string | null): number | null {
@@ -50,9 +63,9 @@ export default function ClubManagePage({
   const router = useRouter();
   const { confirm, alert } = useDialog();
   const { data: club } = useSWR<ClubDetail>(`/api/clubs/${id}`);
-  const [tab, setTab] = useState<'pending' | 'invited' | 'active' | 'settings'>(
-    'pending'
-  );
+  const [tab, setTab] = useState<
+    'pending' | 'invited' | 'active' | 'history' | 'settings'
+  >('pending');
   const [inviteQuery, setInviteQuery] = useState('');
   const [searchResults, setSearchResults] = useState<
     { id: string; name: string; username: string; image: string | null }[]
@@ -73,11 +86,31 @@ export default function ClubManagePage({
   const { data: activeMembers = [] } = useSWR<Member[]>(
     isAdmin ? `/api/clubs/${id}/members?status=ACTIVE` : null
   );
+  const { data: rejectedMembers = [] } = useSWR<Member[]>(
+    isAdmin ? `/api/clubs/${id}/members?status=REJECTED` : null
+  );
+  const { data: leftMembers = [] } = useSWR<Member[]>(
+    isAdmin ? `/api/clubs/${id}/members?status=LEFT` : null
+  );
+  const { data: removedMembers = [] } = useSWR<Member[]>(
+    isAdmin ? `/api/clubs/${id}/members?status=REMOVED` : null
+  );
+
+  const historyMembers = [
+    ...rejectedMembers,
+    ...leftMembers,
+    ...removedMembers,
+  ].sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  );
 
   const refreshMembers = () => {
     mutate(`/api/clubs/${id}/members?status=PENDING`);
     mutate(`/api/clubs/${id}/members?status=INVITED`);
     mutate(`/api/clubs/${id}/members?status=ACTIVE`);
+    mutate(`/api/clubs/${id}/members?status=REJECTED`);
+    mutate(`/api/clubs/${id}/members?status=LEFT`);
+    mutate(`/api/clubs/${id}/members?status=REMOVED`);
     mutate(`/api/clubs/${id}`);
   };
 
@@ -159,6 +192,29 @@ export default function ClubManagePage({
     refreshMembers();
   };
 
+  const handlePurge = async (memberId: string, memberName: string | null) => {
+    const ok = await confirm({
+      title: '이력 영구 삭제',
+      description: `${memberName ?? '이 멤버'}의 이력을 DB에서 완전히 제거합니다.\n이 작업은 되돌릴 수 없습니다.`,
+      confirmText: '삭제',
+      destructive: true,
+    });
+    if (!ok) return;
+    const res = await fetch(
+      `/api/clubs/${id}/members/${memberId}?permanent=1`,
+      { method: 'DELETE' }
+    );
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      await alert({
+        title: '삭제 실패',
+        description: data.error ?? '삭제에 실패했습니다.',
+      });
+      return;
+    }
+    refreshMembers();
+  };
+
   const handleDeleteClub = async () => {
     const ok = await confirm({
       title: '클럽 삭제',
@@ -182,6 +238,7 @@ export default function ClubManagePage({
     { key: 'pending', label: `대기 (${pendingMembers?.length ?? 0})` },
     { key: 'invited', label: `초대 (${invitedMembers.length})` },
     { key: 'active', label: `멤버 (${activeMembers.length})` },
+    { key: 'history', label: `이력 (${historyMembers.length})` },
     ...(isOwner ? [{ key: 'settings', label: '설정' }] : []),
   ] as const;
 
@@ -378,6 +435,72 @@ export default function ClubManagePage({
               )}
             </div>
           ))}
+        </div>
+      )}
+
+      {/* 이력 (REJECTED / LEFT / REMOVED) */}
+      {tab === 'history' && (
+        <div className="space-y-2">
+          {historyMembers.length === 0 ? (
+            <p className="text-sm text-gray-400 py-8 text-center">
+              이력이 없습니다.
+            </p>
+          ) : (
+            historyMembers.map((m) => {
+              const canPurge = isOwner || user?.role === 'SUPER_ADMIN';
+              return (
+                <div
+                  key={m.id}
+                  className="p-3 bg-white border rounded-lg space-y-2"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span
+                          className={`text-xs px-2 py-0.5 rounded-full ${
+                            HISTORY_STATUS_COLOR[m.status] ??
+                            'bg-gray-100 text-gray-600'
+                          }`}
+                        >
+                          {HISTORY_STATUS_LABEL[m.status] ?? m.status}
+                        </span>
+                        <span className="font-medium text-sm">
+                          {m.user.name}
+                        </span>
+                        <span className="text-xs text-gray-400 truncate">
+                          {m.user.email}
+                        </span>
+                      </div>
+                      {m.statusReason && (
+                        <p className="text-xs text-gray-500 mt-1">
+                          사유: {m.statusReason}
+                        </p>
+                      )}
+                      <p className="text-xs text-gray-400 mt-0.5">
+                        신청일{' '}
+                        {new Date(m.createdAt).toLocaleDateString('ko-KR')}
+                      </p>
+                    </div>
+                    {canPurge && (
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="text-red-500 border-red-200 hover:bg-red-50 shrink-0"
+                        onClick={() => handlePurge(m.id, m.user.name)}
+                      >
+                        영구 삭제
+                      </Button>
+                    )}
+                  </div>
+                  {m.status === 'REJECTED' && m.introduction && (
+                    <p className="text-sm text-gray-600 bg-gray-50 rounded p-2 whitespace-pre-line">
+                      {m.introduction}
+                    </p>
+                  )}
+                </div>
+              );
+            })
+          )}
         </div>
       )}
 

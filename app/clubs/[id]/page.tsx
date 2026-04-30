@@ -32,7 +32,12 @@ type ClubDetail = {
   memberCount: number;
   isActive: boolean;
   members: ClubMember[];
-  myMembership: { id: string; role: string; status: string } | null;
+  myMembership: {
+    id: string;
+    role: string;
+    status: string;
+    statusReason: string | null;
+  } | null;
 };
 
 const joinTypeLabel: Record<string, string> = {
@@ -136,11 +141,50 @@ export default function ClubDetailPage({
         </div>
 
         {/* 액션 버튼 */}
-        <div className="mt-4 pt-4 border-t border-gray-100">
-          {!club.myMembership && (
-            <Button onClick={() => setJoinDialogOpen(true)} className="w-full">
-              가입 신청
-            </Button>
+        <div className="mt-4 pt-4 border-t border-gray-100 space-y-2">
+          {(!club.myMembership ||
+            myStatus === 'REJECTED' ||
+            myStatus === 'LEFT' ||
+            myStatus === 'REMOVED') &&
+            club.joinType !== 'INVITE_ONLY' && (
+              <>
+                {myStatus === 'REJECTED' && (
+                  <div className="text-sm text-red-600 bg-red-50 rounded-md p-3">
+                    <div className="font-medium">가입이 거절되었습니다.</div>
+                    {club.myMembership?.statusReason && (
+                      <div className="text-xs mt-1 text-red-500">
+                        사유: {club.myMembership.statusReason}
+                      </div>
+                    )}
+                  </div>
+                )}
+                {myStatus === 'LEFT' && (
+                  <div className="text-sm text-gray-600 bg-gray-50 rounded-md p-3">
+                    이전에 탈퇴한 클럽입니다. 다시 가입 신청할 수 있습니다.
+                  </div>
+                )}
+                {myStatus === 'REMOVED' && (
+                  <div className="text-sm text-gray-600 bg-gray-50 rounded-md p-3">
+                    이전에 강퇴된 클럽입니다.
+                    {club.myMembership?.statusReason && (
+                      <div className="text-xs mt-1 text-gray-500">
+                        사유: {club.myMembership.statusReason}
+                      </div>
+                    )}
+                  </div>
+                )}
+                <Button
+                  onClick={() => setJoinDialogOpen(true)}
+                  className="w-full"
+                >
+                  {myStatus ? '다시 신청' : '가입 신청'}
+                </Button>
+              </>
+            )}
+          {club.joinType === 'INVITE_ONLY' && !club.myMembership && (
+            <div className="text-center text-sm text-gray-500 bg-gray-50 rounded-md py-2">
+              초대 전용 클럽입니다.
+            </div>
           )}
           {myStatus === 'PENDING' && (
             <div className="text-center text-sm text-amber-600 bg-amber-50 rounded-md py-2">

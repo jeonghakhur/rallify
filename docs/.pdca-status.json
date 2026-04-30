@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "lastUpdated": "2026-04-30T13:52:43.956Z",
+  "lastUpdated": "2026-04-30T14:18:52.672Z",
   "activeFeatures": [
     "club-join-application",
     "react-tennis-2",
@@ -74,7 +74,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-03-09T10:25:37.726Z",
-        "lastUpdated": "2026-04-30T13:32:38.056Z"
+        "lastUpdated": "2026-04-30T14:17:39.748Z"
       },
       "lastFile": "/Users/jeonghakhur/work/person/rallify/service/club.ts"
     },
@@ -87,9 +87,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-03-09T10:27:06.138Z",
-        "lastUpdated": "2026-04-30T13:22:54.407Z"
+        "lastUpdated": "2026-04-30T14:13:08.395Z"
       },
-      "lastFile": "/Users/jeonghakhur/work/person/rallify/scripts/rollback-pending.ts"
+      "lastFile": "/Users/jeonghakhur/work/person/rallify/scripts/debug-club-members.ts"
     },
     "util": {
       "phase": "do",
@@ -139,7 +139,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-03-10T02:37:57.796Z",
-        "lastUpdated": "2026-04-30T13:33:47.056Z"
+        "lastUpdated": "2026-04-30T14:15:00.879Z"
       },
       "lastFile": "/Users/jeonghakhur/work/person/rallify/app/clubs/[id]/page.tsx"
     },
@@ -354,7 +354,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-23T13:41:42.561Z",
-        "lastUpdated": "2026-04-23T13:41:42.561Z"
+        "lastUpdated": "2026-04-30T14:18:01.340Z"
       },
       "lastFile": "/Users/jeonghakhur/work/person/rallify/app/api/clubs/[id]/members/[memberId]/route.ts"
     },
@@ -406,7 +406,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-23T13:44:25.971Z",
-        "lastUpdated": "2026-04-30T13:34:08.369Z"
+        "lastUpdated": "2026-04-30T14:18:52.672Z"
       },
       "lastFile": "/Users/jeonghakhur/work/person/rallify/app/clubs/[id]/manage/page.tsx"
     },
@@ -471,7 +471,7 @@
   "session": {
     "startedAt": "2026-03-09T09:12:04.567Z",
     "onboardingCompleted": false,
-    "lastActivity": "2026-04-30T13:52:43.956Z"
+    "lastActivity": "2026-04-30T14:18:52.672Z"
   },
   "history": [
     {
@@ -1635,6 +1635,84 @@
     {
       "timestamp": "2026-04-30T13:52:43.956Z",
       "feature": "club",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-30T14:13:08.396Z",
+      "feature": "scripts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-30T14:14:39.771Z",
+      "feature": "service",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-30T14:14:44.696Z",
+      "feature": "[id]",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-30T14:15:00.879Z",
+      "feature": "[id]",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-30T14:17:39.748Z",
+      "feature": "service",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-30T14:17:47.035Z",
+      "feature": "[memberId]",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-30T14:18:01.340Z",
+      "feature": "[memberId]",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-30T14:18:09.461Z",
+      "feature": "manage",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-30T14:18:14.687Z",
+      "feature": "manage",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-30T14:18:25.883Z",
+      "feature": "manage",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-30T14:18:33.727Z",
+      "feature": "manage",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-30T14:18:39.664Z",
+      "feature": "manage",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-30T14:18:52.672Z",
+      "feature": "manage",
       "phase": "do",
       "action": "updated"
     }
