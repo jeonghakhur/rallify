@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma';
+import { decryptField } from '@/util/encryption';
 
 // ─── 클럽 CRUD ───
 
@@ -258,22 +259,44 @@ export async function updateMemberRole(memberId: string, newRole: string) {
   });
 }
 
-export async function getClubMembers(clubId: string, status?: string) {
-  return prisma.clubMember.findMany({
+export async function getClubMembers(
+  clubId: string,
+  status?: string,
+  options: { includeSensitive?: boolean } = {}
+) {
+  const baseSelect = {
+    id: true,
+    name: true,
+    username: true,
+    image: true,
+    email: true,
+  };
+  const sensitiveSelect = options.includeSensitive
+    ? { gender: true, phoneNumber: true, birthyear: true }
+    : {};
+
+  const members = await prisma.clubMember.findMany({
     where: { clubId, ...(status ? { status } : {}) },
     include: {
-      user: {
-        select: {
-          id: true,
-          name: true,
-          username: true,
-          image: true,
-          email: true,
-        },
-      },
+      user: { select: { ...baseSelect, ...sensitiveSelect } },
     },
     orderBy: { createdAt: 'asc' },
   });
+
+  if (!options.includeSensitive) return members;
+
+  return members.map((m) => ({
+    ...m,
+    user: {
+      ...m.user,
+      phoneNumber: decryptField(
+        (m.user as { phoneNumber?: string | null }).phoneNumber
+      ),
+      birthyear: decryptField(
+        (m.user as { birthyear?: string | null }).birthyear
+      ),
+    },
+  }));
 }
 
 export async function getMyClubs(userId: string) {

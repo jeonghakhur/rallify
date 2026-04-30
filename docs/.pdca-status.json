@@ -1,7 +1,8 @@
 {
   "version": "2.0",
-  "lastUpdated": "2026-04-29T11:43:19.747Z",
+  "lastUpdated": "2026-04-30T13:52:43.956Z",
   "activeFeatures": [
+    "club-join-application",
     "react-tennis-2",
     "service",
     "scripts",
@@ -31,10 +32,26 @@
     "manage",
     "games",
     "user",
-    "admin"
+    "admin",
+    "club"
   ],
-  "primaryFeature": "react-tennis-2",
+  "primaryFeature": "club-join-application",
   "features": {
+    "club-join-application": {
+      "phase": "plan",
+      "phaseNumber": 1,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {
+        "plan": "docs/01-plan/features/club-join-application.plan.md"
+      },
+      "timestamps": {
+        "started": "2026-04-30T00:00:00.000Z",
+        "lastUpdated": "2026-04-30T00:00:00.000Z"
+      },
+      "lastFile": "docs/01-plan/features/club-join-application.plan.md"
+    },
     "react-tennis-2": {
       "phase": "do",
       "phaseNumber": 3,
@@ -57,9 +74,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-03-09T10:25:37.726Z",
-        "lastUpdated": "2026-04-29T11:39:46.273Z"
+        "lastUpdated": "2026-04-30T13:32:38.056Z"
       },
-      "lastFile": "/Users/jeonghakhur/work/person/rallify/service/user.ts"
+      "lastFile": "/Users/jeonghakhur/work/person/rallify/service/club.ts"
     },
     "scripts": {
       "phase": "do",
@@ -70,9 +87,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-03-09T10:27:06.138Z",
-        "lastUpdated": "2026-03-09T10:27:06.138Z"
+        "lastUpdated": "2026-04-30T13:22:54.407Z"
       },
-      "lastFile": "/Users/jeonghak/work/react-tennis-2/scripts/migrate-sanity-to-postgres.ts"
+      "lastFile": "/Users/jeonghakhur/work/person/rallify/scripts/rollback-pending.ts"
     },
     "util": {
       "phase": "do",
@@ -109,9 +126,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-03-10T02:22:25.916Z",
-        "lastUpdated": "2026-04-29T11:43:19.747Z"
+        "lastUpdated": "2026-04-30T13:32:42.212Z"
       },
-      "lastFile": "/Users/jeonghakhur/work/person/rallify/app/admin/members/page.tsx"
+      "lastFile": "/Users/jeonghakhur/work/person/rallify/app/api/clubs/[id]/members/route.ts"
     },
     "[id]": {
       "phase": "do",
@@ -122,9 +139,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-03-10T02:37:57.796Z",
-        "lastUpdated": "2026-04-29T11:37:06.850Z"
+        "lastUpdated": "2026-04-30T13:33:47.056Z"
       },
-      "lastFile": "/Users/jeonghakhur/work/person/rallify/app/api/admin/members/[id]/route.ts"
+      "lastFile": "/Users/jeonghakhur/work/person/rallify/app/clubs/[id]/page.tsx"
     },
     "schedule": {
       "phase": "do",
@@ -311,7 +328,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-23T13:41:15.203Z",
-        "lastUpdated": "2026-04-23T13:41:15.203Z"
+        "lastUpdated": "2026-04-30T13:34:33.319Z"
       },
       "lastFile": "/Users/jeonghakhur/work/person/rallify/app/api/clubs/[id]/join/route.ts"
     },
@@ -389,7 +406,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-04-23T13:44:25.971Z",
-        "lastUpdated": "2026-04-29T10:58:31.277Z"
+        "lastUpdated": "2026-04-30T13:34:08.369Z"
       },
       "lastFile": "/Users/jeonghakhur/work/person/rallify/app/clubs/[id]/manage/page.tsx"
     },
@@ -431,6 +448,19 @@
         "lastUpdated": "2026-04-29T11:37:50.488Z"
       },
       "lastFile": "/Users/jeonghakhur/work/person/rallify/components/admin/MemberEditDialog.tsx"
+    },
+    "club": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-04-30T13:33:15.888Z",
+        "lastUpdated": "2026-04-30T13:52:43.956Z"
+      },
+      "lastFile": "/Users/jeonghakhur/work/person/rallify/components/club/JoinApplicationDialog.tsx"
     }
   },
   "pipeline": {
@@ -441,7 +471,7 @@
   "session": {
     "startedAt": "2026-03-09T09:12:04.567Z",
     "onboardingCompleted": false,
-    "lastActivity": "2026-04-29T11:43:19.747Z"
+    "lastActivity": "2026-04-30T13:52:43.956Z"
   },
   "history": [
     {
@@ -1485,6 +1515,126 @@
     {
       "timestamp": "2026-04-29T11:43:19.747Z",
       "feature": "members",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-30T13:21:25.137Z",
+      "feature": "members",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-30T13:21:37.029Z",
+      "feature": "manage",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-30T13:21:59.960Z",
+      "feature": "manage",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-30T13:22:05.266Z",
+      "feature": "manage",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-30T13:22:08.522Z",
+      "feature": "manage",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-30T13:22:54.407Z",
+      "feature": "scripts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-30T13:32:30.538Z",
+      "feature": "service",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-30T13:32:38.056Z",
+      "feature": "service",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-30T13:32:42.212Z",
+      "feature": "members",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-30T13:32:55.743Z",
+      "feature": "join",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-30T13:33:15.888Z",
+      "feature": "club",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-30T13:33:22.981Z",
+      "feature": "[id]",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-30T13:33:29.211Z",
+      "feature": "[id]",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-30T13:33:37.015Z",
+      "feature": "[id]",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-30T13:33:47.056Z",
+      "feature": "[id]",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-30T13:33:53.692Z",
+      "feature": "manage",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-30T13:34:08.369Z",
+      "feature": "manage",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-30T13:34:28.781Z",
+      "feature": "join",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-30T13:34:33.319Z",
+      "feature": "join",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-04-30T13:52:43.956Z",
+      "feature": "club",
       "phase": "do",
       "action": "updated"
     }

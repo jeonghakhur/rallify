@@ -19,8 +19,18 @@ type Member = {
     username: string | null;
     image: string | null;
     email: string | null;
+    gender?: string | null;
+    phoneNumber?: string | null;
+    birthyear?: string | null;
   };
 };
+
+function calcAge(birthyear?: string | null): number | null {
+  if (!birthyear) return null;
+  const y = Number(birthyear);
+  if (!Number.isFinite(y) || y < 1900) return null;
+  return new Date().getFullYear() - y;
+}
 
 type ClubDetail = {
   id: string;
@@ -53,31 +63,23 @@ export default function ClubManagePage({
   const isAdmin =
     isOwner || myRole === 'MANAGER' || user?.role === 'SUPER_ADMIN';
 
-  // Fetch members by status
+  // Fetch members by status (admin-only endpoint)
   const { data: pendingMembers } = useSWR<Member[]>(
-    isAdmin ? `/api/clubs/${id}?_members=pending` : null,
-    async () => {
-      const res = await fetch(`/api/clubs/${id}`);
-      const data = await res.json();
-      return data.members?.filter((m: Member) => m.status === 'PENDING') ?? [];
-    }
+    isAdmin ? `/api/clubs/${id}/members?status=PENDING` : null
+  );
+  const { data: invitedMembers = [] } = useSWR<Member[]>(
+    isAdmin ? `/api/clubs/${id}/members?status=INVITED` : null
+  );
+  const { data: activeMembers = [] } = useSWR<Member[]>(
+    isAdmin ? `/api/clubs/${id}/members?status=ACTIVE` : null
   );
 
-  const fetchAllMembers = async () => {
-    const res = await fetch(`/api/clubs/${id}`);
-    const data = await res.json();
-    return data;
+  const refreshMembers = () => {
+    mutate(`/api/clubs/${id}/members?status=PENDING`);
+    mutate(`/api/clubs/${id}/members?status=INVITED`);
+    mutate(`/api/clubs/${id}/members?status=ACTIVE`);
+    mutate(`/api/clubs/${id}`);
   };
-
-  const { data: fullClub } = useSWR(
-    isAdmin ? `club-manage-${id}` : null,
-    fetchAllMembers
-  );
-  const allMembers: Member[] = fullClub?.members ?? [];
-  const invitedMembers = allMembers.filter(
-    (m: Member) => m.status === 'INVITED'
-  );
-  const activeMembers = allMembers.filter((m: Member) => m.status === 'ACTIVE');
 
   const handleApprove = async (memberId: string) => {
     await fetch(`/api/clubs/${id}/members/${memberId}`, {
@@ -85,8 +87,7 @@ export default function ClubManagePage({
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ status: 'ACTIVE' }),
     });
-    mutate(`club-manage-${id}`);
-    mutate(`/api/clubs/${id}`);
+    refreshMembers();
   };
 
   const handleReject = async (memberId: string) => {
@@ -99,7 +100,7 @@ export default function ClubManagePage({
         statusReason: reason || undefined,
       }),
     });
-    mutate(`club-manage-${id}`);
+    refreshMembers();
   };
 
   const handleRemove = async (memberId: string) => {
@@ -115,8 +116,7 @@ export default function ClubManagePage({
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ reason: '관리자에 의한 강퇴' }),
     });
-    mutate(`club-manage-${id}`);
-    mutate(`/api/clubs/${id}`);
+    refreshMembers();
   };
 
   const handleRoleChange = async (memberId: string, currentRole: string) => {
@@ -132,8 +132,7 @@ export default function ClubManagePage({
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ role: newRole }),
     });
-    mutate(`club-manage-${id}`);
-    mutate(`/api/clubs/${id}`);
+    refreshMembers();
   };
 
   const handleSearch = async () => {
@@ -157,7 +156,7 @@ export default function ClubManagePage({
       return;
     }
     setSearchResults((prev) => prev.filter((u) => u.id !== userId));
-    mutate(`club-manage-${id}`);
+    refreshMembers();
   };
 
   const handleDeleteClub = async () => {
@@ -215,36 +214,57 @@ export default function ClubManagePage({
               대기 중인 가입 신청이 없습니다.
             </p>
           ) : (
-            pendingMembers.map((m) => (
-              <div
-                key={m.id}
-                className="flex items-center justify-between p-3 bg-white border rounded-lg"
-              >
-                <div>
-                  <span className="font-medium text-sm">{m.user.name}</span>
-                  <span className="text-xs text-gray-400 ml-2">
-                    {m.user.email}
-                  </span>
+            pendingMembers.map((m) => {
+              const age = calcAge(m.user.birthyear);
+              return (
+                <div
+                  key={m.id}
+                  className="p-3 bg-white border rounded-lg space-y-2"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="font-medium text-sm">
+                          {m.user.name}
+                        </span>
+                        {m.user.gender && (
+                          <span className="text-xs text-gray-500">
+                            {m.user.gender}
+                          </span>
+                        )}
+                        {m.user.birthyear && (
+                          <span className="text-xs text-gray-500">
+                            {m.user.birthyear}
+                            {age !== null && ` (만 ${age}세)`}
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-xs text-gray-400 mt-0.5 truncate">
+                        {m.user.email}
+                        {m.user.phoneNumber && ` · ${m.user.phoneNumber}`}
+                      </p>
+                    </div>
+                    <div className="flex gap-2 shrink-0">
+                      <Button size="sm" onClick={() => handleApprove(m.id)}>
+                        승인
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleReject(m.id)}
+                      >
+                        거절
+                      </Button>
+                    </div>
+                  </div>
                   {m.introduction && (
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className="text-sm text-gray-600 bg-gray-50 rounded p-2 whitespace-pre-line">
                       {m.introduction}
                     </p>
                   )}
                 </div>
-                <div className="flex gap-2">
-                  <Button size="sm" onClick={() => handleApprove(m.id)}>
-                    승인
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => handleReject(m.id)}
-                  >
-                    거절
-                  </Button>
-                </div>
-              </div>
-            ))
+              );
+            })
           )}
         </div>
       )}

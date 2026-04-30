@@ -7,6 +7,7 @@ import useSWR, { mutate } from 'swr';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { useState } from 'react';
+import JoinApplicationDialog from '@/components/club/JoinApplicationDialog';
 
 type ClubMember = {
   id: string;
@@ -54,28 +55,9 @@ export default function ClubDetailPage({
   const { id } = use(params);
   const { isLoading: authLoading } = useAuthRedirect();
   const { data: club, isLoading } = useSWR<ClubDetail>(`/api/clubs/${id}`);
-  const { confirm, alert } = useDialog();
-  const [joining, setJoining] = useState(false);
+  const { confirm } = useDialog();
+  const [joinDialogOpen, setJoinDialogOpen] = useState(false);
   const [responding, setResponding] = useState(false);
-
-  const handleJoin = async () => {
-    setJoining(true);
-    try {
-      const res = await fetch(`/api/clubs/${id}/join`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({}),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        await alert({ title: '가입 신청 실패', description: data.error });
-        return;
-      }
-      mutate(`/api/clubs/${id}`);
-    } finally {
-      setJoining(false);
-    }
-  };
 
   const handleRespond = async (accept: boolean) => {
     if (!club?.myMembership) return;
@@ -156,8 +138,8 @@ export default function ClubDetailPage({
         {/* 액션 버튼 */}
         <div className="mt-4 pt-4 border-t border-gray-100">
           {!club.myMembership && (
-            <Button onClick={handleJoin} disabled={joining} className="w-full">
-              {joining ? '처리 중...' : '가입 신청'}
+            <Button onClick={() => setJoinDialogOpen(true)} className="w-full">
+              가입 신청
             </Button>
           )}
           {myStatus === 'PENDING' && (
@@ -230,6 +212,14 @@ export default function ClubDetailPage({
           ))}
         </div>
       </div>
+
+      <JoinApplicationDialog
+        clubId={id}
+        clubName={club.name}
+        open={joinDialogOpen}
+        onClose={() => setJoinDialogOpen(false)}
+        onSuccess={() => mutate(`/api/clubs/${id}`)}
+      />
     </main>
   );
 }
