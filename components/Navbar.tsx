@@ -115,19 +115,34 @@ export default function NavBar() {
               </>
             )}
             {role === 'SUPER_ADMIN' && (
-              <li>
-                <Link
-                  href="/admin/members"
-                  className={
-                    'relative pb-0.5 ' +
-                    (pathname.startsWith('/admin/members')
-                      ? 'border-b-2 border-blue-600 transition-all duration-300 ease-in-out'
-                      : 'border-b-2 border-transparent transition-all duration-300 ease-in-out')
-                  }
-                >
-                  회원관리
-                </Link>
-              </li>
+              <>
+                <li>
+                  <Link
+                    href="/admin/members"
+                    className={
+                      'relative pb-0.5 ' +
+                      (pathname.startsWith('/admin/members')
+                        ? 'border-b-2 border-blue-600 transition-all duration-300 ease-in-out'
+                        : 'border-b-2 border-transparent transition-all duration-300 ease-in-out')
+                    }
+                  >
+                    회원관리
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    href="/admin/club-applications"
+                    className={
+                      'relative pb-0.5 ' +
+                      (pathname.startsWith('/admin/club-applications')
+                        ? 'border-b-2 border-blue-600 transition-all duration-300 ease-in-out'
+                        : 'border-b-2 border-transparent transition-all duration-300 ease-in-out')
+                    }
+                  >
+                    클럽신청
+                  </Link>
+                </li>
+              </>
             )}
           </ul>
           {!isSignin && (
