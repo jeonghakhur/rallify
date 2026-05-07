@@ -128,20 +128,11 @@ export default function User() {
 
   return (
     <div>
-      <div className="flex justify-between items-center gap-2 px-4 my-4">
-        <Button
-          type="button"
-          variant="outline"
-          onClick={() => signOut({ callbackUrl: '/' })}
-        >
-          로그아웃
-        </Button>
-        <div className="flex items-center gap-2">
-          {isClient && (
-            <Switch checked={largeFont} onCheckedChange={setLargeFont} />
-          )}
-          <span className="text-xm">큰글씨보기</span>
-        </div>
+      <div className="flex justify-end items-center gap-2 px-4 my-4">
+        {isClient && (
+          <Switch checked={largeFont} onCheckedChange={setLargeFont} />
+        )}
+        <span className="text-xm">큰글씨보기</span>
       </div>
       {isLoading && <LoadingGrid loading={loading} />}
       {!isLoading && (

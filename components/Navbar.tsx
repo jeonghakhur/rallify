@@ -1,8 +1,9 @@
 'use client';
 
-import { useSession, signIn } from 'next-auth/react';
+import { useSession, signIn, signOut } from 'next-auth/react';
 import { Button } from './ui/button';
-import { usePathname } from 'next/navigation';
+import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
+import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
@@ -10,11 +11,13 @@ import { useState, useEffect } from 'react';
 export default function NavBar() {
   const { data: session, status } = useSession();
   const pathname = usePathname() || '';
+  const router = useRouter();
   const isSignin = pathname?.includes('/auth/signin');
 
   const user = session?.user;
   const role = user?.role || 'PENDING';
   const [largeFont, setLargeFont] = useState<null | boolean>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   // 마운트 후 localStorage에서 값 동기화
   useEffect(() => {
@@ -148,18 +151,50 @@ export default function NavBar() {
           {!isSignin && (
             <div className="ml-auto">
               {user ? (
-                <div className="flex items-center">
-                  <Link href="/user">
-                    <Image
-                      src={user.image ?? '/default_profile.png'}
-                      width={36}
-                      height={36}
-                      alt={`${user.name} profile image`}
-                      className="rounded-full"
-                      priority
-                    />
-                  </Link>
-                </div>
+                <Popover open={menuOpen} onOpenChange={setMenuOpen}>
+                  <PopoverTrigger asChild>
+                    <button
+                      type="button"
+                      aria-label="사용자 메뉴"
+                      className="rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                    >
+                      <Image
+                        src={user.image ?? '/default_profile.png'}
+                        width={36}
+                        height={36}
+                        alt={`${user.name} profile image`}
+                        className="rounded-full"
+                        priority
+                      />
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent
+                    align="end"
+                    sideOffset={8}
+                    className="w-40 p-1"
+                  >
+                    <button
+                      type="button"
+                      className="w-full text-left px-3 py-2 text-sm rounded hover:bg-gray-100"
+                      onClick={() => {
+                        setMenuOpen(false);
+                        router.push('/user');
+                      }}
+                    >
+                      프로필 보기
+                    </button>
+                    <button
+                      type="button"
+                      className="w-full text-left px-3 py-2 text-sm rounded hover:bg-gray-100 text-red-600"
+                      onClick={() => {
+                        setMenuOpen(false);
+                        signOut({ callbackUrl: '/' });
+                      }}
+                    >
+                      로그아웃
+                    </button>
+                  </PopoverContent>
+                </Popover>
               ) : (
                 <Button type="button" variant="link" onClick={() => signIn()}>
                   로그인
