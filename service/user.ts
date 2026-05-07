@@ -128,6 +128,36 @@ export async function getUserByEmail(email: string) {
   });
 }
 
+type UpdatableUserField =
+  | 'name'
+  | 'image'
+  | 'gender'
+  | 'phoneNumber'
+  | 'birthday'
+  | 'birthyear'
+  | 'address'
+  | 'level'
+  | 'role';
+
+const UPDATABLE_USER_FIELDS = [
+  'name',
+  'image',
+  'gender',
+  'phoneNumber',
+  'birthday',
+  'birthyear',
+  'address',
+  'level',
+  'role',
+] as const satisfies readonly UpdatableUserField[];
+
+const ENCRYPTED_USER_FIELDS = new Set<UpdatableUserField>([
+  'phoneNumber',
+  'birthday',
+  'birthyear',
+  'address',
+]);
+
 export async function updateUserById(
   id: string,
   updatedData: Partial<{
@@ -142,19 +172,18 @@ export async function updateUserById(
     role: string;
   }>
 ) {
-  const { phoneNumber, birthday, birthyear, address, ...rest } = updatedData;
-  const encryptedData = {
-    ...rest,
-    ...(phoneNumber !== undefined && {
-      phoneNumber: encryptField(phoneNumber),
-    }),
-    ...(birthday !== undefined && { birthday: encryptField(birthday) }),
-    ...(birthyear !== undefined && { birthyear: encryptField(birthyear) }),
-    ...(address !== undefined && { address: encryptField(address) }),
-  };
+  // 알려진 필드만 통과시키고, 민감 필드는 암호화. Prisma 가 모르는 키(snake_case 등) 차단.
+  const data: Record<string, unknown> = {};
+  for (const key of UPDATABLE_USER_FIELDS) {
+    const value = (updatedData as Record<string, unknown>)[key];
+    if (value === undefined) continue;
+    data[key] = ENCRYPTED_USER_FIELDS.has(key)
+      ? encryptField(value as string | null)
+      : value;
+  }
   return prisma.user.update({
     where: { id },
-    data: encryptedData,
+    data,
   });
 }
 
