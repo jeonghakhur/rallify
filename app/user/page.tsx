@@ -2,7 +2,6 @@
 
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { SimpleUserProps } from '@/model/user';
 import { Button } from '@/components/ui/button';
 import { useEffect, useState } from 'react';
 import { useForm, Controller } from 'react-hook-form';
@@ -19,10 +18,23 @@ import LoadingGrid from '@/components/LoadingGrid';
 import { toast } from '@/hooks/use-toast';
 import { Switch } from '@/components/ui/switch';
 
+// API(/api/me) 응답·요청은 Prisma 스키마와 동일한 camelCase 필드명을 사용한다.
+// 과거 SimpleUserProps(snake_case)와의 불일치로 phone_number 가 저장되지 않던 버그가 있어,
+// 폼 데이터 타입을 페이지 내부에서 직접 정의한다.
+type ProfileForm = {
+  name: string;
+  gender: string;
+  phoneNumber: string | null;
+  birthyear: string | null;
+  address: string | null;
+};
+
+type ProfileApiResponse = ProfileForm & { email?: string };
+
 export default function User() {
   const { data: session, status } = useSession();
-  const { data, isLoading, error } = useSWR<SimpleUserProps>('/api/me');
-  const { control, register, handleSubmit, reset } = useForm<SimpleUserProps>();
+  const { data, isLoading, error } = useSWR<ProfileApiResponse>('/api/me');
+  const { control, register, handleSubmit, reset } = useForm<ProfileForm>();
   const [loading, setLoading] = useState<boolean>(isLoading);
   const [largeFont, setLargeFont] = useState(false);
   const [isClient, setIsClient] = useState(false);
@@ -54,26 +66,38 @@ export default function User() {
     }
   }, [status, error]);
 
-  async function updateUser(updateData: SimpleUserProps) {
-    return fetch('/api/me', {
+  async function updateUser(updateData: ProfileForm) {
+    const res = await fetch('/api/me', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(updateData),
-    }).then((res) => res.json());
+    });
+    const json = await res.json().catch(() => ({}));
+    if (!res.ok) {
+      throw new Error(json.error ?? '업데이트에 실패했습니다.');
+    }
+    return json;
   }
 
-  function onSubmit(formData: SimpleUserProps) {
+  function onSubmit(formData: ProfileForm) {
     setLoading(true);
     updateUser(formData)
-      .then((data) => {
-        console.log(data);
-      })
-      .catch((error) => console.error(error))
-      .finally(() => {
+      .then(() => {
         toast({
           title: '사용자 정보가 업데이트 되었습니다',
           duration: 1500,
         });
+      })
+      .catch((err) => {
+        console.error(err);
+        toast({
+          title: '업데이트 실패',
+          description: err instanceof Error ? err.message : '알 수 없는 오류',
+          variant: 'destructive',
+          duration: 2000,
+        });
+      })
+      .finally(() => {
         setLoading(false);
       });
   }
@@ -92,11 +116,11 @@ export default function User() {
   useEffect(() => {
     if (data) {
       reset({
-        name: data.name,
-        gender: data.gender,
-        birthyear: data.birthyear,
-        phone_number: data.phone_number,
-        address: data.address,
+        name: data.name ?? '',
+        gender: data.gender ?? '',
+        birthyear: data.birthyear ?? '',
+        phoneNumber: data.phoneNumber ?? '',
+        address: data.address ?? '',
       });
       setLoading(false);
     }
@@ -161,7 +185,7 @@ export default function User() {
               <Label>핸드폰 번호</Label>
               <Input
                 type="text"
-                {...register('phone_number')}
+                {...register('phoneNumber')}
                 placeholder="숫자만 입력해주세요."
               />
             </div>
