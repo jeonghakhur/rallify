@@ -280,7 +280,10 @@ const TennisMatchScheduler: React.FC<MatchSchedulerProps> = ({
     if (game && game.games && game.games.length > 0) {
       setMatches(game.games);
 
-      setScheduleStatus(game.status);
+      // game.status는 GameResult 자체 상태('wait' 등)라 스케줄 상태와 다름
+      if (game.scheduleStatus) {
+        setScheduleStatus(game.scheduleStatus);
+      }
       calculateIdleSummary(game.games);
       calculateGamesPlayed(game.games);
     } else {

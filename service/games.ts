@@ -126,10 +126,12 @@ export async function getAllGames(
   startDate?: string | null,
   endDate?: string | null
 ) {
+  // status는 콤마로 구분된 복수 값 허용 (예: "done,playing")
+  const statuses = status?.split(',').filter(Boolean) ?? [];
   const results = await prisma.gameResult.findMany({
     where: {
       schedule: {
-        ...(status ? { status } : {}),
+        ...(statuses.length > 0 ? { status: { in: statuses } } : {}),
         ...(startDate && endDate
           ? { date: { gte: startDate, lte: endDate } }
           : {}),

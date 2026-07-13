@@ -30,11 +30,12 @@ interface Game {
     score: string[];
   }[];
   comments?: GameComment[];
+  scheduleStatus?: string;
 }
 
 export default function Home() {
   const { isLoading } = useAuthRedirect('/', 0);
-  const { data: games } = useSWR<Game[]>('/api/games?status=done', {
+  const { data: games } = useSWR<Game[]>('/api/games?status=done,playing', {
     revalidateOnFocus: true,
     revalidateOnMount: true,
     dedupingInterval: 0,
@@ -232,8 +233,13 @@ export default function Home() {
             >
               <div className="flex justify-between items-start mb-4">
                 <div>
-                  <h2 className="text-xl font-bold text-gray-800">
+                  <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
                     {game.courtName}
+                    {game.scheduleStatus === 'playing' && (
+                      <span className="text-xs font-semibold text-green-700 bg-green-100 rounded-full px-2 py-0.5">
+                        진행중
+                      </span>
+                    )}
                   </h2>
                   <p className="text-gray-600">
                     {format(new Date(date), 'yyyy년 MM월 dd일 (EEE)', {

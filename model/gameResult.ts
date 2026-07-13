@@ -42,6 +42,13 @@ export interface GameResult {
     | 'shared'
     | 'playing'
     | 'done';
+  scheduleStatus?:
+    | 'pending'
+    | 'attendees'
+    | 'matchmaking'
+    | 'shared'
+    | 'playing'
+    | 'done';
   comments?: GameComment[]; // 코멘트 목록
   editHistory?: Editor[];
   lastEditor?: {
