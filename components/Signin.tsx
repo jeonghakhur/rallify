@@ -1,6 +1,6 @@
 'use client';
 
-import { ClientSafeProvider, signIn } from 'next-auth/react';
+import { signIn } from 'next-auth/react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -8,7 +8,7 @@ import { useState } from 'react';
 import { Button } from './ui/button';
 
 type Props = {
-  providers: Record<string, ClientSafeProvider>;
+  providers: Record<string, { id: string; name: string }>;
   callbackUrl: string;
 };
 

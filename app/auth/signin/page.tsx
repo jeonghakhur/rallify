@@ -1,7 +1,6 @@
 import SignIn from '@/components/Signin';
 import { authOptions } from '@/lib/auth';
 import { getServerSession } from 'next-auth';
-import { getProviders } from 'next-auth/react';
 import { redirect } from 'next/navigation';
 
 interface Props {
@@ -17,7 +16,11 @@ export default async function SignPage({ searchParams }: Props) {
     redirect('/');
   }
 
-  const providers = (await getProviders()) ?? {};
+  // getProviders()는 NEXTAUTH_URL로 HTTP 자기 호출을 해서 배포 환경 설정에 따라
+  // 빈 값이 될 수 있으므로 authOptions에서 직접 목록을 만든다
+  const providers = Object.fromEntries(
+    authOptions.providers.map((p) => [p.id, { id: p.id, name: p.name }])
+  );
 
   return (
     <section className="flex flex-col w-[300px] mt-10 mx-auto">
