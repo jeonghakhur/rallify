@@ -65,13 +65,13 @@ export async function createSchedule(
 
   return prisma.schedule.create({
     data: {
-      date,
+      date: date.toISOString(),
       startTime,
       endTime,
       courtName,
       courtCount,
       status: status || 'pending',
-      authorId: userId || undefined,
+      authorId: userId || null,
       courtNumbers: {
         create: (courtNumbers || []).map((cn) => ({
           number: cn.number,
@@ -106,7 +106,7 @@ export async function updateSchedule(
     return tx.schedule.update({
       where: { id: scheduleId },
       data: {
-        ...(rest.date && { date: rest.date }),
+        ...(rest.date && { date: rest.date.toISOString() }),
         ...(rest.startTime && { startTime: rest.startTime }),
         ...(rest.endTime && { endTime: rest.endTime }),
         ...(rest.courtName && { courtName: rest.courtName }),
@@ -145,7 +145,7 @@ export async function addAttendance(
   return prisma.attendee.create({
     data: {
       scheduleId,
-      userId: userId || undefined,
+      userId: userId || null,
       name: data.name,
       gender: data.gender,
       startHour: data.startHour,

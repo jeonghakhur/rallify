@@ -14,13 +14,10 @@ export async function POST(req: NextRequest) {
 
     const game = await getGame(scheduleId);
 
-    if (game) {
-      return updateGameResult(game._id, matches, undefined, {
-        _ref: user.id,
-        name: user.name,
-        username: user.userName,
-        image: user.image,
-      }).then((data) => NextResponse.json(data));
+    if (game?.id) {
+      return updateGameResult(game.id, matches, undefined, user.id).then(
+        (data) => NextResponse.json(data)
+      );
     } else {
       return createGameResult(scheduleId, user.id, matches).then((data) =>
         NextResponse.json(data)

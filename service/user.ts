@@ -56,14 +56,14 @@ export async function addUser({
       id,
       email,
       name,
-      image,
+      image: image ?? null,
       username,
       provider,
       level: level ?? 1,
-      gender,
-      phoneNumber: phone_number,
-      birthday,
-      birthyear,
+      gender: gender ?? null,
+      phoneNumber: phone_number ?? null,
+      birthday: birthday ?? null,
+      birthyear: birthyear ?? null,
     },
     update: {},
   });
@@ -81,7 +81,7 @@ export async function createEmailUser(data: {
       password: data.password,
       name: data.name,
       gender: data.gender,
-      username: data.email.split('@')[0],
+      username: data.email.split('@')[0] ?? data.email,
       provider: 'email',
       level: 0,
       role: 'PENDING',
@@ -189,14 +189,16 @@ export async function updateUserById(
 
 export async function searchUsers(keyword?: string) {
   const users = await prisma.user.findMany({
-    where: keyword
+    ...(keyword
       ? {
-          OR: [
-            { name: { contains: keyword, mode: 'insensitive' } },
-            { username: { contains: keyword, mode: 'insensitive' } },
-          ],
+          where: {
+            OR: [
+              { name: { contains: keyword, mode: 'insensitive' as const } },
+              { username: { contains: keyword, mode: 'insensitive' as const } },
+            ],
+          },
         }
-      : undefined,
+      : {}),
     select: {
       id: true,
       image: true,

@@ -98,7 +98,7 @@ test.describe('회원가입 및 로그인 테스트', () => {
 
   // 5. PENDING 사용자 로그인 차단 확인
   test('PENDING 계정 로그인 시 PENDING_APPROVAL 에러', async ({ page }) => {
-    const account = TEST_ACCOUNTS[0];
+    const account = TEST_ACCOUNTS[0]!;
 
     await page.goto(`${BASE_URL}/auth/signin`);
     await page.fill('input[type="email"]', account.email);

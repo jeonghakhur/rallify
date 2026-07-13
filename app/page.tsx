@@ -43,7 +43,7 @@ export default function Home() {
   // 일정 데이터 불러오기
   const { data: schedules } = useSWR<GetScheduleProps[]>('/api/schedule');
   // UTC 날짜 문자열을 로컬 날짜 문자열로 정규화 (timezone 오차 방지)
-  const toLocalDateStr = (dateStr: string) => {
+  const toLocalDateStr = (dateStr: string | Date) => {
     const d = new Date(dateStr);
     return new Date(d.getFullYear(), d.getMonth(), d.getDate()).toDateString();
   };

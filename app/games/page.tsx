@@ -34,7 +34,7 @@ interface Game {
 }
 
 export default function Home() {
-  const { isLoading } = useAuthRedirect('/', 0);
+  const { isLoading } = useAuthRedirect('/');
   const { data: games } = useSWR<Game[]>('/api/games?status=done,playing', {
     revalidateOnFocus: true,
     revalidateOnMount: true,

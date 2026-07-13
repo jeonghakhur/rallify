@@ -243,7 +243,7 @@ function StatsTableContent({ stats }: { stats: PlayerStats[] }) {
 export default function StatsTable() {
   // 가입된 회원 목록 불러오기
   const { data: members } = useSWR<UserProps[]>('/api/members');
-  const { user } = useAuthRedirect('/', 0);
+  const { user } = useAuthRedirect('/');
   const isAdmin = user && user.level > 3;
 
   // 시작일/종료일 상태 관리

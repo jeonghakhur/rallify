@@ -68,7 +68,11 @@ export default function SignIn({ providers, callbackUrl }: Props) {
       });
 
       if (result?.error) {
-        setLoginError(errorMessages[result.error] ?? errorMessages.DEFAULT);
+        setLoginError(
+          errorMessages[result.error] ??
+            errorMessages.DEFAULT ??
+            '알 수 없는 에러가 발생했습니다.'
+        );
       } else {
         router.push(callbackUrl);
         router.refresh();

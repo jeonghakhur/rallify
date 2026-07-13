@@ -36,7 +36,7 @@ export default function ScheduleForm() {
   const { postSchedule } = useSchedule();
 
   // 사용자 권한 확인
-  const { user } = useAuthRedirect('/', 0);
+  const { user } = useAuthRedirect('/');
 
   useEffect(() => {
     console.log('👤 스케줄 생성 페이지 - 사용자 정보:', {

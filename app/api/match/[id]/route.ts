@@ -9,9 +9,14 @@ export async function POST(req: NextRequest) {
 
     const game = await getGame(scheduleId);
 
-    if (game) {
+    if (game?.id) {
       // 기존 게임이 있어도 status가 전송되었다면 업데이트
-      const gameResult = await updateGameResult(game._id, matches);
+      const gameResult = await updateGameResult(
+        game.id,
+        matches,
+        undefined,
+        user.id
+      );
       if (status) {
         await updateScheduleStatus(scheduleId, status);
       }

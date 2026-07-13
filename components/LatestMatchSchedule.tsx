@@ -1,12 +1,25 @@
 'use client';
 
 import MatchPrintPageContent from '@/components/MatchPrintPageContent';
-import { getSchedule } from '@/service/schedule';
 
 // import useGame from '@/hooks/useGames';
 import Skeleton from './common/Skeleton';
 import useSWR from 'swr';
 import { GameResult } from '@/model/gameResult';
+
+type ScheduleData = {
+  attendees: {
+    id: string;
+    name: string;
+    gender: string;
+    userId: string | null;
+    startHour: string;
+    startMinute: string;
+    endHour: string;
+    endMinute: string;
+  }[];
+  courtNumbers: { number: string }[];
+};
 
 export default function LatestMatchSchedule() {
   const {
@@ -22,9 +35,8 @@ export default function LatestMatchSchedule() {
   // } = useGame('89xezVoxyX62cPX9RogpU8');
 
   // schedule 정보 fetch (attendees, courtNumbers 등)
-  const { data: schedule, isLoading: scheduleLoading } = useSWR(
+  const { data: schedule, isLoading: scheduleLoading } = useSWR<ScheduleData>(
     gameResult?.scheduleID ? `/api/schedule/${gameResult.scheduleID}` : null,
-    () => (gameResult ? getSchedule(gameResult.scheduleID) : undefined),
     { revalidateOnFocus: false }
   );
 
@@ -47,7 +59,7 @@ export default function LatestMatchSchedule() {
     );
   }
 
-  if (!gameResult) return null;
+  if (!gameResult || !schedule) return null;
 
   return (
     <div>
@@ -58,7 +70,11 @@ export default function LatestMatchSchedule() {
         matchData={{
           games: gameResult.games,
           courtNumbers: schedule.courtNumbers,
-          attendees: schedule.attendees,
+          attendees: schedule.attendees.map((a) => ({
+            ...a,
+            _key: a.id,
+            userId: a.userId ?? '',
+          })),
           courtName: gameResult.courtName,
           date: typeof gameResult.date === 'string' ? gameResult.date : '',
         }}

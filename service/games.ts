@@ -28,12 +28,12 @@ function formatGameResult(
       id: string;
       text: string;
       createdAt: Date;
-      authorId: string;
+      authorId: string | null;
       author: {
         name: string | null;
         username: string | null;
         image: string | null;
-      };
+      } | null;
     }[];
   }
 ) {
@@ -220,7 +220,7 @@ export async function removeCommentFromGameResult(
 
 export async function getLatestGameByStatus(status?: string | null) {
   const gr = await prisma.gameResult.findFirst({
-    where: status ? { schedule: { status } } : undefined,
+    ...(status ? { where: { schedule: { status } } } : {}),
     orderBy: { schedule: { date: 'desc' } },
     include: gameResultInclude,
   });

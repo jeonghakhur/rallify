@@ -51,7 +51,7 @@ export default function Page({ params }: Props) {
   const { confirm, alert } = useDialog();
 
   // 사용자 인증 정보 가져오기
-  const { user } = useAuthRedirect('/', 0);
+  const { user } = useAuthRedirect('/');
 
   // 수정 가능 여부 확인 (레벨 3 이상)
   const canEdit = typeof user?.level === 'number' && user.level >= 3;

@@ -19,7 +19,7 @@ import {
 import { CalendarPlus, SlidersHorizontal } from 'lucide-react';
 
 export default function ScheduleList() {
-  const { user } = useAuthRedirect('/', 0);
+  const { user } = useAuthRedirect('/');
   const { data: schedules, error } = useSWR<GetScheduleProps[]>(
     '/api/schedule',
     {

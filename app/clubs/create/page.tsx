@@ -84,7 +84,7 @@ export default function CreateClubPage() {
 
   const fillTestData = () => {
     const data = testData[Math.floor(Math.random() * testData.length)];
-    setForm(data);
+    if (data) setForm(data);
   };
 
   if (authLoading) return null;
