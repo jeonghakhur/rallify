@@ -1,5 +1,4 @@
 import { getAllMembers } from '@/service/user';
-import { withSessionUser } from '@/util/session';
 import { NextResponse } from 'next/server';
 
 export async function GET() {
