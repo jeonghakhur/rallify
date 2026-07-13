@@ -1,6 +1,6 @@
 {
-  "name": "React Tennis Club",
-  "short_name": "리액트테니스클럽",
+  "name": "rallify-tennis",
+  "short_name": "rallify-tennis",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",

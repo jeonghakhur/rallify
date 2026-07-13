@@ -13,8 +13,8 @@ const notoSans = Noto_Sans({
 });
 
 export const metadata: Metadata = {
-  title: 'React Tennis Club',
-  description: '리액트 테니스 클럽에 오신것을 환영합니다.',
+  title: 'rallify-tennis',
+  description: 'rallify-tennis에 오신것을 환영합니다.',
   icons: {
     icon: '/icons/favicon-32x32.png', // 기본 파비콘
     shortcut: '/icons/favicon.ico', // 브라우저 기본 favicon
