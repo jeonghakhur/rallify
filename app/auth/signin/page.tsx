@@ -22,9 +22,16 @@ export default async function SignPage({ searchParams }: Props) {
     authOptions.providers.map((p) => [p.id, { id: p.id, name: p.name }])
   );
 
+  // 프로덕션에서는 소셜 로그인만 노출
+  const showEmailLogin = process.env.NODE_ENV !== 'production';
+
   return (
     <section className="flex flex-col w-[300px] mt-10 mx-auto">
-      <SignIn providers={providers} callbackUrl={callbackUrl} />
+      <SignIn
+        providers={providers}
+        callbackUrl={callbackUrl}
+        showEmailLogin={showEmailLogin}
+      />
     </section>
   );
 }

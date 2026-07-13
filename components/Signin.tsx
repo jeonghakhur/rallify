@@ -10,6 +10,7 @@ import { Button } from './ui/button';
 type Props = {
   providers: Record<string, { id: string; name: string }>;
   callbackUrl: string;
+  showEmailLogin?: boolean;
 };
 
 const errorMessages: Record<string, string> = {
@@ -42,7 +43,11 @@ const providerLogoExt: Record<string, string> = {
   google: 'svg',
 };
 
-export default function SignIn({ providers, callbackUrl }: Props) {
+export default function SignIn({
+  providers,
+  callbackUrl,
+  showEmailLogin = true,
+}: Props) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const errorCode = searchParams?.get('error');
@@ -95,34 +100,38 @@ export default function SignIn({ providers, callbackUrl }: Props) {
         </div>
       )}
 
-      {/* 이메일 로그인 폼 */}
-      <form onSubmit={handleEmailLogin} className="flex flex-col gap-2">
-        <input
-          type="email"
-          required
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="이메일"
-          className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        <input
-          type="password"
-          required
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="패스워드"
-          className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-        <Button
-          type="submit"
-          className="w-full h-[50px] rounded-xl text-base"
-          disabled={loading}
-        >
-          {loading ? '로그인 중...' : '이메일로 로그인'}
-        </Button>
-      </form>
+      {/* 이메일 로그인 폼 (프로덕션에서는 미노출) */}
+      {showEmailLogin && (
+        <>
+          <form onSubmit={handleEmailLogin} className="flex flex-col gap-2">
+            <input
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="이메일"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <input
+              type="password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="패스워드"
+              className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <Button
+              type="submit"
+              className="w-full h-[50px] rounded-xl text-base"
+              disabled={loading}
+            >
+              {loading ? '로그인 중...' : '이메일로 로그인'}
+            </Button>
+          </form>
 
-      <div className="text-center text-xs text-gray-400 my-1">또는</div>
+          <div className="text-center text-xs text-gray-400 my-1">또는</div>
+        </>
+      )}
 
       {/* 소셜 로그인 버튼 */}
       {Object.values(providers)
@@ -149,14 +158,16 @@ export default function SignIn({ providers, callbackUrl }: Props) {
           );
         })}
 
-      <div className="mt-2 pt-3 border-t border-gray-200 text-center">
-        <Link
-          href="/auth/signup"
-          className="text-sm text-gray-500 hover:text-gray-700 underline underline-offset-2"
-        >
-          이메일로 가입하기
-        </Link>
-      </div>
+      {showEmailLogin && (
+        <div className="mt-2 pt-3 border-t border-gray-200 text-center">
+          <Link
+            href="/auth/signup"
+            className="text-sm text-gray-500 hover:text-gray-700 underline underline-offset-2"
+          >
+            이메일로 가입하기
+          </Link>
+        </div>
+      )}
     </div>
   );
 }
