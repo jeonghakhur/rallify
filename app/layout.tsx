@@ -3,10 +3,12 @@ import { Noto_Sans } from 'next/font/google';
 import { Toaster } from '@/components/ui/toaster';
 import './globals.css';
 import AuthContext from '@/context/AuthContext';
+import ThemeContext from '@/context/ThemeContext';
 import SWRConfigContext from '@/context/SWRConfigContext';
 import clsx from 'clsx';
 import NavBar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import TabBar from '@/components/TabBar';
 import { DialogProvider } from '@/hooks/useDialog';
 
 const notoSans = Noto_Sans({
@@ -37,18 +39,21 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko">
+    <html lang="ko" suppressHydrationWarning>
       <body className={clsx(notoSans.className)}>
-        <AuthContext>
-          <SWRConfigContext>
-            <DialogProvider>
-              <NavBar />
-              {children}
-              <Footer />
-              <Toaster />
-            </DialogProvider>
-          </SWRConfigContext>
-        </AuthContext>
+        <ThemeContext>
+          <AuthContext>
+            <SWRConfigContext>
+              <DialogProvider>
+                <NavBar />
+                <main className="pb-20">{children}</main>
+                <Footer />
+                <TabBar />
+                <Toaster />
+              </DialogProvider>
+            </SWRConfigContext>
+          </AuthContext>
+        </ThemeContext>
       </body>
     </html>
   );

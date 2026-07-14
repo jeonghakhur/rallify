@@ -19,7 +19,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 
 interface Game {
-  _id: string;
+  id: string;
   scheduleID: string;
   courtName: string;
   date: string;
@@ -110,7 +110,7 @@ export default function Home() {
   const periodUI = (
     <>
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold text-gray-800">게임결과</h1>
+        <h1 className="text-2xl font-bold text-foreground">게임결과</h1>
         <SlidersHorizontal
           className="ml-3 cursor-pointer"
           onClick={() => setShowPeriod((prev) => !prev)}
@@ -168,12 +168,12 @@ export default function Home() {
     return (
       <Container>
         {periodUI}
-        <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="bg-card rounded-lg shadow-md p-6">
           <div className="flex flex-col items-center text-center">
-            <div className="bg-gray-50 rounded-lg p-8 w-full max-w-md">
-              <div className="text-gray-500 mb-4">
+            <div className="bg-muted rounded-lg p-8 w-full max-w-md">
+              <div className="text-muted-foreground mb-4">
                 <svg
-                  className="mx-auto h-12 w-12 text-gray-400"
+                  className="mx-auto h-12 w-12 text-muted-foreground"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -187,10 +187,10 @@ export default function Home() {
                   />
                 </svg>
               </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
+              <h3 className="text-lg font-medium text-foreground mb-2">
                 등록된 게임이 없습니다
               </h3>
-              <p className="text-gray-500 mb-6">
+              <p className="text-muted-foreground mb-6">
                 조회기간에 해당하는 게임 데이터가 없습니다.
               </p>
               <Button
@@ -215,7 +215,7 @@ export default function Home() {
         {filteredGames.slice(0, visibleCount).map((game) => {
           const date = new Date(game.date);
           const isClickable = true; // 모든 사용자가 클릭 가능
-          const isExpanded = expandedGames.has(game._id);
+          const isExpanded = expandedGames.has(game.id);
           const displayedGames = isExpanded
             ? game.games
             : game.games.slice(0, 2);
@@ -223,8 +223,8 @@ export default function Home() {
 
           return (
             <div
-              key={game._id}
-              className={`bg-white rounded-lg shadow-md py-6 px-4 transition-shadow border border-gray-200 ${
+              key={game.id}
+              className={`bg-card rounded-lg shadow-md py-6 px-4 transition-shadow border border-border ${
                 isClickable
                   ? 'cursor-pointer hover:shadow-lg'
                   : 'cursor-default'
@@ -233,71 +233,91 @@ export default function Home() {
             >
               <div className="flex justify-between items-start mb-4">
                 <div>
-                  <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
-                    {game.courtName}
+                  <h2 className="text-lg font-black tracking-tight text-foreground flex items-center gap-2">
+                    {format(new Date(date), 'M월 d일 (EEE)', { locale: ko })}
                     {game.scheduleStatus === 'playing' && (
-                      <span className="text-xs font-semibold text-green-700 bg-green-100 rounded-full px-2 py-0.5">
-                        진행중
+                      <span className="flex items-center gap-1 rounded-full border border-clay/40 bg-clay/10 px-2 py-0.5 text-[10px] font-extrabold tracking-wide text-clay">
+                        <i className="h-1.5 w-1.5 animate-pulse rounded-full bg-clay" />
+                        LIVE
                       </span>
                     )}
                   </h2>
-                  <p className="text-gray-600">
-                    {format(new Date(date), 'yyyy년 MM월 dd일 (EEE)', {
-                      locale: ko,
-                    })}
+                  <p className="text-[13px] text-muted-foreground">
+                    {game.courtName} · {game.games.length}게임
                   </p>
                 </div>
-                <div className="text-sm text-gray-500">
-                  {game.games.length}개의 게임
-                </div>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5">
                 {displayedGames.map((g, index) => {
                   const scoreA = parseInt(g.score[0] || '0') || 0;
                   const scoreB = parseInt(g.score[1] || '0') || 0;
                   const teamAWins = scoreA > scoreB;
                   const teamBWins = scoreB > scoreA;
 
+                  const pairRow = (
+                    players: string,
+                    score: string,
+                    wins: boolean,
+                    loses: boolean
+                  ) => (
+                    <div className="flex items-center justify-between gap-2 py-0.5">
+                      <span
+                        className={
+                          'text-sm ' +
+                          (wins
+                            ? 'font-extrabold text-foreground'
+                            : loses
+                              ? 'font-medium text-muted-foreground/70'
+                              : 'font-medium text-foreground')
+                        }
+                      >
+                        {players}
+                        {wins && (
+                          <span className="ml-1.5 rounded bg-primary px-1 py-px align-[2px] text-[8px] font-black tracking-wider text-primary-foreground dark:bg-ball dark:text-[#141b10]">
+                            WIN
+                          </span>
+                        )}
+                      </span>
+                      <span
+                        className={
+                          'text-xl font-black tabular-nums leading-none ' +
+                          (wins
+                            ? 'text-primary dark:text-ball'
+                            : loses
+                              ? 'text-muted-foreground/50'
+                              : 'text-foreground')
+                        }
+                      >
+                        {score || '0'}
+                      </span>
+                    </div>
+                  );
+
                   return (
-                    <div key={index} className="bg-gray-50 rounded-lg p-4">
-                      <div className="flex justify-between items-center mb-2">
-                        <span className="text-sm font-medium text-gray-700">
-                          게임 {index + 1}
+                    <div
+                      key={index}
+                      className="rounded-xl border border-border bg-muted/60 px-3.5 py-3"
+                    >
+                      <div className="mb-1.5 flex justify-between text-[10px] font-bold tracking-wide text-muted-foreground">
+                        <span>
+                          GAME {index + 1}
+                          {g.court && ` · ${g.court}코트`}
                         </span>
-                        <span className="text-sm text-gray-500">{g.time}</span>
+                        <span>{g.time}</span>
                       </div>
-                      <div className="grid grid-cols-2 gap-2">
-                        <div>
-                          <div className="text-xs text-gray-500 mb-1">
-                            페어 A
-                          </div>
-                          <div
-                            className={`text-sm ${teamAWins ? 'font-bold' : ''}`}
-                          >
-                            {g.players[0]}, {g.players[1]}
-                            <span
-                              className={`ml-1 ${teamAWins ? 'text-red-600 font-bold' : 'text-gray-700'}`}
-                            >
-                              [{g.score[0] || '0'}]
-                            </span>
-                          </div>
-                        </div>
-                        <div>
-                          <div className="text-xs text-gray-500 mb-1">
-                            페어 B
-                          </div>
-                          <div
-                            className={`text-sm ${teamBWins ? 'font-bold' : ''}`}
-                          >
-                            {g.players[2]}, {g.players[3]}
-                            <span
-                              className={`ml-1 ${teamBWins ? 'text-red-600 font-bold' : 'text-gray-700'}`}
-                            >
-                              [{g.score[1] || '0'}]
-                            </span>
-                          </div>
-                        </div>
-                      </div>
+                      {pairRow(
+                        `${g.players[0]} · ${g.players[1]}`,
+                        g.score[0] ?? '0',
+                        teamAWins,
+                        teamBWins
+                      )}
+                      <div className="my-1 border-t border-dashed border-border" />
+                      {pairRow(
+                        `${g.players[2]} · ${g.players[3]}`,
+                        g.score[1] ?? '0',
+                        teamBWins,
+                        teamAWins
+                      )}
                     </div>
                   );
                 })}
@@ -310,7 +330,7 @@ export default function Home() {
                     size="sm"
                     onClick={(e) => {
                       e.stopPropagation();
-                      toggleGameExpansion(game._id);
+                      toggleGameExpansion(game.id);
                     }}
                     className="text-sm"
                   >
@@ -341,7 +361,7 @@ export default function Home() {
                 <div className="text-xl font-bold">
                   {selectedGame.courtName}
                 </div>
-                <div className="text-sm text-gray-600 font-normal mt-1">
+                <div className="text-sm text-muted-foreground font-normal mt-1">
                   {format(
                     new Date(selectedGame.date),
                     'yyyy년 MM월 dd일 (EEE)',
@@ -350,7 +370,7 @@ export default function Home() {
                 </div>
               </DialogTitle>
 
-              <div className="text-sm text-gray-500 text-center">
+              <div className="text-sm text-muted-foreground text-center">
                 총 {selectedGame.games.length}개의 게임
               </div>
 
@@ -362,12 +382,12 @@ export default function Home() {
                   const teamBWins = scoreB > scoreA;
 
                   return (
-                    <div key={index} className="bg-gray-50 rounded-lg p-4">
+                    <div key={index} className="bg-muted rounded-lg p-4">
                       <div className="flex justify-between items-center mb-2">
-                        <span className="text-sm font-medium text-gray-700">
+                        <span className="text-sm font-medium text-muted-foreground">
                           게임 {index + 1}
                         </span>
-                        <div className="flex gap-2 text-sm text-gray-500">
+                        <div className="flex gap-2 text-sm text-muted-foreground">
                           <span>{g.time}</span>
                           {g.court && <span>{g.court}코트</span>}
                         </div>
@@ -376,16 +396,16 @@ export default function Home() {
                         <div className={`${teamAWins ? 'font-bold' : ''}`}>
                           {g.players[0]}/{g.players[1]}
                           <span
-                            className={`ml-1 ${teamAWins ? 'text-red-600 font-bold' : 'text-gray-700'}`}
+                            className={`ml-1 ${teamAWins ? 'text-red-600 font-bold' : 'text-muted-foreground'}`}
                           >
                             [{g.score[0] || '0'}]
                           </span>
                         </div>
-                        <div className="text-gray-400 mx-2">vs</div>
+                        <div className="text-muted-foreground mx-2">vs</div>
                         <div className={`${teamBWins ? 'font-bold' : ''}`}>
                           {g.players[2]}/{g.players[3]}
                           <span
-                            className={`ml-1 ${teamBWins ? 'text-red-600 font-bold' : 'text-gray-700'}`}
+                            className={`ml-1 ${teamBWins ? 'text-red-600 font-bold' : 'text-muted-foreground'}`}
                           >
                             [{g.score[1] || '0'}]
                           </span>

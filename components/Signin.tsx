@@ -90,7 +90,7 @@ export default function SignIn({
   return (
     <div className="flex flex-col gap-3">
       {noticeMessage && !errorCode && !loginError && (
-        <div className="bg-blue-50 border border-blue-200 text-blue-700 text-sm p-3 rounded-md text-center">
+        <div className="bg-blue-50 border border-blue-200 text-primary text-sm p-3 rounded-md text-center">
           {noticeMessage}
         </div>
       )}
@@ -110,7 +110,7 @@ export default function SignIn({
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="이메일"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-border rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <input
               type="password"
@@ -118,7 +118,7 @@ export default function SignIn({
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="패스워드"
-              className="w-full border border-gray-300 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-border rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <Button
               type="submit"
@@ -129,7 +129,9 @@ export default function SignIn({
             </Button>
           </form>
 
-          <div className="text-center text-xs text-gray-400 my-1">또는</div>
+          <div className="text-center text-xs text-muted-foreground my-1">
+            또는
+          </div>
         </>
       )}
 
@@ -159,10 +161,10 @@ export default function SignIn({
         })}
 
       {showEmailLogin && (
-        <div className="mt-2 pt-3 border-t border-gray-200 text-center">
+        <div className="mt-2 pt-3 border-t border-border text-center">
           <Link
             href="/auth/signup"
-            className="text-sm text-gray-500 hover:text-gray-700 underline underline-offset-2"
+            className="text-sm text-muted-foreground hover:text-muted-foreground underline underline-offset-2"
           >
             이메일로 가입하기
           </Link>

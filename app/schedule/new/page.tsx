@@ -120,8 +120,8 @@ export default function ScheduleForm() {
         console.log('✅ 서버 응답:', result);
         setLoading(false);
         // 생성된 스케줄의 상세 페이지로 이동
-        if (result && result._id) {
-          router.push(`/schedule/${result._id}`);
+        if (result && result.id) {
+          router.push(`/schedule/${result.id}`);
         } else {
           // ID가 없는 경우 목록으로 이동
           router.push('/schedule');

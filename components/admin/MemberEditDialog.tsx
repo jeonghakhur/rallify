@@ -132,18 +132,22 @@ export default function MemberEditDialog({ memberId, onClose }: Props) {
         </DialogHeader>
 
         {isLoading || !member ? (
-          <p className="text-sm text-gray-500 py-8 text-center">불러오는 중…</p>
+          <p className="text-sm text-muted-foreground py-8 text-center">
+            불러오는 중…
+          </p>
         ) : (
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mt-2">
             <div>
-              <Label className="text-xs text-gray-500">이메일</Label>
-              <p className="text-sm text-gray-700">{member.email ?? '-'}</p>
+              <Label className="text-xs text-muted-foreground">이메일</Label>
+              <p className="text-sm text-muted-foreground">
+                {member.email ?? '-'}
+              </p>
             </div>
 
             <div>
               <Label>관리 중인 클럽</Label>
               {member.managedClubs.length === 0 ? (
-                <p className="text-sm text-gray-500">없음</p>
+                <p className="text-sm text-muted-foreground">없음</p>
               ) : (
                 <ul className="flex flex-wrap gap-2">
                   {member.managedClubs.map((club) => (
@@ -153,7 +157,7 @@ export default function MemberEditDialog({ memberId, onClose }: Props) {
                         target="_blank"
                         className={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium ${
                           club.role === 'OWNER'
-                            ? 'bg-blue-100 text-blue-700 hover:bg-blue-200'
+                            ? 'bg-blue-100 text-primary hover:bg-blue-200'
                             : 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200'
                         }`}
                       >
@@ -164,7 +168,7 @@ export default function MemberEditDialog({ memberId, onClose }: Props) {
                   ))}
                 </ul>
               )}
-              <p className="text-xs text-gray-400 mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 회원 등급과는 별도로 관리되는 클럽 단위 권한입니다.
               </p>
             </div>

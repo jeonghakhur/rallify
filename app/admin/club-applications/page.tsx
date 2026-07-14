@@ -99,19 +99,19 @@ export default function AdminClubApplicationsPage() {
   return (
     <Container>
       <div className="flex items-center justify-between mb-4">
-        <h1 className="text-2xl font-bold text-gray-800">클럽 가입 신청</h1>
+        <h1 className="text-2xl font-bold text-foreground">클럽 가입 신청</h1>
         <Link
           href="/admin/members"
-          className="text-sm text-blue-600 hover:underline"
+          className="text-sm text-primary hover:underline"
         >
           회원 관리로 →
         </Link>
       </div>
 
       {!applications ? (
-        <p className="text-gray-400 text-center py-12">불러오는 중…</p>
+        <p className="text-muted-foreground text-center py-12">불러오는 중…</p>
       ) : applications.length === 0 ? (
-        <p className="text-gray-500 text-center py-12">
+        <p className="text-muted-foreground text-center py-12">
           대기 중인 클럽 가입 신청이 없습니다.
         </p>
       ) : (
@@ -121,40 +121,40 @@ export default function AdminClubApplicationsPage() {
             return (
               <div
                 key={app.memberId}
-                className="bg-white rounded-lg border border-gray-200 p-4 space-y-3"
+                className="bg-card rounded-lg border border-border p-4 space-y-3"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center gap-2 flex-wrap">
                       <Link
                         href={`/clubs/${app.clubId}/manage`}
-                        className="font-semibold text-gray-900 hover:text-blue-600 hover:underline"
+                        className="font-semibold text-foreground hover:text-primary hover:underline"
                       >
                         {app.clubName}
                       </Link>
-                      <span className="text-xs text-gray-400">
+                      <span className="text-xs text-muted-foreground">
                         {format(new Date(app.createdAt), 'MM/dd HH:mm', {
                           locale: ko,
                         })}
                       </span>
                     </div>
                     <div className="mt-1 flex items-center gap-2 flex-wrap text-sm">
-                      <span className="font-medium text-gray-800">
+                      <span className="font-medium text-foreground">
                         {app.user.name ?? '(이름 없음)'}
                       </span>
                       {app.user.gender && (
-                        <span className="text-xs text-gray-500">
+                        <span className="text-xs text-muted-foreground">
                           {app.user.gender}
                         </span>
                       )}
                       {app.user.birthyear && (
-                        <span className="text-xs text-gray-500">
+                        <span className="text-xs text-muted-foreground">
                           {app.user.birthyear}
                           {age !== null && ` (만 ${age}세)`}
                         </span>
                       )}
                     </div>
-                    <p className="text-xs text-gray-500 mt-0.5 truncate">
+                    <p className="text-xs text-muted-foreground mt-0.5 truncate">
                       {app.user.email}
                       {app.user.phoneNumber && ` · ${app.user.phoneNumber}`}
                     </p>
@@ -175,7 +175,7 @@ export default function AdminClubApplicationsPage() {
                 </div>
 
                 {app.introduction && (
-                  <div className="text-sm text-gray-700 bg-gray-50 rounded-md px-3 py-2 whitespace-pre-wrap">
+                  <div className="text-sm text-muted-foreground bg-muted rounded-md px-3 py-2 whitespace-pre-wrap">
                     {app.introduction}
                   </div>
                 )}

@@ -48,7 +48,7 @@ export default function SignUpPage() {
 
   return (
     <section className="flex flex-col w-[320px] mt-10 mx-auto gap-4">
-      <h1 className="text-2xl font-bold text-center text-gray-800">
+      <h1 className="text-2xl font-bold text-center text-foreground">
         이메일 회원가입
       </h1>
 
@@ -60,7 +60,7 @@ export default function SignUpPage() {
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-3">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-muted-foreground mb-1">
             이메일
           </label>
           <input
@@ -68,13 +68,13 @@ export default function SignUpPage() {
             required
             value={form.email}
             onChange={(e) => setForm({ ...form, email: e.target.value })}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border border-border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="example@email.com"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-muted-foreground mb-1">
             패스워드
           </label>
           <input
@@ -83,13 +83,13 @@ export default function SignUpPage() {
             minLength={8}
             value={form.password}
             onChange={(e) => setForm({ ...form, password: e.target.value })}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border border-border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="8자 이상"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-muted-foreground mb-1">
             이름
           </label>
           <input
@@ -98,13 +98,13 @@ export default function SignUpPage() {
             minLength={2}
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border border-border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="실명을 입력해주세요"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-muted-foreground mb-2">
             성별
           </label>
           <div className="flex gap-3">
@@ -116,7 +116,7 @@ export default function SignUpPage() {
                 className={`flex-1 py-2 rounded-md border text-sm font-medium transition-colors ${
                   form.gender === g
                     ? 'bg-blue-500 text-white border-blue-500'
-                    : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                    : 'bg-card text-muted-foreground border-border hover:bg-muted'
                 }`}
               >
                 {g}
@@ -130,21 +130,21 @@ export default function SignUpPage() {
         </Button>
       </form>
 
-      <p className="text-xs text-gray-400 text-center">
+      <p className="text-xs text-muted-foreground text-center">
         가입하면{' '}
-        <Link href="/terms" className="underline hover:text-gray-600">
+        <Link href="/terms" className="underline hover:text-muted-foreground">
           이용약관
         </Link>
         과{' '}
-        <Link href="/privacy" className="underline hover:text-gray-600">
+        <Link href="/privacy" className="underline hover:text-muted-foreground">
           개인정보처리방침
         </Link>
         에 동의하는 것으로 간주됩니다.
       </p>
 
-      <div className="text-center text-sm text-gray-500">
+      <div className="text-center text-sm text-muted-foreground">
         이미 계정이 있으신가요?{' '}
-        <Link href="/auth/signin" className="text-blue-600 hover:underline">
+        <Link href="/auth/signin" className="text-primary hover:underline">
           로그인
         </Link>
       </div>

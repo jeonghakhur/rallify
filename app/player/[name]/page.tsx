@@ -87,7 +87,7 @@ export default function PlayerGameHistory() {
   if (!games || games.length === 0) {
     return (
       <Container>
-        <div className="text-center py-20 text-lg text-gray-500">
+        <div className="text-center py-20 text-lg text-muted-foreground">
           게임 데이터가 없습니다.
         </div>
       </Container>
@@ -216,10 +216,10 @@ export default function PlayerGameHistory() {
       <div className="space-y-6">
         {/* 헤더 */}
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-800 mb-2">
+          <h1 className="text-2xl font-bold text-foreground mb-2">
             {playerName}님의 게임 기록
           </h1>
-          <p className="text-gray-600">
+          <p className="text-muted-foreground">
             총 {totalGames}경기 • {wins}승 {draws}무 {losses}패 • 승률 {winRate}
             %
           </p>
@@ -227,28 +227,28 @@ export default function PlayerGameHistory() {
 
         {/* 통계 카드 */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="bg-white p-4 rounded-lg shadow border text-center">
-            <div className="text-2xl font-bold text-blue-600">{totalGames}</div>
-            <div className="text-sm text-gray-600">총 경기</div>
+          <div className="bg-card p-4 rounded-lg shadow border text-center">
+            <div className="text-2xl font-bold text-primary">{totalGames}</div>
+            <div className="text-sm text-muted-foreground">총 경기</div>
           </div>
-          <div className="bg-white p-4 rounded-lg shadow border text-center">
+          <div className="bg-card p-4 rounded-lg shadow border text-center">
             <div className="text-2xl font-bold text-green-600">{wins}</div>
-            <div className="text-sm text-gray-600">승</div>
+            <div className="text-sm text-muted-foreground">승</div>
           </div>
-          <div className="bg-white p-4 rounded-lg shadow border text-center">
+          <div className="bg-card p-4 rounded-lg shadow border text-center">
             <div className="text-2xl font-bold text-yellow-600">{draws}</div>
-            <div className="text-sm text-gray-600">무</div>
+            <div className="text-sm text-muted-foreground">무</div>
           </div>
-          <div className="bg-white p-4 rounded-lg shadow border text-center">
+          <div className="bg-card p-4 rounded-lg shadow border text-center">
             <div className="text-2xl font-bold text-red-600">{losses}</div>
-            <div className="text-sm text-gray-600">패</div>
+            <div className="text-sm text-muted-foreground">패</div>
           </div>
         </div>
 
         {/* 페어 통계 */}
         {qualifiedPairs.length > 0 && (
-          <div className="bg-white rounded-lg shadow border p-6">
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">
+          <div className="bg-card rounded-lg shadow border p-6">
+            <h3 className="text-lg font-semibold text-foreground mb-4">
               페어별 승률 (1경기 이상) - {qualifiedPairs.length}명
             </h3>
 
@@ -259,7 +259,7 @@ export default function PlayerGameHistory() {
                   <button
                     onClick={() => setCurrentPage(Math.max(0, currentPage - 1))}
                     disabled={currentPage === 0}
-                    className="px-3 py-1 text-sm bg-gray-200 rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-300"
+                    className="px-3 py-1 text-sm bg-muted rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-300"
                   >
                     이전
                   </button>
@@ -278,7 +278,7 @@ export default function PlayerGameHistory() {
                     disabled={
                       currentPage >= Math.ceil(qualifiedPairs.length / 10) - 1
                     }
-                    className="px-3 py-1 text-sm bg-gray-200 rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-300"
+                    className="px-3 py-1 text-sm bg-muted rounded disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-300"
                   >
                     다음
                   </button>
@@ -378,7 +378,7 @@ export default function PlayerGameHistory() {
               <div className="mt-4 text-center">
                 <button
                   onClick={() => setShowAllPairs(!showAllPairs)}
-                  className="text-blue-600 hover:text-blue-800 text-sm underline"
+                  className="text-primary hover:text-blue-800 text-sm underline"
                 >
                   {showAllPairs ? '차트로 보기' : '전체 페어 목록 보기'}
                 </button>
@@ -403,7 +403,7 @@ export default function PlayerGameHistory() {
                       <tr key={pair.partner} className="border-t">
                         <td>{index + 1}</td>
                         <td
-                          className="cursor-pointer text-blue-600 underline hover:text-blue-800"
+                          className="cursor-pointer text-primary underline hover:text-blue-800"
                           onClick={() => handlePairClick(pair.partner)}
                         >
                           {pair.partner}
@@ -430,7 +430,7 @@ export default function PlayerGameHistory() {
               </div>
             )}
 
-            <div className="mt-4 text-sm text-gray-600 text-center">
+            <div className="mt-4 text-sm text-muted-foreground text-center">
               <span className="inline-block mr-4">
                 <span className="inline-block w-3 h-3 bg-green-500 rounded mr-1"></span>
                 50% 이상
@@ -449,10 +449,10 @@ export default function PlayerGameHistory() {
 
         {/* 게임 기록 테이블 */}
         {playerGames.length > 0 ? (
-          <div className="bg-white rounded-lg shadow border overflow-hidden">
+          <div className="bg-card rounded-lg shadow border overflow-hidden">
             <div className="overflow-x-auto">
               <table className="table w-full">
-                <thead className="bg-gray-50">
+                <thead className="bg-muted">
                   <tr>
                     <th className="text-left">날짜</th>
                     <th className="text-left">장소</th>
@@ -466,28 +466,28 @@ export default function PlayerGameHistory() {
                   {playerGames.map((game, index) => (
                     <tr key={index} className="border-t">
                       <td className="py-3">
-                        <div className="text-sm font-medium text-gray-900">
+                        <div className="text-sm font-medium text-foreground">
                           {format(new Date(game.date), 'MM.dd')}
                         </div>
-                        <div className="text-xs text-gray-500">
+                        <div className="text-xs text-muted-foreground">
                           {format(new Date(game.date), 'EEEE', { locale: ko })}
                         </div>
                       </td>
-                      <td className="py-3 text-sm text-gray-900">
+                      <td className="py-3 text-sm text-foreground">
                         {game.courtName}
                       </td>
-                      <td className="py-3 text-sm text-gray-900">
+                      <td className="py-3 text-sm text-foreground">
                         <span
-                          className="cursor-pointer text-blue-600 underline hover:text-blue-800"
+                          className="cursor-pointer text-primary underline hover:text-blue-800"
                           onClick={() => handleTeamClick(game.team)}
                           title={`${game.team} 페어 기록 보기`}
                         >
                           {game.team}
                         </span>
                       </td>
-                      <td className="py-3 text-sm text-gray-900">
+                      <td className="py-3 text-sm text-foreground">
                         <span
-                          className="cursor-pointer text-blue-600 underline hover:text-blue-800"
+                          className="cursor-pointer text-primary underline hover:text-blue-800"
                           onClick={() => handleTeamClick(game.opponent)}
                           title={`${game.opponent} 페어 기록 보기`}
                         >
@@ -495,7 +495,7 @@ export default function PlayerGameHistory() {
                         </span>
                       </td>
                       <td className="py-3 text-center">
-                        <span className="text-sm font-medium text-gray-900">
+                        <span className="text-sm font-medium text-foreground">
                           {game.score}
                         </span>
                       </td>
@@ -523,7 +523,7 @@ export default function PlayerGameHistory() {
             </div>
           </div>
         ) : (
-          <div className="text-center py-20 text-lg text-gray-500">
+          <div className="text-center py-20 text-lg text-muted-foreground">
             {playerName}님의 게임 기록이 없습니다.
           </div>
         )}

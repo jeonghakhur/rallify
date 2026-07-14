@@ -146,7 +146,7 @@ export default function JoinApplicationDialog({
                 {errors.introduction.message}
               </p>
             ) : (
-              <p className="text-xs text-gray-400 mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 운동 경력, 가입 동기 등을 자유롭게 적어주세요.
               </p>
             )}
@@ -216,7 +216,7 @@ export default function JoinApplicationDialog({
                 {errors.birthyear.message}
               </p>
             ) : (
-              <p className="text-xs text-gray-400 mt-1">
+              <p className="text-xs text-muted-foreground mt-1">
                 네 자리 숫자로 입력해주세요. (예: 1990)
               </p>
             )}

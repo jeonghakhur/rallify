@@ -85,14 +85,14 @@ export default function AdminMembersPage() {
 
   return (
     <Container>
-      <h1 className="text-2xl font-bold text-gray-800 mb-4">회원 관리</h1>
+      <h1 className="text-2xl font-bold text-foreground mb-4">회원 관리</h1>
 
       <div className="flex border-b mb-4">
         <button
           className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
             tab === 'pending'
-              ? 'border-blue-500 text-blue-600'
-              : 'border-transparent text-gray-500 hover:text-gray-700'
+              ? 'border-blue-500 text-primary'
+              : 'border-transparent text-muted-foreground hover:text-muted-foreground'
           }`}
           onClick={() => setTab('pending')}
         >
@@ -106,8 +106,8 @@ export default function AdminMembersPage() {
         <button
           className={`px-4 py-2 text-sm font-medium border-b-2 transition-colors ${
             tab === 'active'
-              ? 'border-blue-500 text-blue-600'
-              : 'border-transparent text-gray-500 hover:text-gray-700'
+              ? 'border-blue-500 text-primary'
+              : 'border-transparent text-muted-foreground hover:text-muted-foreground'
           }`}
           onClick={() => setTab('active')}
         >
@@ -118,23 +118,23 @@ export default function AdminMembersPage() {
       {tab === 'pending' && (
         <div className="space-y-3">
           {!pendingMembers || pendingMembers.length === 0 ? (
-            <p className="text-gray-500 text-center py-12">
+            <p className="text-muted-foreground text-center py-12">
               대기 중인 가입 신청이 없습니다.
             </p>
           ) : (
             pendingMembers.map((member) => (
               <div
                 key={member.id}
-                className="bg-white rounded-lg border border-gray-200 p-4 flex items-center justify-between gap-3"
+                className="bg-card rounded-lg border border-border p-4 flex items-center justify-between gap-3"
               >
                 <div className="min-w-0">
-                  <p className="font-medium text-gray-800">
+                  <p className="font-medium text-foreground">
                     {member.name ?? '(이름 없음)'}
                   </p>
-                  <p className="text-sm text-gray-500 truncate">
+                  <p className="text-sm text-muted-foreground truncate">
                     {member.email}
                   </p>
-                  <p className="text-xs text-gray-400 mt-0.5">
+                  <p className="text-xs text-muted-foreground mt-0.5">
                     {member.gender ?? '-'} · {member.provider ?? 'email'} ·{' '}
                     {format(new Date(member.createdAt), 'MM/dd HH:mm', {
                       locale: ko,
@@ -163,32 +163,32 @@ export default function AdminMembersPage() {
       {tab === 'active' && (
         <div className="space-y-3">
           {activeMembers.length === 0 ? (
-            <p className="text-gray-500 text-center py-12">
+            <p className="text-muted-foreground text-center py-12">
               활성 회원이 없습니다.
             </p>
           ) : (
             activeMembers.map((member) => (
               <div
                 key={member.id}
-                className="bg-white rounded-lg border border-gray-200 p-4 flex items-center justify-between gap-3"
+                className="bg-card rounded-lg border border-border p-4 flex items-center justify-between gap-3"
               >
                 <div className="min-w-0">
                   <button
                     type="button"
                     onClick={() => setEditingId(member.id)}
-                    className="font-medium text-gray-800 hover:text-blue-600 hover:underline text-left"
+                    className="font-medium text-foreground hover:text-primary hover:underline text-left"
                   >
                     {member.name}
                   </button>
-                  <p className="text-sm text-gray-500 truncate">
+                  <p className="text-sm text-muted-foreground truncate">
                     {member.email}
                   </p>
-                  <p className="text-xs text-gray-400 mt-0.5">
+                  <p className="text-xs text-muted-foreground mt-0.5">
                     {member.gender ?? '-'} · {getUserLevelLabel(member.level)}{' '}
                     (Lv.{member.level})
                   </p>
                   {(member.address || member.birthday || member.birthyear) && (
-                    <p className="text-xs text-gray-400 mt-0.5 truncate">
+                    <p className="text-xs text-muted-foreground mt-0.5 truncate">
                       {member.address && <span>거주 {member.address}</span>}
                       {member.address &&
                         (member.birthday || member.birthyear) &&

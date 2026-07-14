@@ -43,6 +43,9 @@ export default {
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',
+        ball: 'hsl(var(--ball))',
+        clay: 'hsl(var(--clay))',
+        'court-deep': 'hsl(var(--court-deep))',
         chart: {
           '1': 'hsl(var(--chart-1))',
           '2': 'hsl(var(--chart-2))',

@@ -11,6 +11,7 @@ import Image from 'next/image';
 import { UserProps } from '@/model/user';
 import { Check } from 'lucide-react';
 import { ko } from 'date-fns/locale';
+import RankList from './RankList';
 
 type PlayerStats = {
   name: string;
@@ -142,7 +143,7 @@ export default function LatestGameRanking() {
   if (isLoading) {
     return (
       <div>
-        <h2 className="text-xl font-semibold text-gray-800 mb-4">
+        <h2 className="text-xl font-semibold text-foreground mb-4">
           최근게임순위
         </h2>
         <LoadingGrid loading={isLoading} />
@@ -153,7 +154,7 @@ export default function LatestGameRanking() {
   if (error) {
     return (
       <div>
-        <h2 className="text-xl font-semibold text-gray-800 mb-4">
+        <h2 className="text-xl font-semibold text-foreground mb-4">
           최근게임순위
         </h2>
         <div className="text-center py-20 text-lg text-red-500 overflow-x-auto">
@@ -166,10 +167,10 @@ export default function LatestGameRanking() {
   if (stats.length === 0) {
     return (
       <div>
-        <h2 className="text-xl font-semibold text-gray-800 mb-4">
+        <h2 className="text-xl font-semibold text-foreground mb-4">
           최근게임순위
         </h2>
-        <div className="text-center py-20 text-lg text-gray-500">
+        <div className="text-center py-20 text-lg text-muted-foreground">
           최근 완료된 게임 데이터가 없습니다.
         </div>
       </div>
@@ -179,9 +180,11 @@ export default function LatestGameRanking() {
   return (
     <div className="print-hidden">
       <h2 className="mb-4 flex items-center justify-between ">
-        <div className="text-xl text-gray-800 font-semibold">최근게임순위</div>
+        <div className="text-xl text-foreground font-semibold">
+          최근게임순위
+        </div>
         {latestGame && (
-          <div className="text-sm text-gray-600 text-right">
+          <div className="text-sm text-muted-foreground text-right">
             {format(new Date(latestGame.date), 'yy년MM월dd일(EEE)', {
               locale: ko,
             })}
@@ -190,72 +193,13 @@ export default function LatestGameRanking() {
           </div>
         )}
       </h2>
-      <div className="overflow-x-auto">
-        <table className="table w-full text-center text-sm">
-          <thead>
-            <tr>
-              <th>순위</th>
-              <th>이름</th>
-              <th>승</th>
-              <th>무</th>
-              <th>패</th>
-              <th>게임</th>
-              <th>승점</th>
-              <th>승률</th>
-              <th>득점</th>
-              <th>실점</th>
-              <th>마진</th>
-            </tr>
-          </thead>
-          <tbody>
-            {displayStats.map((row, idx) => {
-              // 회원 정보 찾기
-
-              return (
-                <tr key={row.name}>
-                  <td className="font-semibold">
-                    {idx === 0 && '🥇'}
-                    {idx === 1 && '🥈'}
-                    {idx === 2 && '🥉'}
-                    {idx > 2 && (showAll ? idx + 1 : idx + 1)}
-                  </td>
-                  <td
-                    className="whitespace-nowrap font-medium text-blue-700 hover:underline cursor-pointer flex items-center gap-2 justify-center underline underline-offset-4"
-                    onClick={() => {
-                      setSelectedPlayer(row.name);
-                      setDialogOpen(true);
-                    }}
-                  >
-                    {row.name}
-                  </td>
-                  <td className="text-green-600 font-semibold">{row.win}</td>
-                  <td className="text-yellow-600">{row.draw}</td>
-                  <td className="text-red-600">{row.lose}</td>
-                  <td>{row.game}</td>
-                  <td className="font-semibold text-blue-600">{row.point}</td>
-                  <td className="font-semibold">
-                    {(row.winRate * 100).toFixed(1)}%
-                  </td>
-                  <td>{row.score}</td>
-                  <td>{row.loseScore}</td>
-                  <td
-                    className={
-                      row.margin > 0
-                        ? 'text-green-600'
-                        : row.margin < 0
-                          ? 'text-red-600'
-                          : ''
-                    }
-                  >
-                    {row.margin > 0 ? '+' : ''}
-                    {row.margin}
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
+      <RankList
+        rows={displayStats}
+        onNameClick={(name) => {
+          setSelectedPlayer(name);
+          setDialogOpen(true);
+        }}
+      />
       {/* 선택된 플레이어의 최근 게임 결과 Dialog */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
         <DialogContent className="max-w-2xl w-[95%] overflow-y-auto max-h-[90vh]">
@@ -289,13 +233,13 @@ export default function LatestGameRanking() {
                   return (
                     <div
                       key={i}
-                      className={`rounded-xl border p-3 shadow-sm bg-white flex flex-col gap-2`}
+                      className={`rounded-xl border p-3 shadow-sm bg-card flex flex-col gap-2`}
                     >
                       <div className="flex items-center justify-between mb-1">
-                        <div className="text-xs text-gray-500 font-semibold">
+                        <div className="text-xs text-muted-foreground font-semibold">
                           {g.court}코트
                         </div>
-                        <div className="text-xs text-gray-400">
+                        <div className="text-xs text-muted-foreground">
                           {g.time && `${g.time} 게임`}
                         </div>
                       </div>
@@ -310,7 +254,7 @@ export default function LatestGameRanking() {
                               key={name}
                               className="flex items-center gap-1"
                             >
-                              <div className="w-7 h-7 rounded-full overflow-hidden border-2 border-white ring-2 ring-gray-300 shadow-sm bg-white flex-shrink-0">
+                              <div className="w-7 h-7 rounded-full overflow-hidden border-2 border-card ring-2 ring-border shadow-sm bg-card flex-shrink-0">
                                 <Image
                                   src={
                                     member?.image ||
@@ -350,7 +294,7 @@ export default function LatestGameRanking() {
                               key={name}
                               className="flex items-center gap-1"
                             >
-                              <div className="w-7 h-7 rounded-full overflow-hidden border-2 border-white ring-2 ring-gray-300 shadow-sm bg-white flex-shrink-0">
+                              <div className="w-7 h-7 rounded-full overflow-hidden border-2 border-card ring-2 ring-border shadow-sm bg-card flex-shrink-0">
                                 <Image
                                   src={
                                     member?.image ||

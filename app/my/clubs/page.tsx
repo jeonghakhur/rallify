@@ -20,7 +20,7 @@ type MyClub = {
 const statusLabel: Record<string, { text: string; className: string }> = {
   ACTIVE: { text: '가입됨', className: 'text-green-600 bg-green-50' },
   PENDING: { text: '승인 대기', className: 'text-amber-600 bg-amber-50' },
-  INVITED: { text: '초대됨', className: 'text-blue-600 bg-blue-50' },
+  INVITED: { text: '초대됨', className: 'text-primary bg-blue-50' },
 };
 
 const roleLabel: Record<string, string> = {
@@ -34,7 +34,9 @@ export default function MyClubsPage() {
   const { data: clubs, isLoading } = useSWR<MyClub[]>('/api/my/clubs');
 
   if (authLoading || isLoading)
-    return <div className="p-4 text-center text-gray-400">로딩 중...</div>;
+    return (
+      <div className="p-4 text-center text-muted-foreground">로딩 중...</div>
+    );
 
   return (
     <main className="max-w-2xl mx-auto px-4 py-6">
@@ -48,7 +50,7 @@ export default function MyClubsPage() {
       </div>
 
       {!clubs || clubs.length === 0 ? (
-        <div className="text-center py-16 text-gray-400">
+        <div className="text-center py-16 text-muted-foreground">
           <p className="mb-4">가입한 클럽이 없습니다.</p>
           <Link href="/clubs">
             <Button>클럽 둘러보기</Button>
@@ -59,18 +61,20 @@ export default function MyClubsPage() {
           {clubs.map((club) => {
             const status = statusLabel[club.myStatus] || {
               text: club.myStatus,
-              className: 'text-gray-500 bg-gray-50',
+              className: 'text-muted-foreground bg-muted',
             };
             return (
               <Link
                 key={club.id}
                 href={`/clubs/${club.id}`}
-                className="block bg-white border border-gray-200 rounded-lg p-4 hover:border-blue-300 transition-colors"
+                className="block bg-card border border-border rounded-lg p-4 hover:border-blue-300 transition-colors"
               >
                 <div className="flex items-start justify-between">
                   <div>
-                    <h2 className="font-semibold text-gray-800">{club.name}</h2>
-                    <div className="flex items-center gap-2 mt-2 text-xs text-gray-400">
+                    <h2 className="font-semibold text-foreground">
+                      {club.name}
+                    </h2>
+                    <div className="flex items-center gap-2 mt-2 text-xs text-muted-foreground">
                       {club.city && (
                         <span>
                           {club.city} {club.district}
@@ -78,7 +82,7 @@ export default function MyClubsPage() {
                       )}
                       <span>멤버 {club.memberCount}명</span>
                       {club.myStatus === 'ACTIVE' && (
-                        <span className="text-gray-500">
+                        <span className="text-muted-foreground">
                           {roleLabel[club.myRole]}
                         </span>
                       )}

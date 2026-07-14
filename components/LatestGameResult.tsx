@@ -65,12 +65,12 @@ export default function LatestGameResult({
 
   if (isLoading) {
     return (
-      <div className="bg-white rounded-lg shadow-md p-4 animate-pulse">
-        <div className="h-4 bg-gray-200 rounded w-1/3 mb-4"></div>
+      <div className="bg-card rounded-lg shadow-md p-4 animate-pulse">
+        <div className="h-4 bg-muted rounded w-1/3 mb-4"></div>
         <div className="space-y-3">
-          <div className="h-3 bg-gray-200 rounded"></div>
-          <div className="h-3 bg-gray-200 rounded w-2/3"></div>
-          <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+          <div className="h-3 bg-muted rounded"></div>
+          <div className="h-3 bg-muted rounded w-2/3"></div>
+          <div className="h-3 bg-muted rounded w-1/2"></div>
         </div>
       </div>
     );
@@ -78,8 +78,8 @@ export default function LatestGameResult({
 
   if (gameError) {
     return (
-      <div className="bg-white rounded-lg shadow-md p-4">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">
+      <div className="bg-card rounded-lg shadow-md p-4">
+        <h3 className="text-lg font-semibold text-foreground mb-4">
           최근 게임 결과
         </h3>
         <div className="text-center py-8 text-red-500">
@@ -91,11 +91,11 @@ export default function LatestGameResult({
 
   if (!gameResult) {
     return (
-      <div className="bg-white rounded-lg shadow-md p-4">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">
+      <div className="bg-card rounded-lg shadow-md p-4">
+        <h3 className="text-lg font-semibold text-foreground mb-4">
           최근 게임 결과
         </h3>
-        <div className="text-center py-8 text-gray-500">
+        <div className="text-center py-8 text-muted-foreground">
           아직 완료된 게임이 없습니다.
         </div>
       </div>
@@ -109,10 +109,10 @@ export default function LatestGameResult({
   const hasMoreGames = totalGames > 2;
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-4 print-hidden">
+    <div className="bg-card rounded-lg shadow-md p-4 print-hidden">
       <div className="mb-4 flex justify-between items-center">
-        <h3 className="text-lg font-semibold text-gray-800">최근게임결과</h3>
-        <div className="text-sm text-gray-600 text-right">
+        <h3 className="text-lg font-semibold text-foreground">최근게임결과</h3>
+        <div className="text-sm text-muted-foreground text-right">
           {formattedDate}
           <br />
           {gameResult.courtName}
@@ -122,13 +122,13 @@ export default function LatestGameResult({
       {/* 각 게임별 상세 결과 */}
       <div className="space-y-3">
         <div className="flex justify-between items-center mb-2">
-          <div className="text-sm font-semibold text-gray-700">
+          <div className="text-sm font-semibold text-muted-foreground">
             게임별 결과 (총 {totalGames}게임)
           </div>
           {gameResult && (
             <button
               onClick={() => router.push(`/games/${gameResult.scheduleID}`)}
-              className="flex items-center gap-1 text-sm text-blue-700 hover:text-blue-900 transition-colors underline underline-offset-4"
+              className="flex items-center gap-1 text-sm text-primary hover:text-primary transition-colors underline underline-offset-4"
             >
               상세보기
               <svg
@@ -154,18 +154,20 @@ export default function LatestGameResult({
           const teamBWins = scoreB > scoreA;
 
           return (
-            <div key={index} className="bg-gray-50 rounded-lg p-4">
+            <div key={index} className="bg-muted rounded-lg p-4">
               <div className="flex justify-between items-center mb-2">
-                <span className="text-sm font-medium text-gray-700">
+                <span className="text-sm font-medium text-muted-foreground">
                   게임 {index + 1}
                 </span>
-                <span className="text-sm text-gray-500">{game.time}</span>
+                <span className="text-sm text-muted-foreground">
+                  {game.time}
+                </span>
               </div>
               <div className="flex justify-between text-base">
                 <div className={` ${teamAWins ? 'font-bold' : ''}`}>
                   {game.players[0]}/{game.players[1]}
                   <span
-                    className={` ${teamAWins ? 'text-red-600 font-bold' : 'text-gray-700'}`}
+                    className={` ${teamAWins ? 'text-primary dark:text-ball font-bold' : 'text-muted-foreground'}`}
                   >
                     [{game.score[0] || '0'}]
                   </span>
@@ -174,7 +176,7 @@ export default function LatestGameResult({
                 <div className={` ${teamBWins ? 'font-bold' : ''}`}>
                   {game.players[2]}/{game.players[3]}
                   <span
-                    className={` ${teamBWins ? 'text-red-600 font-bold' : 'text-gray-700'}`}
+                    className={` ${teamBWins ? 'text-primary dark:text-ball font-bold' : 'text-muted-foreground'}`}
                   >
                     [{game.score[1] || '0'}]
                   </span>

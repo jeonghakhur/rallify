@@ -334,11 +334,11 @@ export default function ScheduleDetailUser({ scheduleId, user }: Props) {
         </Button>
       </div>
 
-      <div className="bg-white border rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+      <div className="bg-card border rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
         <div className="flex justify-between items-start mb-4">
           <div>
-            <h2 className="text-xl font-bold text-gray-800">{courtName}</h2>
-            <p className="text-gray-600">
+            <h2 className="text-xl font-bold text-foreground">{courtName}</h2>
+            <p className="text-muted-foreground">
               {format(new Date(date), 'yyyy년 MM월 dd일 (EEE)', {
                 locale: ko,
               })}
@@ -346,21 +346,21 @@ export default function ScheduleDetailUser({ scheduleId, user }: Props) {
           </div>
         </div>
         <div className="grid grid-cols-3 gap-4 mb-6">
-          <div className="bg-blue-50 p-3 rounded-lg">
-            <p className="text-sm text-gray-600">시작</p>
-            <p className="text-lg font-bold text-blue-600">
+          <div className="bg-muted p-3 rounded-lg">
+            <p className="text-sm text-muted-foreground">시작</p>
+            <p className="text-lg font-bold text-primary">
               {startTime}-{endTime}
             </p>
           </div>
-          <div className="bg-orange-50 p-3 rounded-lg">
-            <p className="text-sm text-gray-600">총 참석자</p>
-            <p className="text-lg font-bold text-green-600">
+          <div className="bg-muted p-3 rounded-lg">
+            <p className="text-sm text-muted-foreground">총 참석자</p>
+            <p className="text-lg font-bold text-foreground">
               {attendees.length}명
             </p>
           </div>
-          <div className=" bg-green-50 p-3 rounded-lg">
-            <p className="text-sm text-gray-600">코트</p>
-            <p className="text-lg font-bold text-orange-600">
+          <div className=" bg-muted p-3 rounded-lg">
+            <p className="text-sm text-muted-foreground">코트</p>
+            <p className="text-lg font-bold text-foreground">
               {Array.isArray(schedule.courtNumbers)
                 ? schedule.courtNumbers
                     .map((cn) =>
@@ -379,16 +379,16 @@ export default function ScheduleDetailUser({ scheduleId, user }: Props) {
                   ? attendee._key
                   : `attendee-${index}`
               }
-              className="bg-gray-100 rounded-lg p-2"
+              className="bg-muted rounded-lg p-2"
             >
               <div className="flex justify-between items-center">
-                <span className="text-sm font-medium text-gray-700">
+                <span className="text-sm font-medium text-muted-foreground">
                   참가자 {index + 1}
                 </span>
                 <div className="text-sm">
                   {attendee.name} ({attendee.gender})
                 </div>
-                <span className="text-sm text-gray-500">
+                <span className="text-sm text-muted-foreground">
                   {attendee.startHour}:{attendee.startMinute} -{' '}
                   {attendee.endHour}:{attendee.endMinute}
                 </span>

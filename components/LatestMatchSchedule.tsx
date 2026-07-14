@@ -48,8 +48,8 @@ export default function LatestMatchSchedule() {
 
   if (gameError) {
     return (
-      <div className="bg-white rounded-lg shadow-md p-4">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">
+      <div className="bg-card rounded-lg shadow-md p-4">
+        <h3 className="text-lg font-semibold text-foreground mb-4">
           진행예정게임대진
         </h3>
         <div className="text-center py-8 text-red-500">
@@ -63,7 +63,7 @@ export default function LatestMatchSchedule() {
 
   return (
     <div>
-      <h3 className="text-lg font-semibold text-gray-800 print-hidden">
+      <h3 className="text-lg font-semibold text-foreground print-hidden">
         진행예정게임대진
       </h3>
       <MatchPrintPageContent

@@ -138,12 +138,12 @@ export default function User() {
       {!isLoading && (
         <form className="px-5" onSubmit={handleSubmit(onSubmit)}>
           <div className="space-y-4">
-            <div>
+            <div className="space-y-2">
               <Label>이름</Label>
               <Input type="text" {...register('name')} />
               <p>실명으로 입력해주세요.</p>
             </div>
-            <div>
+            <div className="space-y-2">
               <Label>성별</Label>
               <Controller
                 control={control}
@@ -164,7 +164,7 @@ export default function User() {
                 )}
               />
             </div>
-            <div>
+            <div className="space-y-2">
               <Label>출생년도</Label>
               <Input
                 type="text"
@@ -172,7 +172,7 @@ export default function User() {
                 placeholder="1988 네 자리 숫자만 입력해주세요."
               />
             </div>
-            <div>
+            <div className="space-y-2">
               <Label>핸드폰 번호</Label>
               <Input
                 type="text"
@@ -180,7 +180,7 @@ export default function User() {
                 placeholder="숫자만 입력해주세요."
               />
             </div>
-            <div>
+            <div className="space-y-2">
               <Label>거주지</Label>
               <Input
                 type="text"
@@ -200,7 +200,7 @@ export default function User() {
       {/* Danger Zone */}
       <div className="mx-5 mt-8 mb-6 border border-red-200 rounded-lg p-4 bg-red-50">
         <h3 className="text-sm font-semibold text-red-600 mb-2">위험 구역</h3>
-        <p className="text-xs text-gray-600 mb-3">
+        <p className="text-xs text-muted-foreground mb-3">
           회원 탈퇴 시 모든 데이터가 삭제되며 복구할 수 없습니다.
         </p>
         <Button
@@ -220,9 +220,9 @@ export default function User() {
       {/* 탈퇴 확인 모달 */}
       {showDeleteModal && (
         <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-lg p-6 max-w-sm w-full">
+          <div className="bg-card rounded-lg p-6 max-w-sm w-full">
             <h3 className="text-lg font-bold text-red-600 mb-2">회원탈퇴</h3>
-            <p className="text-sm text-gray-600 mb-4">
+            <p className="text-sm text-muted-foreground mb-4">
               탈퇴 시 모든 데이터가 영구 삭제되며 복구할 수 없습니다. 계속하려면
               이메일 주소를 입력하세요.
             </p>
@@ -238,7 +238,7 @@ export default function User() {
               value={deleteEmail}
               onChange={(e) => setDeleteEmail(e.target.value)}
               placeholder={session?.user?.email || '이메일 주소'}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm mb-4"
+              className="w-full border border-border rounded-md px-3 py-2 text-sm mb-4"
             />
 
             <div className="flex gap-2">

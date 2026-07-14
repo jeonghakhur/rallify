@@ -5,19 +5,29 @@ import { Button } from './ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover';
 import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import Image from 'next/image';
 import { useState, useEffect } from 'react';
+import { useTheme } from 'next-themes';
+import UserAvatar from './UserAvatar';
+
+const THEME_OPTIONS = [
+  { value: 'light', label: '라이트' },
+  { value: 'dark', label: '다크' },
+  { value: 'system', label: '시스템' },
+] as const;
 
 export default function NavBar() {
   const { data: session, status } = useSession();
   const pathname = usePathname() || '';
   const router = useRouter();
+  const { theme, setTheme } = useTheme();
   const isSignin = pathname?.includes('/auth/signin');
 
   const user = session?.user;
-  const role = user?.role || 'PENDING';
   const [largeFont, setLargeFont] = useState<null | boolean>(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => setMounted(true), []);
 
   // 마운트 후 localStorage에서 값 동기화
   useEffect(() => {
@@ -39,173 +49,83 @@ export default function NavBar() {
   }, [largeFont]);
 
   return (
-    <div className="print-hidden px-6 py-3">
-      {status === 'loading' ? (
-        // 로딩 중일 때 동일한 높이를 유지하는 스켈레톤
-        <div className="flex items-center">
-          <div className="flex gap-x-3 text-lg font-bold">
-            <div className="text-lg font-bold pb-0.5 border-b-2 border-transparent">
-              <div className="h-6 bg-gray-200 rounded w-8 animate-pulse"></div>
-            </div>
-            <div className="text-lg font-bold pb-0.5 border-b-2 border-transparent">
-              <div className="h-6 bg-gray-200 rounded w-12 animate-pulse"></div>
-            </div>
-            <div className="text-lg font-bold pb-0.5 border-b-2 border-transparent">
-              <div className="h-6 bg-gray-200 rounded w-8 animate-pulse"></div>
-            </div>
-          </div>
+    <div className="print-hidden sticky top-0 z-40 border-b border-border/60 bg-background/90 backdrop-blur-md">
+      <div className="flex h-14 items-center px-5">
+        <Link
+          href="/"
+          className="text-xl font-black tracking-tight text-foreground"
+        >
+          React Tennis Club<span className="text-accent dark:text-ball">.</span>
+        </Link>
+
+        {!isSignin && (
           <div className="ml-auto">
-            <div className="h-9 w-9 bg-gray-200 rounded-full animate-pulse"></div>
+            {status === 'loading' ? (
+              <div className="h-9 w-9 animate-pulse rounded-full bg-muted" />
+            ) : user ? (
+              <Popover open={menuOpen} onOpenChange={setMenuOpen}>
+                <PopoverTrigger asChild>
+                  <button
+                    type="button"
+                    aria-label="사용자 메뉴"
+                    className="rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  >
+                    <UserAvatar name={user.name} image={user.image} size={36} />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent align="end" sideOffset={8} className="w-44 p-1">
+                  <button
+                    type="button"
+                    className="w-full rounded px-3 py-2 text-left text-sm hover:bg-muted"
+                    onClick={() => {
+                      setMenuOpen(false);
+                      router.push('/user');
+                    }}
+                  >
+                    프로필 보기
+                  </button>
+                  <div className="my-1 border-t border-border" />
+                  <div className="px-3 pb-1 pt-1.5 text-xs font-semibold text-muted-foreground">
+                    테마
+                  </div>
+                  <div className="flex gap-1 px-2 pb-1.5">
+                    {THEME_OPTIONS.map((opt) => (
+                      <button
+                        key={opt.value}
+                        type="button"
+                        className={
+                          'flex-1 rounded-md px-1 py-1.5 text-xs font-semibold ' +
+                          (mounted && theme === opt.value
+                            ? 'bg-primary text-primary-foreground'
+                            : 'bg-muted text-muted-foreground hover:text-foreground')
+                        }
+                        onClick={() => setTheme(opt.value)}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="my-1 border-t border-border" />
+                  <button
+                    type="button"
+                    className="w-full rounded px-3 py-2 text-left text-sm text-destructive hover:bg-muted"
+                    onClick={() => {
+                      setMenuOpen(false);
+                      signOut({ callbackUrl: '/' });
+                    }}
+                  >
+                    로그아웃
+                  </button>
+                </PopoverContent>
+              </Popover>
+            ) : (
+              <Button type="button" variant="link" onClick={() => signIn()}>
+                로그인
+              </Button>
+            )}
           </div>
-        </div>
-      ) : (
-        <div className="flex items-center">
-          <ul className="flex gap-x-3 text-lg font-bold h-[43px] items-center">
-            <li>
-              <Link
-                href="/"
-                className={
-                  'relative pb-0.5 ' +
-                  (pathname === '/'
-                    ? 'border-b-2 border-blue-600 transition-all duration-300 ease-in-out'
-                    : 'border-b-2 border-transparent transition-all duration-300 ease-in-out')
-                }
-              >
-                홈
-              </Link>
-            </li>
-            {role !== 'PENDING' && (
-              <>
-                <li>
-                  <Link
-                    href="/schedule"
-                    className={
-                      'relative pb-0.5 ' +
-                      (pathname.startsWith('/schedule')
-                        ? 'border-b-2 border-blue-600 transition-all duration-300 ease-in-out'
-                        : 'border-b-2 border-transparent transition-all duration-300 ease-in-out')
-                    }
-                  >
-                    일정
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/games"
-                    className={
-                      'relative pb-0.5 ' +
-                      (pathname.startsWith('/games')
-                        ? 'border-b-2 border-blue-600 transition-all duration-300 ease-in-out'
-                        : 'border-b-2 border-transparent transition-all duration-300 ease-in-out')
-                    }
-                  >
-                    게임
-                  </Link>
-                </li>
-                {/* 클럽 기능 오픈 전까지 메뉴 비노출 */}
-                {/* <li>
-                  <Link
-                    href="/clubs"
-                    className={
-                      'relative pb-0.5 ' +
-                      (pathname.startsWith('/clubs')
-                        ? 'border-b-2 border-blue-600 transition-all duration-300 ease-in-out'
-                        : 'border-b-2 border-transparent transition-all duration-300 ease-in-out')
-                    }
-                  >
-                    클럽
-                  </Link>
-                </li> */}
-              </>
-            )}
-            {role === 'SUPER_ADMIN' && (
-              <>
-                <li>
-                  <Link
-                    href="/admin/members"
-                    className={
-                      'relative pb-0.5 ' +
-                      (pathname.startsWith('/admin/members')
-                        ? 'border-b-2 border-blue-600 transition-all duration-300 ease-in-out'
-                        : 'border-b-2 border-transparent transition-all duration-300 ease-in-out')
-                    }
-                  >
-                    회원관리
-                  </Link>
-                </li>
-                {/* 클럽 기능 오픈 전까지 메뉴 비노출 */}
-                {/* <li>
-                  <Link
-                    href="/admin/club-applications"
-                    className={
-                      'relative pb-0.5 ' +
-                      (pathname.startsWith('/admin/club-applications')
-                        ? 'border-b-2 border-blue-600 transition-all duration-300 ease-in-out'
-                        : 'border-b-2 border-transparent transition-all duration-300 ease-in-out')
-                    }
-                  >
-                    클럽신청
-                  </Link>
-                </li> */}
-              </>
-            )}
-          </ul>
-          {!isSignin && (
-            <div className="ml-auto">
-              {user ? (
-                <Popover open={menuOpen} onOpenChange={setMenuOpen}>
-                  <PopoverTrigger asChild>
-                    <button
-                      type="button"
-                      aria-label="사용자 메뉴"
-                      className="rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
-                    >
-                      <Image
-                        src={user.image ?? '/default_profile.png'}
-                        width={36}
-                        height={36}
-                        alt={`${user.name} profile image`}
-                        className="rounded-full"
-                        priority
-                      />
-                    </button>
-                  </PopoverTrigger>
-                  <PopoverContent
-                    align="end"
-                    sideOffset={8}
-                    className="w-40 p-1"
-                  >
-                    <button
-                      type="button"
-                      className="w-full text-left px-3 py-2 text-sm rounded hover:bg-gray-100"
-                      onClick={() => {
-                        setMenuOpen(false);
-                        router.push('/user');
-                      }}
-                    >
-                      프로필 보기
-                    </button>
-                    <button
-                      type="button"
-                      className="w-full text-left px-3 py-2 text-sm rounded hover:bg-gray-100 text-red-600"
-                      onClick={() => {
-                        setMenuOpen(false);
-                        signOut({ callbackUrl: '/' });
-                      }}
-                    >
-                      로그아웃
-                    </button>
-                  </PopoverContent>
-                </Popover>
-              ) : (
-                <Button type="button" variant="link" onClick={() => signIn()}>
-                  로그인
-                </Button>
-              )}
-            </div>
-          )}
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }

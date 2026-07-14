@@ -64,7 +64,7 @@ export default function PairGameHistory() {
   if (!games || games.length === 0) {
     return (
       <Container>
-        <div className="text-center py-20 text-lg text-gray-500">
+        <div className="text-center py-20 text-lg text-muted-foreground">
           게임 데이터가 없습니다.
         </div>
       </Container>
@@ -134,10 +134,10 @@ export default function PairGameHistory() {
       <div className="space-y-6">
         {/* 헤더 */}
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-800 mb-2">
+          <h1 className="text-2xl font-bold text-foreground mb-2">
             {players.join(' & ')} 페어 기록
           </h1>
-          <p className="text-gray-600">
+          <p className="text-muted-foreground">
             총 {totalGames}경기 • {wins}승 {draws}무 {losses}패 • 승률 {winRate}
             %
           </p>
@@ -145,30 +145,30 @@ export default function PairGameHistory() {
 
         {/* 통계 카드 */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="bg-white p-4 rounded-lg shadow border text-center">
-            <div className="text-2xl font-bold text-blue-600">{totalGames}</div>
-            <div className="text-sm text-gray-600">총 경기</div>
+          <div className="bg-card p-4 rounded-lg shadow border text-center">
+            <div className="text-2xl font-bold text-primary">{totalGames}</div>
+            <div className="text-sm text-muted-foreground">총 경기</div>
           </div>
-          <div className="bg-white p-4 rounded-lg shadow border text-center">
+          <div className="bg-card p-4 rounded-lg shadow border text-center">
             <div className="text-2xl font-bold text-green-600">{wins}</div>
-            <div className="text-sm text-gray-600">승</div>
+            <div className="text-sm text-muted-foreground">승</div>
           </div>
-          <div className="bg-white p-4 rounded-lg shadow border text-center">
+          <div className="bg-card p-4 rounded-lg shadow border text-center">
             <div className="text-2xl font-bold text-yellow-600">{draws}</div>
-            <div className="text-sm text-gray-600">무</div>
+            <div className="text-sm text-muted-foreground">무</div>
           </div>
-          <div className="bg-white p-4 rounded-lg shadow border text-center">
+          <div className="bg-card p-4 rounded-lg shadow border text-center">
             <div className="text-2xl font-bold text-red-600">{losses}</div>
-            <div className="text-sm text-gray-600">패</div>
+            <div className="text-sm text-muted-foreground">패</div>
           </div>
         </div>
 
         {/* 게임 기록 테이블 */}
         {pairGames.length > 0 ? (
-          <div className="bg-white rounded-lg shadow border overflow-hidden">
+          <div className="bg-card rounded-lg shadow border overflow-hidden">
             <div className="overflow-x-auto">
               <table className="table w-full">
-                <thead className="bg-gray-50">
+                <thead className="bg-muted">
                   <tr>
                     <th className="text-left">날짜</th>
                     <th className="text-left">장소</th>
@@ -182,24 +182,24 @@ export default function PairGameHistory() {
                   {pairGames.map((game, index) => (
                     <tr key={index} className="border-t">
                       <td className="py-3">
-                        <div className="text-sm font-medium text-gray-900">
+                        <div className="text-sm font-medium text-foreground">
                           {format(new Date(game.date), 'MM.dd')}
                         </div>
-                        <div className="text-xs text-gray-500">
+                        <div className="text-xs text-muted-foreground">
                           {format(new Date(game.date), 'EEEE', { locale: ko })}
                         </div>
                       </td>
-                      <td className="py-3 text-sm text-gray-900">
+                      <td className="py-3 text-sm text-foreground">
                         {game.courtName}
                       </td>
-                      <td className="py-3 text-sm text-gray-900">
+                      <td className="py-3 text-sm text-foreground">
                         {game.team}
                       </td>
-                      <td className="py-3 text-sm text-gray-900">
+                      <td className="py-3 text-sm text-foreground">
                         {game.opponent}
                       </td>
                       <td className="py-3 text-center">
-                        <span className="text-sm font-medium text-gray-900">
+                        <span className="text-sm font-medium text-foreground">
                           {game.score}
                         </span>
                       </td>
@@ -227,7 +227,7 @@ export default function PairGameHistory() {
             </div>
           </div>
         ) : (
-          <div className="text-center py-20 text-lg text-gray-500">
+          <div className="text-center py-20 text-lg text-muted-foreground">
             {players.join(' & ')} 페어의 게임 기록이 없습니다.
           </div>
         )}

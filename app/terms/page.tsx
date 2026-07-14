@@ -2,11 +2,11 @@ export default function TermsPage() {
   return (
     <main className="max-w-2xl mx-auto px-4 py-10">
       <h1 className="text-2xl font-bold mb-6">이용약관</h1>
-      <p className="text-xs text-gray-400 mb-8">
+      <p className="text-xs text-muted-foreground mb-8">
         시행일: 2026년 4월 23일 | 버전 1.0
       </p>
 
-      <section className="space-y-8 text-sm text-gray-700 leading-relaxed">
+      <section className="space-y-8 text-sm text-muted-foreground leading-relaxed">
         <article>
           <h2 className="text-lg font-semibold mb-2">제1조 (목적)</h2>
           <p>

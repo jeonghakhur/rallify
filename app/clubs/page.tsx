@@ -27,7 +27,9 @@ export default function ClubsPage() {
   const { data: clubs, isLoading } = useSWR<Club[]>('/api/clubs');
 
   if (authLoading || isLoading)
-    return <div className="p-4 text-center text-gray-400">로딩 중...</div>;
+    return (
+      <div className="p-4 text-center text-muted-foreground">로딩 중...</div>
+    );
 
   return (
     <main className="max-w-2xl mx-auto px-4 py-6">
@@ -39,7 +41,7 @@ export default function ClubsPage() {
       </div>
 
       {!clubs || clubs.length === 0 ? (
-        <div className="text-center py-16 text-gray-400">
+        <div className="text-center py-16 text-muted-foreground">
           <p className="mb-4">아직 생성된 클럽이 없습니다.</p>
           <Link href="/clubs/create">
             <Button>첫 번째 클럽 만들기</Button>
@@ -51,17 +53,17 @@ export default function ClubsPage() {
             <Link
               key={club.id}
               href={`/clubs/${club.id}`}
-              className="block bg-white border border-gray-200 rounded-lg p-4 hover:border-blue-300 transition-colors"
+              className="block bg-card border border-border rounded-lg p-4 hover:border-blue-300 transition-colors"
             >
               <div className="flex items-start justify-between">
                 <div>
-                  <h2 className="font-semibold text-gray-800">{club.name}</h2>
+                  <h2 className="font-semibold text-foreground">{club.name}</h2>
                   {club.description && (
-                    <p className="text-sm text-gray-500 mt-1 line-clamp-2">
+                    <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
                       {club.description}
                     </p>
                   )}
-                  <div className="flex items-center gap-3 mt-2 text-xs text-gray-400">
+                  <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
                     {club.city && (
                       <span>
                         {club.city} {club.district}
@@ -70,7 +72,7 @@ export default function ClubsPage() {
                     <span>멤버 {club.memberCount}명</span>
                   </div>
                 </div>
-                <span className="text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-600 whitespace-nowrap">
+                <span className="text-xs px-2 py-1 rounded-full bg-muted text-muted-foreground whitespace-nowrap">
                   {joinTypeLabel[club.joinType] || club.joinType}
                 </span>
               </div>

@@ -189,7 +189,10 @@ export default function Page({ params }: Props) {
 
     setDataLoading(true);
     try {
-      const result = await updateGameData(game._id!, editableGames);
+      const result = await updateGameData(
+        (game.id ?? game._id)!,
+        editableGames
+      );
 
       if (result.success) {
         toast({
@@ -233,7 +236,7 @@ export default function Page({ params }: Props) {
 
       if (updatedGames.length === 0) {
         // 모든 게임이 삭제되면 전체 게임 결과를 삭제하고 스케줄 상태를 pending으로 변경
-        const result = await removeGame(game._id!);
+        const result = await removeGame((game.id ?? game._id)!);
         if (result.success) {
           // 스케줄 상태를 pending으로 변경
           if (game.scheduleID) {
@@ -279,7 +282,7 @@ export default function Page({ params }: Props) {
       }
 
       // 남은 게임들로 업데이트 (일부 게임만 삭제되므로 스케줄 상태는 match_done 유지)
-      const result = await updateGameData(game._id!, updatedGames);
+      const result = await updateGameData((game.id ?? game._id)!, updatedGames);
 
       if (result.success) {
         setEditableGames(updatedGames);
@@ -350,7 +353,11 @@ export default function Page({ params }: Props) {
     setEditableGames(updatedGames);
     setDataLoading(true);
     try {
-      const result = await updateGameData(game._id!, updatedGames, gameStatus);
+      const result = await updateGameData(
+        (game.id ?? game._id)!,
+        updatedGames,
+        gameStatus
+      );
       if (result.success) {
         toast({ title: '게임이 등록되었습니다.', duration: 1500 });
         setDialogOpen(false);
@@ -389,12 +396,12 @@ export default function Page({ params }: Props) {
       {dataLoading && <Skeleton lines={3} />}
 
       <div className="pb-10">
-        <div className="bg-white rounded-lg shadow-md p-3 mb-6">
+        <div className="bg-card rounded-lg shadow-md p-3 mb-6">
           <div className="flex flex-col items-center text-center">
-            <h1 className="text-2xl font-bold text-gray-800 mb-2">
+            <h1 className="text-2xl font-bold text-foreground mb-2">
               {game.courtName}
             </h1>
-            <div className="text-lg text-gray-600">
+            <div className="text-lg text-muted-foreground">
               {game.date
                 ? format(new Date(game.date), 'yyyy년 MM월 dd일 (EEE)', {
                     locale: ko,
@@ -560,14 +567,16 @@ export default function Page({ params }: Props) {
         <div className="grid gap-4">
           {editableGames.map((result, index) => {
             return (
-              <div key={index} className="bg-white rounded-lg shadow-md p-4">
+              <div key={index} className="bg-card rounded-lg shadow-md p-4">
                 <div className="flex gap-2">
                   <div className="flex flex-col justify-center items-center ">
                     <div className="font-semibold whitespace-nowrap">
                       게임 {index + 1}
                     </div>
-                    <div className="text-sm text-gray-500">{result.time}</div>
-                    <div className="text-sm text-gray-500">
+                    <div className="text-sm text-muted-foreground">
+                      {result.time}
+                    </div>
+                    <div className="text-sm text-muted-foreground">
                       {result.court} 코트
                     </div>
                   </div>
@@ -668,7 +677,7 @@ export default function Page({ params }: Props) {
               variant="destructive"
               size="lg"
               className="flex-1"
-              onClick={() => handleDelete(game._id!)}
+              onClick={() => handleDelete((game.id ?? game._id)!)}
             >
               전체 삭제
             </Button>
@@ -676,7 +685,7 @@ export default function Page({ params }: Props) {
               type="button"
               size="lg"
               className="flex-1"
-              onClick={() => handleUpdate(game._id!)}
+              onClick={() => handleUpdate((game.id ?? game._id)!)}
             >
               전체 수정
             </Button>

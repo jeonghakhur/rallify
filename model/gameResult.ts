@@ -29,7 +29,8 @@ export interface Editor {
 }
 
 export interface GameResult {
-  _id?: string; // 문서 ID (선택적)
+  id?: string; // 문서 ID (Prisma)
+  _id?: string; // 문서 ID (레거시 Sanity, 점진 제거 예정)
   scheduleID: string;
   courtName: string;
   date: string;

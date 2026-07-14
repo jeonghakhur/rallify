@@ -114,7 +114,7 @@ export default function CreateClubPage() {
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-muted-foreground mb-1">
             클럽 이름 *
           </label>
           <input
@@ -123,53 +123,53 @@ export default function CreateClubPage() {
             minLength={2}
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border border-border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="클럽 이름을 입력하세요"
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-muted-foreground mb-1">
             설명
           </label>
           <textarea
             value={form.description}
             onChange={(e) => setForm({ ...form, description: e.target.value })}
             rows={3}
-            className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full border border-border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             placeholder="클럽에 대한 간단한 설명"
           />
         </div>
 
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-muted-foreground mb-1">
               시/도
             </label>
             <input
               type="text"
               value={form.city}
               onChange={(e) => setForm({ ...form, city: e.target.value })}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="서울"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-sm font-medium text-muted-foreground mb-1">
               구/군
             </label>
             <input
               type="text"
               value={form.district}
               onChange={(e) => setForm({ ...form, district: e.target.value })}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="마포구"
             />
           </div>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label className="block text-sm font-medium text-muted-foreground mb-2">
             가입 방식
           </label>
           <div className="flex gap-2">
@@ -185,7 +185,7 @@ export default function CreateClubPage() {
                 className={`flex-1 py-2 rounded-md border text-sm font-medium transition-colors ${
                   form.joinType === opt.value
                     ? 'bg-blue-500 text-white border-blue-500'
-                    : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'
+                    : 'bg-card text-muted-foreground border-border hover:bg-muted'
                 }`}
               >
                 {opt.label}

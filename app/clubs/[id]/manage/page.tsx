@@ -34,7 +34,7 @@ const HISTORY_STATUS_LABEL: Record<string, string> = {
 
 const HISTORY_STATUS_COLOR: Record<string, string> = {
   REJECTED: 'bg-red-100 text-red-700',
-  LEFT: 'bg-gray-100 text-gray-600',
+  LEFT: 'bg-muted text-muted-foreground',
   REMOVED: 'bg-orange-100 text-orange-700',
 };
 
@@ -231,7 +231,9 @@ export default function ClubManagePage({
   if (authLoading) return null;
   if (!isAdmin)
     return (
-      <div className="p-4 text-center text-gray-400">접근 권한이 없습니다.</div>
+      <div className="p-4 text-center text-muted-foreground">
+        접근 권한이 없습니다.
+      </div>
     );
 
   const tabs = [
@@ -247,15 +249,15 @@ export default function ClubManagePage({
       <h1 className="text-xl font-bold mb-4">{club?.name} 관리</h1>
 
       {/* 탭 */}
-      <div className="flex border-b border-gray-200 mb-4">
+      <div className="flex border-b border-border mb-4">
         {tabs.map((t) => (
           <button
             key={t.key}
             onClick={() => setTab(t.key as typeof tab)}
             className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors ${
               tab === t.key
-                ? 'border-blue-500 text-blue-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700'
+                ? 'border-blue-500 text-primary'
+                : 'border-transparent text-muted-foreground hover:text-muted-foreground'
             }`}
           >
             {t.label}
@@ -267,7 +269,7 @@ export default function ClubManagePage({
       {tab === 'pending' && (
         <div className="space-y-2">
           {!pendingMembers || pendingMembers.length === 0 ? (
-            <p className="text-sm text-gray-400 py-8 text-center">
+            <p className="text-sm text-muted-foreground py-8 text-center">
               대기 중인 가입 신청이 없습니다.
             </p>
           ) : (
@@ -276,7 +278,7 @@ export default function ClubManagePage({
               return (
                 <div
                   key={m.id}
-                  className="p-3 bg-white border rounded-lg space-y-2"
+                  className="p-3 bg-card border rounded-lg space-y-2"
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0 flex-1">
@@ -285,18 +287,18 @@ export default function ClubManagePage({
                           {m.user.name}
                         </span>
                         {m.user.gender && (
-                          <span className="text-xs text-gray-500">
+                          <span className="text-xs text-muted-foreground">
                             {m.user.gender}
                           </span>
                         )}
                         {m.user.birthyear && (
-                          <span className="text-xs text-gray-500">
+                          <span className="text-xs text-muted-foreground">
                             {m.user.birthyear}
                             {age !== null && ` (만 ${age}세)`}
                           </span>
                         )}
                       </div>
-                      <p className="text-xs text-gray-400 mt-0.5 truncate">
+                      <p className="text-xs text-muted-foreground mt-0.5 truncate">
                         {m.user.email}
                         {m.user.phoneNumber && ` · ${m.user.phoneNumber}`}
                       </p>
@@ -315,7 +317,7 @@ export default function ClubManagePage({
                     </div>
                   </div>
                   {m.introduction && (
-                    <p className="text-sm text-gray-600 bg-gray-50 rounded p-2 whitespace-pre-line">
+                    <p className="text-sm text-muted-foreground bg-muted rounded p-2 whitespace-pre-line">
                       {m.introduction}
                     </p>
                   )}
@@ -330,7 +332,7 @@ export default function ClubManagePage({
       {tab === 'invited' && (
         <div className="space-y-4">
           {/* 초대 검색 */}
-          <div className="bg-white border rounded-lg p-4">
+          <div className="bg-card border rounded-lg p-4">
             <h3 className="text-sm font-medium mb-2">멤버 초대</h3>
             <div className="flex gap-2">
               <input
@@ -339,7 +341,7 @@ export default function ClubManagePage({
                 onChange={(e) => setInviteQuery(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
                 placeholder="이름 또는 이메일로 검색"
-                className="flex-1 border border-gray-300 rounded-md px-3 py-2 text-sm"
+                className="flex-1 border border-border rounded-md px-3 py-2 text-sm"
               />
               <Button size="sm" onClick={handleSearch}>
                 검색
@@ -354,7 +356,9 @@ export default function ClubManagePage({
                   >
                     <span className="text-sm">
                       {u.name}{' '}
-                      <span className="text-gray-400">@{u.username}</span>
+                      <span className="text-muted-foreground">
+                        @{u.username}
+                      </span>
                     </span>
                     <Button
                       size="sm"
@@ -371,18 +375,20 @@ export default function ClubManagePage({
 
           {/* 초대 목록 */}
           {invitedMembers.length === 0 ? (
-            <p className="text-sm text-gray-400 text-center py-4">
+            <p className="text-sm text-muted-foreground text-center py-4">
               초대 대기 중인 멤버가 없습니다.
             </p>
           ) : (
             invitedMembers.map((m) => (
               <div
                 key={m.id}
-                className="flex items-center justify-between p-3 bg-white border rounded-lg"
+                className="flex items-center justify-between p-3 bg-card border rounded-lg"
               >
                 <span className="text-sm">
                   {m.user.name}{' '}
-                  <span className="text-gray-400">@{m.user.username}</span>
+                  <span className="text-muted-foreground">
+                    @{m.user.username}
+                  </span>
                 </span>
                 <span className="text-xs text-amber-500">초대 대기</span>
               </div>
@@ -397,15 +403,15 @@ export default function ClubManagePage({
           {activeMembers.map((m) => (
             <div
               key={m.id}
-              className="flex items-center justify-between p-3 bg-white border rounded-lg"
+              className="flex items-center justify-between p-3 bg-card border rounded-lg"
             >
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-xs">
+                <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-xs">
                   {m.user.name?.[0] || '?'}
                 </div>
                 <div>
                   <span className="text-sm font-medium">{m.user.name}</span>
-                  <span className="text-xs text-gray-400 ml-1">
+                  <span className="text-xs text-muted-foreground ml-1">
                     {m.role === 'OWNER'
                       ? '소유자'
                       : m.role === 'MANAGER'
@@ -442,7 +448,7 @@ export default function ClubManagePage({
       {tab === 'history' && (
         <div className="space-y-2">
           {historyMembers.length === 0 ? (
-            <p className="text-sm text-gray-400 py-8 text-center">
+            <p className="text-sm text-muted-foreground py-8 text-center">
               이력이 없습니다.
             </p>
           ) : (
@@ -451,7 +457,7 @@ export default function ClubManagePage({
               return (
                 <div
                   key={m.id}
-                  className="p-3 bg-white border rounded-lg space-y-2"
+                  className="p-3 bg-card border rounded-lg space-y-2"
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0 flex-1">
@@ -459,7 +465,7 @@ export default function ClubManagePage({
                         <span
                           className={`text-xs px-2 py-0.5 rounded-full ${
                             HISTORY_STATUS_COLOR[m.status] ??
-                            'bg-gray-100 text-gray-600'
+                            'bg-muted text-muted-foreground'
                           }`}
                         >
                           {HISTORY_STATUS_LABEL[m.status] ?? m.status}
@@ -467,16 +473,16 @@ export default function ClubManagePage({
                         <span className="font-medium text-sm">
                           {m.user.name}
                         </span>
-                        <span className="text-xs text-gray-400 truncate">
+                        <span className="text-xs text-muted-foreground truncate">
                           {m.user.email}
                         </span>
                       </div>
                       {m.statusReason && (
-                        <p className="text-xs text-gray-500 mt-1">
+                        <p className="text-xs text-muted-foreground mt-1">
                           사유: {m.statusReason}
                         </p>
                       )}
-                      <p className="text-xs text-gray-400 mt-0.5">
+                      <p className="text-xs text-muted-foreground mt-0.5">
                         신청일{' '}
                         {new Date(m.createdAt).toLocaleDateString('ko-KR')}
                       </p>
@@ -493,7 +499,7 @@ export default function ClubManagePage({
                     )}
                   </div>
                   {m.status === 'REJECTED' && m.introduction && (
-                    <p className="text-sm text-gray-600 bg-gray-50 rounded p-2 whitespace-pre-line">
+                    <p className="text-sm text-muted-foreground bg-muted rounded p-2 whitespace-pre-line">
                       {m.introduction}
                     </p>
                   )}
@@ -507,9 +513,9 @@ export default function ClubManagePage({
       {/* 설정 */}
       {tab === 'settings' && isOwner && (
         <div className="space-y-6">
-          <div className="bg-white border rounded-lg p-4">
+          <div className="bg-card border rounded-lg p-4">
             <h3 className="text-sm font-medium mb-2">클럽 정보</h3>
-            <p className="text-xs text-gray-400">
+            <p className="text-xs text-muted-foreground">
               클럽 정보 수정 기능은 추후 업데이트 예정입니다.
             </p>
           </div>
@@ -518,7 +524,7 @@ export default function ClubManagePage({
             <h3 className="text-sm font-semibold text-red-600 mb-2">
               위험 구역
             </h3>
-            <p className="text-xs text-gray-600 mb-3">
+            <p className="text-xs text-muted-foreground mb-3">
               클럽을 삭제하면 모든 멤버 데이터가 함께 삭제됩니다.
             </p>
             <Button

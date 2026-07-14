@@ -109,10 +109,10 @@ export default function ScheduleList() {
   if (error) {
     return (
       <Container>
-        <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="bg-card rounded-lg shadow-md p-6">
           <div className="flex flex-col items-center text-center">
-            <div className="bg-gray-50 rounded-lg p-8 w-full max-w-md">
-              <div className="text-gray-500 mb-4">
+            <div className="bg-muted rounded-lg p-8 w-full max-w-md">
+              <div className="text-muted-foreground mb-4">
                 <svg
                   className="mx-auto h-12 w-12 text-red-400"
                   fill="none"
@@ -128,10 +128,12 @@ export default function ScheduleList() {
                   />
                 </svg>
               </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
+              <h3 className="text-lg font-medium text-foreground mb-2">
                 데이터를 불러오는데 실패했습니다
               </h3>
-              <p className="text-gray-500 mb-6">잠시 후 다시 시도해주세요.</p>
+              <p className="text-muted-foreground mb-6">
+                잠시 후 다시 시도해주세요.
+              </p>
               <Button
                 type="button"
                 variant="outline"
@@ -150,12 +152,12 @@ export default function ScheduleList() {
   if (!schedules || schedules.length === 0) {
     return (
       <Container>
-        <div className="bg-white rounded-lg shadow-md p-6">
+        <div className="bg-card rounded-lg shadow-md p-6">
           <div className="flex flex-col items-center text-center">
-            <div className="bg-gray-50 rounded-lg p-8 w-full max-w-md">
-              <div className="text-gray-500 mb-4">
+            <div className="bg-muted rounded-lg p-8 w-full max-w-md">
+              <div className="text-muted-foreground mb-4">
                 <svg
-                  className="mx-auto h-12 w-12 text-gray-400"
+                  className="mx-auto h-12 w-12 text-muted-foreground"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -169,10 +171,10 @@ export default function ScheduleList() {
                   />
                 </svg>
               </div>
-              <h3 className="text-lg font-medium text-gray-900 mb-2">
+              <h3 className="text-lg font-medium text-foreground mb-2">
                 등록된 스케줄이 없습니다
               </h3>
-              <p className="text-gray-500 mb-6">
+              <p className="text-muted-foreground mb-6">
                 아직 등록된 스케줄이 없습니다.
               </p>
               {user && user.level >= 3 && (
@@ -195,7 +197,7 @@ export default function ScheduleList() {
   return (
     <Container>
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold text-gray-800">게임일정</h1>
+        <h1 className="text-2xl font-bold text-foreground">게임일정</h1>
         {user && user.level >= 3 && (
           <CalendarPlus
             className="ml-auto"
@@ -270,54 +272,87 @@ export default function ScheduleList() {
           };
           const status = statusMap[schedule.status] || '';
 
+          const scheduleDate = new Date(schedule.date);
+          const isPast = schedule.status === 'done';
+          const isToday =
+            scheduleDate.toDateString() === new Date().toDateString();
+          const courts = Array.isArray(schedule.courtNumbers)
+            ? schedule.courtNumbers
+                .map((cn) =>
+                  typeof cn === 'object' && cn.number ? cn.number : cn
+                )
+                .join('·')
+            : '';
+          const needsVote = schedule.status === 'attendees';
+
           return (
             <div
               key={schedule.id}
-              className="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow border border-gray-200"
+              className="rounded-2xl border border-border bg-card p-4"
             >
-              <div className="flex justify-between items-start mb-4">
-                <div>
-                  <h2 className="text-xl font-bold text-gray-800">
-                    {schedule.courtName}
-                  </h2>
-                  <p className="text-gray-600">
-                    {format(new Date(schedule.date), 'yyyy년 MM월 dd일 (EEE)', {
-                      locale: ko,
-                    })}
+              <div className="grid grid-cols-[72px_1fr] items-center gap-4">
+                <div
+                  className={
+                    'border-r border-border pr-4 text-center tabular-nums ' +
+                    (isPast ? 'opacity-45' : '')
+                  }
+                >
+                  <p className="text-[10px] font-extrabold tracking-[0.14em] text-muted-foreground">
+                    {format(scheduleDate, 'M월', { locale: ko })}
+                  </p>
+                  <p
+                    className={
+                      'text-[30px] font-black leading-tight ' +
+                      (isToday ? 'text-clay' : 'text-foreground')
+                    }
+                  >
+                    {format(scheduleDate, 'd')}
+                  </p>
+                  <p
+                    className={
+                      'text-[11px] font-extrabold ' +
+                      (isToday
+                        ? 'text-clay'
+                        : isPast
+                          ? 'text-muted-foreground'
+                          : 'text-primary dark:text-accent')
+                    }
+                  >
+                    {format(scheduleDate, 'EEEE', { locale: ko })}
                   </p>
                 </div>
-              </div>
-
-              {workoutInfo && (
-                <div className="grid grid-cols-3 gap-4 mb-3">
-                  <div className="bg-blue-50 p-3 rounded-lg">
-                    <p className="text-sm text-gray-600">시간</p>
-                    <p className="text-lg font-bold text-blue-600">
-                      {workoutInfo.startTime}-{workoutInfo.endTime}
+                <div>
+                  <p className="flex items-center text-[15px] font-extrabold text-foreground">
+                    {workoutInfo?.startTime}–{workoutInfo?.endTime}시
+                    <span
+                      className={
+                        'ml-2 rounded-full border px-2.5 py-0.5 text-[10px] font-extrabold tracking-wide ' +
+                        (needsVote
+                          ? 'border-clay/40 bg-clay/10 text-clay'
+                          : isPast
+                            ? 'border-primary/30 bg-primary/10 text-primary dark:text-accent dark:border-accent/30 dark:bg-accent/10'
+                            : 'border-border bg-muted text-muted-foreground')
+                      }
+                    >
+                      {isPast
+                        ? `완료 · ${workoutInfo?.totalPlayers ?? 0}명`
+                        : status}
+                    </span>
+                  </p>
+                  <p className="mt-0.5 text-[13px] text-muted-foreground">
+                    {schedule.courtName}
+                    {courts && <> · {courts}코트</>}
+                  </p>
+                  {!isPast && (
+                    <p className="mt-0.5 text-xs text-muted-foreground">
+                      참석{' '}
+                      <b className="text-foreground">
+                        {workoutInfo?.totalPlayers ?? 0}명
+                      </b>
                     </p>
-                  </div>
-                  <div className="bg-orange-50 p-3 rounded-lg">
-                    <p className="text-sm text-gray-600">총 참석자</p>
-                    <p className="text-lg font-bold text-orange-600">
-                      {workoutInfo.totalPlayers}명
-                    </p>
-                  </div>
-                  <div className="bg-green-50 p-3 rounded-lg">
-                    <p className="text-sm text-gray-600">코트</p>
-                    <p className="text-lg font-bold text-green-600">
-                      {Array.isArray(schedule.courtNumbers)
-                        ? schedule.courtNumbers
-                            .map((cn) =>
-                              typeof cn === 'object' && cn.number
-                                ? cn.number
-                                : cn
-                            )
-                            .join(', ')
-                        : '0'}
-                    </p>
-                  </div>
+                  )}
                 </div>
-              )}
+              </div>
 
               <div className="grid mt-3">
                 {user && user.level >= 3 && (

@@ -9,6 +9,7 @@ import { UserProps } from '@/model/user';
 import { Calendar } from './ui/calendar';
 import { Popover, PopoverTrigger, PopoverContent } from './ui/popover';
 import useAuthRedirect from '@/hooks/useAuthRedirect';
+import RankList from './RankList';
 
 type PlayerStats = {
   name: string;
@@ -116,114 +117,64 @@ function StatsTableContent({ stats }: { stats: PlayerStats[] }) {
   const displayStats = showAll ? stats : stats.slice(0, 10);
   const router = useRouter();
 
-  // 가장 많은 게임 수 찾기
-  const maxGames = Math.max(...stats.map((s) => s.game));
-  const minGamesThreshold = Math.ceil(maxGames * 0.33);
-
-  // 33% 이상 참석한 회원들만 필터링
-  const qualifiedPlayers = stats.filter((s) => s.game >= minGamesThreshold);
-
-  // 각 항목별 상위 2명 찾기 (33% 이상 참석한 회원들 중에서)
-  const sortedByPoint = [...qualifiedPlayers].sort((a, b) => b.point - a.point);
-  const top2Points = sortedByPoint.slice(0, 2).map((s) => s.point);
-  const top2PointPlayers = sortedByPoint.slice(0, 2).map((s) => s.name);
-
-  // 승점 1,2위를 제외한 회원들 중에서 승률 1,2위 찾기
-  const remainingForWinRate = qualifiedPlayers.filter(
-    (p) => !top2PointPlayers.includes(p.name)
-  );
-  const sortedByWinRate = [...remainingForWinRate].sort(
-    (a, b) => b.winRate - a.winRate || b.margin - a.margin
-  );
-  const top2WinRates = sortedByWinRate.slice(0, 2).map((s) => s.winRate);
-  const top2WinRatePlayers = sortedByWinRate.slice(0, 2).map((s) => s.name);
-
-  // 승점과 승률 1,2위를 제외한 회원들 중에서 마진 1,2위 찾기
-  const remainingForMargin = qualifiedPlayers.filter(
-    (p) =>
-      !top2PointPlayers.includes(p.name) && !top2WinRatePlayers.includes(p.name)
-  );
-  const sortedByMargin = [...remainingForMargin].sort(
-    (a, b) => b.margin - a.margin
-  );
-  const top2Margins = sortedByMargin.slice(0, 2).map((s) => s.margin);
-
-  const getPointClass = (point: number) => {
-    if (point === top2Points[0]) return 'bg-red-200 font-semibold';
-    if (point === top2Points[1]) return 'bg-red-100 font-semibold';
-    return '';
-  };
-
-  const getWinRateClass = (winRate: number) => {
-    if (winRate === top2WinRates[0]) return 'bg-green-200 font-semibold';
-    if (winRate === top2WinRates[1]) return 'bg-green-100 font-semibold';
-    return '';
-  };
-
-  const getMarginClass = (margin: number) => {
-    if (margin === top2Margins[0]) return 'bg-sky-200 font-semibold';
-    if (margin === top2Margins[1]) return 'bg-sky-100 font-semibold';
-    return '';
-  };
-
   const handleNameClick = (name: string) => {
     router.push(`/player/${encodeURIComponent(name)}`);
   };
 
+  const podium = stats.slice(0, 3);
+
   return (
     <div className="space-y-4">
-      <div className="overflow-x-auto">
-        <table className="table w-full text-center text-sm">
-          <thead>
-            <tr>
-              <th>순위</th>
-              <th>이름</th>
-              <th>승</th>
-              <th>무</th>
-              <th>패</th>
-              <th>게임</th>
-              <th>승점</th>
-              <th>승률</th>
-              <th>득점</th>
-              <th>실점</th>
-              <th>마진</th>
-            </tr>
-          </thead>
-          <tbody>
-            {displayStats.map((row, idx) => (
-              <tr key={row.name}>
-                <td>{idx + 1}</td>
-                <td>
-                  <div
-                    className="whitespace-nowrap cursor-pointer text-blue-700 hover:text-blue-900 transition-colors underline underline-offset-4"
-                    onClick={() => handleNameClick(row.name)}
-                  >
-                    {row.name}
-                  </div>
-                </td>
-                <td className="text-green-600 font-semibold">{row.win}</td>
-                <td className="text-yellow-600">{row.draw}</td>
-                <td className="text-red-600">{row.lose}</td>
-                <td>{row.game}</td>
-                <td
-                  className={`font-semibold text-blue-600 ${getPointClass(row.point)}`}
+      {podium.length === 3 && (
+        <div className="grid grid-cols-3 items-end gap-2.5">
+          {[podium[1], podium[0], podium[2]].map((p, i) => {
+            if (!p) return null;
+            const isFirst = i === 1;
+            const rankLabel = isFirst ? '1ST' : i === 0 ? '2ND' : '3RD';
+            return (
+              <button
+                type="button"
+                key={p.name}
+                onClick={() => handleNameClick(p.name)}
+                className={
+                  'rounded-2xl border bg-card px-2 pb-3 text-center ' +
+                  (isFirst
+                    ? 'border-primary/50 pt-5 shadow-[0_8px_26px_hsl(var(--ball)/0.15)] dark:border-ball/50'
+                    : 'border-border pt-3.5')
+                }
+              >
+                <p
+                  className={
+                    'text-[10px] font-black tracking-[0.18em] ' +
+                    (isFirst
+                      ? 'text-primary dark:text-ball'
+                      : 'text-muted-foreground')
+                  }
                 >
-                  {row.point}
-                </td>
-                <td className={getWinRateClass(row.winRate)}>
-                  {(row.winRate * 100).toFixed(1)}%
-                </td>
-                <td>{row.score}</td>
-                <td>{row.loseScore}</td>
-                <td className={getMarginClass(row.margin)}>
-                  {row.margin > 0 ? '+' : ''}
-                  {row.margin}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+                  {rankLabel}
+                </p>
+                <p className="mt-0.5 truncate text-sm font-extrabold text-foreground">
+                  {p.name}
+                </p>
+                <p
+                  className={
+                    'font-black tabular-nums leading-tight ' +
+                    (isFirst
+                      ? 'text-[32px] text-primary dark:text-ball'
+                      : 'text-[24px] text-muted-foreground')
+                  }
+                >
+                  {p.point}
+                </p>
+                <p className="text-[10px] text-muted-foreground">
+                  {p.win}승 {p.game}게임 · {(p.winRate * 100).toFixed(1)}%
+                </p>
+              </button>
+            );
+          })}
+        </div>
+      )}
+      <RankList rows={displayStats} onNameClick={handleNameClick} />
 
       {stats.length > 10 && (
         <div className="flex justify-center mt-4">
@@ -326,7 +277,7 @@ export default function StatsTable() {
   // if (!gamesApiUrl || isLoading) {
   //   return (
   //     <div>
-  //       <h2 className="text-xl font-semibold text-gray-800 mb-4">전체순위</h2>
+  //       <h2 className="text-xl font-semibold text-foreground mb-4">전체순위</h2>
   //       <LoadingGrid loading={true} />
   //     </div>
   //   );
@@ -335,7 +286,7 @@ export default function StatsTable() {
   if (error) {
     return (
       <div>
-        <h2 className="text-xl font-semibold text-gray-800 mb-4">전체순위</h2>
+        <h2 className="text-xl font-semibold text-foreground mb-4">전체순위</h2>
         <div className="text-center py-20 text-lg text-red-500 overflow-x-auto">
           데이터를 불러오는 중 오류가 발생했습니다.
         </div>
@@ -346,8 +297,8 @@ export default function StatsTable() {
   if (stats.length === 0) {
     return (
       <div>
-        <h2 className="text-xl font-semibold text-gray-800 mb-4">전체순위</h2>
-        <div className="text-center py-20 text-lg text-gray-500">
+        <h2 className="text-xl font-semibold text-foreground mb-4">전체순위</h2>
+        <div className="text-center py-20 text-lg text-muted-foreground">
           조회된 데이터가 없습니다.
         </div>
       </div>
@@ -356,7 +307,7 @@ export default function StatsTable() {
 
   return (
     <div className="print-hidden">
-      <h2 className="text-xl font-semibold text-gray-800 mb-4">전체순위</h2>
+      <h2 className="text-xl font-semibold text-foreground mb-4">전체순위</h2>
       {isAdmin && (
         <div className="flex gap-2 mb-4">
           <Popover open={openStart} onOpenChange={setOpenStart}>

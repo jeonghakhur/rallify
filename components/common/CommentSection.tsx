@@ -131,11 +131,11 @@ export default function CommentSection({
 
   return (
     <div className="mt-6 mb-10">
-      <h3 className="text-lg font-bold text-gray-800 mb-3">{title}</h3>
+      <h3 className="text-lg font-bold text-foreground mb-3">{title}</h3>
 
       {/* 코멘트 입력 - 읽기 전용이 아닐 때만 표시 */}
       {!readOnly && (
-        <div className="fixed bottom-0 left-0 right-0 bg-white p-4">
+        <div className="fixed bottom-0 left-0 right-0 bg-card p-4">
           <form
             onSubmit={(e) => {
               e.preventDefault();
@@ -164,10 +164,7 @@ export default function CommentSection({
       <div className="flex flex-col gap-2">
         {comments && comments.length > 0 ? (
           comments.map((comment: Comment) => (
-            <div
-              key={comment._key}
-              className="border rounded-lg p-3 bg-gray-50"
-            >
+            <div key={comment._key} className="border rounded-lg p-3 bg-muted">
               <div className="flex justify-between items-center">
                 <div className="flex-1 flex items-center gap-2">
                   <div className="w-8 h-8 !bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-bold overflow-hidden">
@@ -185,14 +182,14 @@ export default function CommentSection({
                   </div>
                   <div className="flex justify-between items-center flex-1">
                     <div className="">
-                      <p className="text-sm font-medium text-gray-800">
+                      <p className="text-sm font-medium text-foreground">
                         {comment.author?.name || '알 수 없는 사용자'}
                       </p>
-                      <p className="text-sm text-gray-700 whitespace-pre-wrap">
+                      <p className="text-sm text-muted-foreground whitespace-pre-wrap">
                         {comment.text}
                       </p>
                     </div>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-muted-foreground">
                       {comment.createdAt &&
                         formatCommentDate(comment.createdAt)}
                     </p>
@@ -213,7 +210,7 @@ export default function CommentSection({
             </div>
           ))
         ) : (
-          <p className="text-gray-500 text-center py-4">
+          <p className="text-muted-foreground text-center py-4">
             {readOnly
               ? '아직 코멘트가 없습니다.'
               : '아직 코멘트가 없습니다. 첫 번째 코멘트를 남겨보세요!'}

@@ -23,6 +23,7 @@ export default function CurrentPlayingGame({ data, isLoading, mutate }: Props) {
   const userLevel = session?.user?.level ?? 0;
   const [editableGames, setEditableGames] = useState<Game[]>([]);
   const [dataLoading, setDataLoading] = useState(false);
+  const [selectedCourt, setSelectedCourt] = useState<string | null>(null);
   const gameApi = useGame(data?.scheduleID || '');
 
   useEffect(() => {
@@ -30,6 +31,22 @@ export default function CurrentPlayingGame({ data, isLoading, mutate }: Props) {
       setEditableGames([...data.games]);
     }
   }, [data]);
+
+  // 코트 목록 (칩 필터)
+  const courts = useMemo(() => {
+    const set = new Set(
+      (data?.games ?? []).map((g) => g.court).filter(Boolean)
+    );
+    return Array.from(set).sort();
+  }, [data?.games]);
+
+  // 기본은 첫 코트만 펼쳐 홈 스크롤을 줄인다
+  useEffect(() => {
+    if (courts.length > 1 && selectedCourt === null) {
+      setSelectedCourt(courts[0] ?? null);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [courts]);
 
   // 인풋 핸들러
   const handlePlayerChange = (
@@ -57,9 +74,14 @@ export default function CurrentPlayingGame({ data, isLoading, mutate }: Props) {
   // 게임별 수정
   const handleGameUpdate = async (gameIndex: number) => {
     if (!data || !data.scheduleID) return;
+    const gameResultId = data.id ?? data._id;
+    if (!gameResultId) return;
     setDataLoading(true);
     try {
-      const result = await gameApi.updateGameData?.(data._id!, editableGames);
+      const result = await gameApi.updateGameData?.(
+        gameResultId,
+        editableGames
+      );
       if (result?.success) {
         toast({
           title: `게임 ${gameIndex + 1}이 성공적으로 수정되었습니다.`,
@@ -81,19 +103,18 @@ export default function CurrentPlayingGame({ data, isLoading, mutate }: Props) {
 
   const formattedDate = useMemo(() => {
     if (!data?.date) return '';
-    return format(new Date(data.date), 'yyyy년 MM월 dd일 (EEE)', {
+    return format(new Date(data.date), 'M월 d일 (EEE)', {
       locale: ko,
     });
   }, [data?.date]);
 
   if (isLoading) {
     return (
-      <div className="bg-white rounded-lg shadow-md p-4 animate-pulse">
-        <div className="h-4 bg-gray-200 rounded w-1/3 mb-4"></div>
+      <div className="bg-card border border-border rounded-2xl p-4 animate-pulse">
+        <div className="h-4 bg-muted rounded w-1/3 mb-4"></div>
         <div className="space-y-3">
-          <div className="h-3 bg-gray-200 rounded"></div>
-          <div className="h-3 bg-gray-200 rounded w-2/3"></div>
-          <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+          <div className="h-3 bg-muted rounded"></div>
+          <div className="h-3 bg-muted rounded w-2/3"></div>
         </div>
       </div>
     );
@@ -107,128 +128,144 @@ export default function CurrentPlayingGame({ data, isLoading, mutate }: Props) {
     return null;
   }
 
+  const visibleGames = editableGames
+    .map((game, index) => ({ game, index }))
+    .filter(({ game }) => !selectedCourt || game.court === selectedCourt);
+
   return (
-    <div className="print-hidden">
+    <section className="print-hidden">
       {dataLoading && <LoadingGrid loading={true} />}
-      <div className="mb-4 flex justify-between items-center">
-        <h3 className="text-lg font-semibold text-gray-800">진행중 게임</h3>
-        <div className="text-sm text-gray-600">
-          {formattedDate} • {data.courtName}
-        </div>
-      </div>
-      <div className="flex justify-between items-center mb-2">
-        <div className="text-sm font-semibold text-gray-700">
-          (현재 진행중 총 {data.games.length}게임)
-        </div>
-        {/* 레벨 3 이상만 노출되는 게임 결과 상세 페이지 이동 버튼 */}
-        {userLevel >= 3 && (
-          <div className="flex justify-end">
+      <div className="mb-2.5 flex items-center justify-between px-1">
+        <h3 className="flex items-center gap-2 text-[15px] font-extrabold">
+          지금 코트에서
+          <span className="flex items-center gap-1.5 text-[10px] font-extrabold tracking-[0.14em] text-clay">
+            <i className="h-1.5 w-1.5 animate-pulse rounded-full bg-clay" />
+            LIVE
+          </span>
+        </h3>
+        <div className="text-xs font-semibold text-muted-foreground">
+          {formattedDate} · {data.courtName}
+          {userLevel >= 3 && (
             <Link
               href={`/games/${data.scheduleID}`}
-              className="flex items-center gap-1 text-sm text-blue-700 hover:text-blue-900 transition-colors underline underline-offset-4"
+              className="ml-2 font-bold text-primary dark:text-accent"
             >
-              상세보기
-              <svg
-                className="w-3 h-3 opacity-60"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 5l7 7-7 7"
-                />
-              </svg>
+              전체 {data.games.length}경기 →
             </Link>
-          </div>
-        )}
+          )}
+        </div>
       </div>
-      <div className="grid gap-4">
-        {editableGames &&
-          editableGames.map((result, index) => (
-            <div key={index} className="bg-white rounded-lg shadow-md p-4">
-              <div className="flex justify-between items-center px-2 mb-2">
-                <div className="font-semibold whitespace-nowrap">
-                  게임 {index + 1}
-                </div>
-                <div className="text-sm text-gray-600">
-                  {result.court && `${result.court}코트 `}
-                  {result.time}
-                </div>
-              </div>
-              <div className="flex gap-2">
-                <div className="flex flex-col gap-2 flex-1">
-                  <div className="flex items-center gap-2">
-                    <Input
-                      value={result.players?.[0] ?? ''}
-                      onChange={(e) =>
-                        handlePlayerChange(index, 0, e.target.value)
-                      }
-                    />
-                    <Input
-                      value={result.players?.[1] ?? ''}
-                      onChange={(e) =>
-                        handlePlayerChange(index, 1, e.target.value)
-                      }
-                    />
-                    <Input
-                      value={result.score?.[0] ?? ''}
-                      onChange={(e) =>
-                        handleScoreChange(index, 0, e.target.value)
-                      }
-                      className="text-center w-10"
-                    />
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Input
-                      value={result.players?.[2] ?? ''}
-                      onChange={(e) =>
-                        handlePlayerChange(index, 2, e.target.value)
-                      }
-                      className="w-full"
-                    />
-                    <Input
-                      value={result.players?.[3] ?? ''}
-                      onChange={(e) =>
-                        handlePlayerChange(index, 3, e.target.value)
-                      }
-                      className="w-full"
-                    />
-                    <Input
-                      value={result.score?.[1] ?? ''}
-                      onChange={(e) =>
-                        handleScoreChange(index, 1, e.target.value)
-                      }
-                      className="w-10 text-center"
-                    />
-                  </div>
-                </div>
-                <div className="flex flex-col gap-2">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    className="flex-1"
-                    onClick={() => handleGameUpdate(index)}
-                  >
-                    등록
-                  </Button>
-                  {/* <Button
-                    type="button"
-                    variant="destructive"
-                    size="sm"
-                    className="flex-1"
-                    onClick={() => handleGameDelete(index)}
-                  >
-                    삭제
-                  </Button> */}
-                </div>
-              </div>
-            </div>
+
+      {courts.length > 1 && (
+        <div className="mb-3 flex gap-1.5 overflow-x-auto px-1">
+          <button
+            type="button"
+            onClick={() => setSelectedCourt(null)}
+            className={
+              'shrink-0 rounded-full border px-3.5 py-1.5 text-xs font-bold ' +
+              (selectedCourt === null
+                ? 'border-transparent bg-primary text-primary-foreground dark:bg-accent dark:text-accent-foreground'
+                : 'border-border bg-card text-muted-foreground')
+            }
+          >
+            전체
+          </button>
+          {courts.map((court) => (
+            <button
+              key={court}
+              type="button"
+              onClick={() => setSelectedCourt(court)}
+              className={
+                'shrink-0 rounded-full border px-3.5 py-1.5 text-xs font-bold ' +
+                (selectedCourt === court
+                  ? 'border-transparent bg-primary text-primary-foreground dark:bg-accent dark:text-accent-foreground'
+                  : 'border-border bg-card text-muted-foreground')
+              }
+            >
+              {court}코트
+            </button>
           ))}
+        </div>
+      )}
+
+      <div className="grid gap-2.5">
+        {visibleGames.map(({ game, index }) => (
+          <div
+            key={index}
+            className="rounded-2xl border border-border bg-card p-4"
+          >
+            <div className="mb-2.5 flex items-center justify-between text-[11px] font-bold tracking-wide text-muted-foreground">
+              <span>
+                GAME {index + 1}
+                {game.court && ` · ${game.court}코트`}
+              </span>
+              <span>{game.time}</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="flex flex-1 flex-col">
+                <div className="flex items-center gap-1.5 py-0.5">
+                  <Input
+                    value={game.players?.[0] ?? ''}
+                    onChange={(e) =>
+                      handlePlayerChange(index, 0, e.target.value)
+                    }
+                    className="h-9 border-transparent bg-transparent px-2 text-[15px] font-bold focus-visible:border-input"
+                  />
+                  <Input
+                    value={game.players?.[1] ?? ''}
+                    onChange={(e) =>
+                      handlePlayerChange(index, 1, e.target.value)
+                    }
+                    className="h-9 border-transparent bg-transparent px-2 text-[15px] font-bold focus-visible:border-input"
+                  />
+                  <Input
+                    value={game.score?.[0] ?? ''}
+                    onChange={(e) =>
+                      handleScoreChange(index, 0, e.target.value)
+                    }
+                    inputMode="numeric"
+                    className="h-10 w-12 border-border bg-background text-center text-xl font-black tabular-nums"
+                  />
+                </div>
+                <div className="my-0.5 border-t border-dashed border-border" />
+                <div className="flex items-center gap-1.5 py-0.5">
+                  <Input
+                    value={game.players?.[2] ?? ''}
+                    onChange={(e) =>
+                      handlePlayerChange(index, 2, e.target.value)
+                    }
+                    className="h-9 border-transparent bg-transparent px-2 text-[15px] font-bold focus-visible:border-input"
+                  />
+                  <Input
+                    value={game.players?.[3] ?? ''}
+                    onChange={(e) =>
+                      handlePlayerChange(index, 3, e.target.value)
+                    }
+                    className="h-9 border-transparent bg-transparent px-2 text-[15px] font-bold focus-visible:border-input"
+                  />
+                  <Input
+                    value={game.score?.[1] ?? ''}
+                    onChange={(e) =>
+                      handleScoreChange(index, 1, e.target.value)
+                    }
+                    inputMode="numeric"
+                    className="h-10 w-12 border-border bg-background text-center text-xl font-black tabular-nums"
+                  />
+                </div>
+              </div>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                className="h-auto self-stretch"
+                onClick={() => handleGameUpdate(index)}
+              >
+                등록
+              </Button>
+            </div>
+          </div>
+        ))}
       </div>
-    </div>
+    </section>
   );
 }

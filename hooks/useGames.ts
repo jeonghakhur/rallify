@@ -115,7 +115,7 @@ export default function useGame(gameResultId: string) {
     const newGame = { ...game, comments: newComments } as GameResult;
     return mutate(
       async () => {
-        await addCommentToGameResult(game._id!, comment);
+        await addCommentToGameResult((game.id ?? game._id)!, comment);
         return { ...game, comments: newComments };
       },
       {
@@ -136,7 +136,7 @@ export default function useGame(gameResultId: string) {
     const newGame = { ...game, comments: updatedComments } as GameResult;
     return mutate(
       async () => {
-        await removeCommentFromGameResult(game._id!, commentKey);
+        await removeCommentFromGameResult((game.id ?? game._id)!, commentKey);
         return { ...game, comments: updatedComments };
       },
       {

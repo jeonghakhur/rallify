@@ -97,10 +97,12 @@ export default function ClubDetailPage({
   };
 
   if (authLoading || isLoading)
-    return <div className="p-4 text-center text-gray-400">로딩 중...</div>;
+    return (
+      <div className="p-4 text-center text-muted-foreground">로딩 중...</div>
+    );
   if (!club)
     return (
-      <div className="p-4 text-center text-gray-400">
+      <div className="p-4 text-center text-muted-foreground">
         클럽을 찾을 수 없습니다.
       </div>
     );
@@ -112,21 +114,23 @@ export default function ClubDetailPage({
   return (
     <main className="max-w-2xl mx-auto px-4 py-6">
       {/* 클럽 정보 */}
-      <div className="bg-white border border-gray-200 rounded-lg p-5 mb-4">
+      <div className="bg-card border border-border rounded-lg p-5 mb-4">
         <div className="flex items-start justify-between">
           <div>
-            <h1 className="text-xl font-bold text-gray-800">{club.name}</h1>
+            <h1 className="text-xl font-bold text-foreground">{club.name}</h1>
             {club.description && (
-              <p className="text-sm text-gray-500 mt-1">{club.description}</p>
+              <p className="text-sm text-muted-foreground mt-1">
+                {club.description}
+              </p>
             )}
-            <div className="flex items-center gap-3 mt-3 text-sm text-gray-400">
+            <div className="flex items-center gap-3 mt-3 text-sm text-muted-foreground">
               {club.city && (
                 <span>
                   {club.city} {club.district}
                 </span>
               )}
               <span>멤버 {club.memberCount}명</span>
-              <span className="px-2 py-0.5 rounded-full bg-gray-100 text-xs">
+              <span className="px-2 py-0.5 rounded-full bg-muted text-xs">
                 {joinTypeLabel[club.joinType]}
               </span>
             </div>
@@ -141,7 +145,7 @@ export default function ClubDetailPage({
         </div>
 
         {/* 액션 버튼 */}
-        <div className="mt-4 pt-4 border-t border-gray-100 space-y-2">
+        <div className="mt-4 pt-4 border-t border-border space-y-2">
           {(!club.myMembership ||
             myStatus === 'REJECTED' ||
             myStatus === 'LEFT' ||
@@ -159,15 +163,15 @@ export default function ClubDetailPage({
                   </div>
                 )}
                 {myStatus === 'LEFT' && (
-                  <div className="text-sm text-gray-600 bg-gray-50 rounded-md p-3">
+                  <div className="text-sm text-muted-foreground bg-muted rounded-md p-3">
                     이전에 탈퇴한 클럽입니다. 다시 가입 신청할 수 있습니다.
                   </div>
                 )}
                 {myStatus === 'REMOVED' && (
-                  <div className="text-sm text-gray-600 bg-gray-50 rounded-md p-3">
+                  <div className="text-sm text-muted-foreground bg-muted rounded-md p-3">
                     이전에 강퇴된 클럽입니다.
                     {club.myMembership?.statusReason && (
-                      <div className="text-xs mt-1 text-gray-500">
+                      <div className="text-xs mt-1 text-muted-foreground">
                         사유: {club.myMembership.statusReason}
                       </div>
                     )}
@@ -182,7 +186,7 @@ export default function ClubDetailPage({
               </>
             )}
           {club.joinType === 'INVITE_ONLY' && !club.myMembership && (
-            <div className="text-center text-sm text-gray-500 bg-gray-50 rounded-md py-2">
+            <div className="text-center text-sm text-muted-foreground bg-muted rounded-md py-2">
               초대 전용 클럽입니다.
             </div>
           )}
@@ -224,8 +228,8 @@ export default function ClubDetailPage({
       </div>
 
       {/* 멤버 목록 */}
-      <div className="bg-white border border-gray-200 rounded-lg p-5">
-        <h2 className="font-semibold text-gray-800 mb-3">
+      <div className="bg-card border border-border rounded-lg p-5">
+        <h2 className="font-semibold text-foreground mb-3">
           멤버 ({club.memberCount})
         </h2>
         <div className="space-y-2">
@@ -235,7 +239,7 @@ export default function ClubDetailPage({
               className="flex items-center justify-between py-2 border-b border-gray-50 last:border-0"
             >
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-xs text-gray-500">
+                <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center text-xs text-muted-foreground">
                   {member.user.name?.[0] || '?'}
                 </div>
                 <div>
@@ -243,13 +247,13 @@ export default function ClubDetailPage({
                     {member.user.name}
                   </span>
                   {member.user.username && (
-                    <span className="text-xs text-gray-400 ml-1">
+                    <span className="text-xs text-muted-foreground ml-1">
                       @{member.user.username}
                     </span>
                   )}
                 </div>
               </div>
-              <span className="text-xs text-gray-400">
+              <span className="text-xs text-muted-foreground">
                 {roleLabel[member.role] || member.role}
               </span>
             </div>
