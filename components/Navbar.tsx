@@ -102,7 +102,8 @@ export default function NavBar() {
                     게임
                   </Link>
                 </li>
-                <li>
+                {/* 클럽 기능 오픈 전까지 메뉴 비노출 */}
+                {/* <li>
                   <Link
                     href="/clubs"
                     className={
@@ -114,7 +115,7 @@ export default function NavBar() {
                   >
                     클럽
                   </Link>
-                </li>
+                </li> */}
               </>
             )}
             {role === 'SUPER_ADMIN' && (
@@ -132,7 +133,8 @@ export default function NavBar() {
                     회원관리
                   </Link>
                 </li>
-                <li>
+                {/* 클럽 기능 오픈 전까지 메뉴 비노출 */}
+                {/* <li>
                   <Link
                     href="/admin/club-applications"
                     className={
@@ -144,7 +146,7 @@ export default function NavBar() {
                   >
                     클럽신청
                   </Link>
-                </li>
+                </li> */}
               </>
             )}
           </ul>
