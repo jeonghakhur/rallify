@@ -6,6 +6,7 @@ import AuthContext from '@/context/AuthContext';
 import SWRConfigContext from '@/context/SWRConfigContext';
 import clsx from 'clsx';
 import NavBar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 import { DialogProvider } from '@/hooks/useDialog';
 
 const notoSans = Noto_Sans({
@@ -43,6 +44,7 @@ export default function RootLayout({
             <DialogProvider>
               <NavBar />
               {children}
+              <Footer />
               <Toaster />
             </DialogProvider>
           </SWRConfigContext>
