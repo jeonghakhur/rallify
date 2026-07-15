@@ -141,7 +141,6 @@ export default function User() {
             <div className="space-y-2">
               <Label>이름</Label>
               <Input type="text" {...register('name')} />
-              <p>실명으로 입력해주세요.</p>
             </div>
             <div className="space-y-2">
               <Label>성별</Label>
