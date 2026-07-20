@@ -17,6 +17,9 @@ export async function getSchedule(id: string) {
   if (!schedule) return null;
   return {
     ...schedule,
+    // 클라이언트는 Sanity 시절 계약대로 _key로 항목을 식별하므로 Prisma id를 매핑
+    attendees: schedule.attendees.map((a) => ({ ...a, _key: a.id })),
+    courtNumbers: schedule.courtNumbers.map((cn) => ({ ...cn, _key: cn.id })),
     comments: schedule.comments.map((c) => ({
       _key: c.id,
       text: c.text,
