@@ -392,6 +392,17 @@ export default function ScheduleDetailUser({ scheduleId, user }: Props) {
                   {attendee.startHour}:{attendee.startMinute} -{' '}
                   {attendee.endHour}:{attendee.endMinute}
                 </span>
+                {index === existingIndex && (
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    size="sm"
+                    className="h-7 px-2 text-xs"
+                    onClick={handleRemoveAttendance}
+                  >
+                    삭제
+                  </Button>
+                )}
               </div>
             </div>
           ))}
