@@ -55,7 +55,7 @@ export default function NavBar() {
           href="/"
           className="text-xl font-black tracking-tight text-foreground"
         >
-          React Tennis Club<span className="text-accent dark:text-ball">.</span>
+          rallify-tennis<span className="text-accent dark:text-ball">.</span>
         </Link>
 
         {!isSignin && (
@@ -84,6 +84,18 @@ export default function NavBar() {
                   >
                     프로필 보기
                   </button>
+                  {user.role === 'SUPER_ADMIN' && (
+                    <button
+                      type="button"
+                      className="w-full rounded px-3 py-2 text-left text-sm hover:bg-muted"
+                      onClick={() => {
+                        setMenuOpen(false);
+                        router.push('/admin/members');
+                      }}
+                    >
+                      회원 관리
+                    </button>
+                  )}
                   <div className="my-1 border-t border-border" />
                   <div className="px-3 pb-1 pt-1.5 text-xs font-semibold text-muted-foreground">
                     테마
