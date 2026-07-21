@@ -130,12 +130,15 @@ export default function CommentSection({
   };
 
   return (
-    <div className="mt-6 mb-10">
+    <div className="mt-6 mb-32">
       <h3 className="text-lg font-bold text-foreground mb-3">{title}</h3>
 
       {/* 코멘트 입력 - 읽기 전용이 아닐 때만 표시 */}
       {!readOnly && (
-        <div className="fixed bottom-0 left-0 right-0 bg-card p-4">
+        <div
+          className="fixed left-0 right-0 z-50 border-t border-border bg-card p-4"
+          style={{ bottom: 'calc(3.5rem + env(safe-area-inset-bottom))' }}
+        >
           <form
             onSubmit={(e) => {
               e.preventDefault();
