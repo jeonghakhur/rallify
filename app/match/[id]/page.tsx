@@ -21,7 +21,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { Check, ChevronsUpDown, Printer } from 'lucide-react';
+import { Check, ChevronsUpDown, Printer, UserPlus } from 'lucide-react';
 import {
   Command,
   CommandEmpty,
@@ -29,7 +29,9 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
+  CommandSeparator,
 } from '@/components/ui/command';
+import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
@@ -491,7 +493,8 @@ const TennisMatchScheduler: React.FC<MatchSchedulerProps> = ({
   }) => {
     const [dialogOpen, setDialogOpen] = useState(false);
     const [memberValue, setMemberValue] = useState(match.players[playerIndex]);
-    const [searchValue, setSearchValue] = useState('');
+    const [directInputMode, setDirectInputMode] = useState(false);
+    const [directInputValue, setDirectInputValue] = useState('');
     const players = match?.time
       ? match?.players?.[playerIndex]
         ? attendessAtTime(match.time)
@@ -501,14 +504,12 @@ const TennisMatchScheduler: React.FC<MatchSchedulerProps> = ({
     // 참석자 이름 오름차순 정렬
     const sortedPlayers = [...players].sort((a, b) => a.localeCompare(b, 'ko'));
 
-    // 검색어가 목록에 없으면 직접 입력 항목 노출
-    const trimmedSearch = searchValue.trim();
-    const canDirectInput =
-      trimmedSearch.length > 0 && !sortedPlayers.includes(trimmedSearch);
-
     const handleOpenChange = (open: boolean) => {
       setDialogOpen(open);
-      if (!open) setSearchValue('');
+      if (!open) {
+        setDirectInputMode(false);
+        setDirectInputValue('');
+      }
     };
 
     const handleSelect = (value: string) => {
@@ -521,6 +522,12 @@ const TennisMatchScheduler: React.FC<MatchSchedulerProps> = ({
         matchIndex
       );
       handleOpenChange(false);
+    };
+
+    const handleDirectInputConfirm = () => {
+      const name = directInputValue.trim();
+      if (!name) return;
+      handleSelect(name);
     };
 
     return (
@@ -540,40 +547,73 @@ const TennisMatchScheduler: React.FC<MatchSchedulerProps> = ({
         </DialogTrigger>
         <DialogContent className="w-[90vw] max-w-md p-0 gap-0 rounded-lg overflow-hidden">
           <DialogTitle className="sr-only">회원 선택</DialogTitle>
-          <Command className="w-full">
-            <CommandInput
-              placeholder="회원 검색 또는 직접 입력"
-              value={searchValue}
-              onValueChange={setSearchValue}
-              className="pr-8"
-            />
-            <CommandList className="h-[300px]">
-              <CommandEmpty>검색 결과가 없습니다.</CommandEmpty>
-              {canDirectInput && (
-                <CommandGroup heading="직접 입력">
+          {directInputMode ? (
+            <div className="flex flex-col gap-3 p-4">
+              <Label htmlFor="directInputName" className="font-bold">
+                이름 직접 입력
+              </Label>
+              <Input
+                id="directInputName"
+                value={directInputValue}
+                onChange={(e) => setDirectInputValue(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') handleDirectInputConfirm();
+                }}
+                placeholder="이름을 입력하세요"
+                autoFocus
+              />
+              <div className="flex gap-2 justify-end">
+                <Button
+                  variant="outline"
+                  onClick={() => setDirectInputMode(false)}
+                >
+                  취소
+                </Button>
+                <Button
+                  onClick={handleDirectInputConfirm}
+                  disabled={!directInputValue.trim()}
+                >
+                  확인
+                </Button>
+              </div>
+            </div>
+          ) : (
+            <Command className="w-full">
+              <CommandInput placeholder="회원 검색" className="pr-8" />
+              <CommandList className="h-[300px]">
+                <CommandEmpty>검색 결과가 없습니다.</CommandEmpty>
+                <CommandGroup>
                   <CommandItem
-                    value={trimmedSearch}
-                    onSelect={() => handleSelect(trimmedSearch)}
+                    forceMount
+                    value="-"
+                    onSelect={() => setDirectInputMode(true)}
+                    className="font-medium"
                   >
-                    &ldquo;{trimmedSearch}&rdquo; 직접 입력
+                    <UserPlus className="opacity-70" />
+                    직접 입력
                   </CommandItem>
                 </CommandGroup>
-              )}
-              <CommandGroup>
-                {sortedPlayers.map((player, idx) => (
-                  <CommandItem key={idx} value={player} onSelect={handleSelect}>
-                    {player}
-                    <Check
-                      className={cn(
-                        'ml-auto',
-                        memberValue === player ? 'opacity-100' : 'opacity-0'
-                      )}
-                    />
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            </CommandList>
-          </Command>
+                <CommandSeparator />
+                <CommandGroup>
+                  {sortedPlayers.map((player, idx) => (
+                    <CommandItem
+                      key={idx}
+                      value={player}
+                      onSelect={handleSelect}
+                    >
+                      {player}
+                      <Check
+                        className={cn(
+                          'ml-auto',
+                          memberValue === player ? 'opacity-100' : 'opacity-0'
+                        )}
+                      />
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          )}
         </DialogContent>
       </Dialog>
     );
