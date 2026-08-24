@@ -15,7 +15,7 @@ export default function Page() {
         <h2 className="px-1 text-2xl font-black tracking-tight">
           랭킹
           <span className="ml-2 text-xs font-bold text-muted-foreground">
-            승점 = 승 3점 · 무 1점 · 정렬 승점 &gt; 승률 &gt; 마진
+            승점 = 승 3점 · 무 1점 · 승점/승률/마진을 눌러 정렬
           </span>
         </h2>
         <StatsTable />

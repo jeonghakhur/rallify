@@ -138,8 +138,6 @@ export default function LatestGameRanking() {
     return calculateStats([latestGame]);
   }, [latestGame]);
 
-  const displayStats = showAll ? stats : stats.slice(0, 3);
-
   if (isLoading) {
     return (
       <div>
@@ -194,7 +192,8 @@ export default function LatestGameRanking() {
         )}
       </h2>
       <RankList
-        rows={displayStats}
+        rows={stats}
+        limit={showAll ? undefined : 3}
         onNameClick={(name) => {
           setSelectedPlayer(name);
           setDialogOpen(true);

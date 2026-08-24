@@ -114,7 +114,6 @@ function calculateStats(games: GameResult[]): PlayerStats[] {
 
 function StatsTableContent({ stats }: { stats: PlayerStats[] }) {
   const [showAll, setShowAll] = useState(false);
-  const displayStats = showAll ? stats : stats.slice(0, 10);
   const router = useRouter();
 
   const handleNameClick = (name: string) => {
@@ -174,7 +173,11 @@ function StatsTableContent({ stats }: { stats: PlayerStats[] }) {
           })}
         </div>
       )}
-      <RankList rows={displayStats} onNameClick={handleNameClick} />
+      <RankList
+        rows={stats}
+        limit={showAll ? undefined : 10}
+        onNameClick={handleNameClick}
+      />
 
       {stats.length > 10 && (
         <div className="flex justify-center mt-4">
