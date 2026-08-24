@@ -10,6 +10,7 @@ import { Calendar } from './ui/calendar';
 import { Popover, PopoverTrigger, PopoverContent } from './ui/popover';
 import useAuthRedirect from '@/hooks/useAuthRedirect';
 import RankList from './RankList';
+import { format } from 'date-fns';
 
 type PlayerStats = {
   name: string;
@@ -228,8 +229,9 @@ export default function StatsTable() {
   // 날짜 필터가 적용된 API URL 생성
   const gamesApiUrl = useMemo(() => {
     if (!startDate || !endDate) return null;
-    const start = startDate.toISOString().slice(0, 10);
-    const end = endDate.toISOString().slice(0, 10);
+    // toISOString()은 UTC 기준이라 KST 자정이 전날로 밀림 → 로컬 날짜로 포맷
+    const start = format(startDate, 'yyyy-MM-dd');
+    const end = format(endDate, 'yyyy-MM-dd');
     return `/api/games?status=done&startDate=${start}&endDate=${end}`;
   }, [startDate, endDate]);
 
@@ -243,8 +245,8 @@ export default function StatsTable() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          startDate: startDate.toISOString().slice(0, 10),
-          endDate: endDate.toISOString().slice(0, 10),
+          startDate: format(startDate, 'yyyy-MM-dd'),
+          endDate: format(endDate, 'yyyy-MM-dd'),
         }),
       });
       if (!res.ok) {
