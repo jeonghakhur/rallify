@@ -15,12 +15,12 @@ import useSchedule from '@/hooks/useSchedule';
 import Skeleton from '@/components/common/Skeleton';
 import { useRouter } from 'next/navigation';
 import { useSWRConfig } from 'swr';
-import { useRef } from 'react';
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import { Check, ChevronsUpDown, Printer } from 'lucide-react';
 import {
   Command,
@@ -309,6 +309,11 @@ const TennisMatchScheduler: React.FC<MatchSchedulerProps> = ({
       const updateMatches = [...matches];
       const sameTimeMatches = updateMatches.filter((m) => m.time === time);
 
+      // 참석자 목록/대기자 어디에도 없는 이름이면 직접 입력된 선수로 간주
+      const isCustomPlayer =
+        !sameTimeMatches.some((m) => m.players.includes(player)) &&
+        !(idleSummary[time] || []).includes(player);
+
       if (prePlayer) {
         sameTimeMatches.forEach((match) => {
           match.players = match.players.map((name) => {
@@ -352,6 +357,20 @@ const TennisMatchScheduler: React.FC<MatchSchedulerProps> = ({
           updateGamesCount[prePlayer] = (updateGamesCount[prePlayer] || 0) - 1;
         } else if (updateIdleSummary[time]) {
           updateIdleSummary[time].splice(idleIndex, 1);
+        }
+
+        setGamesPlayed(updateGamesCount);
+      } else if (isCustomPlayer) {
+        // 직접 입력된 선수: 게임 수 반영, 교체된 기존 선수는 대기자로 이동
+        const updateGamesCount = { ...gamesPlayed };
+        updateGamesCount[player] = (updateGamesCount[player] || 0) + 1;
+
+        if (prePlayer) {
+          updateGamesCount[prePlayer] = (updateGamesCount[prePlayer] || 0) - 1;
+          updateIdleSummary[time] = [
+            ...(updateIdleSummary[time] || []),
+            prePlayer,
+          ];
         }
 
         setGamesPlayed(updateGamesCount);
@@ -470,9 +489,9 @@ const TennisMatchScheduler: React.FC<MatchSchedulerProps> = ({
     match,
     playerIndex,
   }) => {
-    const [popoverOpen, setPopoverOpen] = useState(false);
+    const [dialogOpen, setDialogOpen] = useState(false);
     const [memberValue, setMemberValue] = useState(match.players[playerIndex]);
-    const buttonRef = useRef<HTMLButtonElement>(null);
+    const [searchValue, setSearchValue] = useState('');
     const players = match?.time
       ? match?.players?.[playerIndex]
         ? attendessAtTime(match.time)
@@ -481,6 +500,16 @@ const TennisMatchScheduler: React.FC<MatchSchedulerProps> = ({
 
     // 참석자 이름 오름차순 정렬
     const sortedPlayers = [...players].sort((a, b) => a.localeCompare(b, 'ko'));
+
+    // 검색어가 목록에 없으면 직접 입력 항목 노출
+    const trimmedSearch = searchValue.trim();
+    const canDirectInput =
+      trimmedSearch.length > 0 && !sortedPlayers.includes(trimmedSearch);
+
+    const handleOpenChange = (open: boolean) => {
+      setDialogOpen(open);
+      if (!open) setSearchValue('');
+    };
 
     const handleSelect = (value: string) => {
       setMemberValue(value);
@@ -491,26 +520,16 @@ const TennisMatchScheduler: React.FC<MatchSchedulerProps> = ({
         playerIndex,
         matchIndex
       );
-      // Popover를 닫기 전에 포커스 설정
-      setTimeout(() => {
-        const button = document.querySelector(
-          `button[data-match-index="${matchIndex}"][data-player-index="${playerIndex}"]`
-        ) as HTMLButtonElement;
-        if (button) {
-          button.focus();
-        }
-      }, 0);
-      setPopoverOpen(false);
+      handleOpenChange(false);
     };
 
     return (
-      <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
-        <PopoverTrigger asChild className="">
+      <Dialog open={dialogOpen} onOpenChange={handleOpenChange}>
+        <DialogTrigger asChild>
           <Button
-            ref={buttonRef}
             variant="outline"
             role="combobox"
-            aria-expanded={popoverOpen}
+            aria-expanded={dialogOpen}
             data-match-index={matchIndex}
             data-player-index={playerIndex}
             className="flex-1"
@@ -518,12 +537,28 @@ const TennisMatchScheduler: React.FC<MatchSchedulerProps> = ({
             {memberValue}
             <ChevronsUpDown className="opacity-50 ml-auto" />
           </Button>
-        </PopoverTrigger>
-        <PopoverContent align="start" className="h-[300px]">
+        </DialogTrigger>
+        <DialogContent className="w-[90vw] max-w-md p-0 gap-0 rounded-lg overflow-hidden">
+          <DialogTitle className="sr-only">회원 선택</DialogTitle>
           <Command className="w-full">
-            <CommandInput placeholder="Search member" />
-            <CommandList>
-              <CommandEmpty>No member found.</CommandEmpty>
+            <CommandInput
+              placeholder="회원 검색 또는 직접 입력"
+              value={searchValue}
+              onValueChange={setSearchValue}
+              className="pr-8"
+            />
+            <CommandList className="h-[300px]">
+              <CommandEmpty>검색 결과가 없습니다.</CommandEmpty>
+              {canDirectInput && (
+                <CommandGroup heading="직접 입력">
+                  <CommandItem
+                    value={trimmedSearch}
+                    onSelect={() => handleSelect(trimmedSearch)}
+                  >
+                    &ldquo;{trimmedSearch}&rdquo; 직접 입력
+                  </CommandItem>
+                </CommandGroup>
+              )}
               <CommandGroup>
                 {sortedPlayers.map((player, idx) => (
                   <CommandItem key={idx} value={player} onSelect={handleSelect}>
@@ -539,8 +574,8 @@ const TennisMatchScheduler: React.FC<MatchSchedulerProps> = ({
               </CommandGroup>
             </CommandList>
           </Command>
-        </PopoverContent>
-      </Popover>
+        </DialogContent>
+      </Dialog>
     );
   };
 
