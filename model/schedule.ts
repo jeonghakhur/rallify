@@ -37,6 +37,7 @@ export const ScheduleFormSchema = z.object({
             _ref: z.string(),
           })
           .optional(),
+        userId: z.string().optional(),
         name: z.string(),
         gender: z.string(),
         startHour: z.string(),

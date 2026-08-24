@@ -96,7 +96,7 @@ export default function FormMembers({
   // 본인이 이미 참석 신청했는지 확인 (이름과 ID가 모두 일치)
   const isMyAttendance = () => {
     return fields.some((att) => {
-      return att.name === user.name && att.author?._ref === user.id;
+      return att.name === user.name && att.userId === user.id;
     });
   };
 
@@ -126,7 +126,8 @@ export default function FormMembers({
         _key: uuid(),
         name,
         gender,
-        userId: user.id,
+        // 본인 등록일 때만 내 ID를 연결하고, 게스트는 연결 계정 없이 등록
+        userId: myAdd ? user.id : '',
         startHour: attendanceTime.startHour,
         startMinute: attendanceTime.startMinute,
         endHour: attendanceTime.endHour,
@@ -345,7 +346,6 @@ export default function FormMembers({
                           onClick={() => {
                             handleRemoveMember(attendees);
                           }}
-                          disabled={attendees.author?._ref !== user.id}
                         >
                           삭제
                         </Button>
